@@ -1,0 +1,1866 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>O Caso da Linha L2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: apresentação em tela cheia, preto no branco (ou branco no preto), muito espaço livre; o experimento acontece numa janela de chat. */
+:root{
+  --bg:#FFFFFF; --surface:#F7F7F8; --surface-2:#ECECEF; --line:#E3E3E7; --fg:#0D0D0D; --muted:#5D5D6B; --faint:#8E8EA0;
+  --other:#C9C9D2; --c1:#7E7E8C; --c2:#C4C4CE; --warn:#B7791F; --night:rgba(30,40,90,.06);
+  --good:#0E8F6E; --good-soft:rgba(14,143,110,.10); --bad:#C93838; --bad-soft:rgba(201,56,56,.09);
+  --btn:#0D0D0D; --btn-fg:#FFFFFF;
+  --f-sans:"Geist",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --f-mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0B0B0C; --surface:#161618; --surface-2:#232326; --line:#2C2C30; --fg:#ECECEE; --muted:#A3A3AE; --faint:#71717C;
+  --other:#45454C; --c1:#8A8A96; --c2:#46464E; --warn:#E0A63A; --night:rgba(70,90,160,.09);
+  --good:#3CCB9C; --good-soft:rgba(60,203,156,.13); --bad:#F06A64; --bad-soft:rgba(240,106,100,.13);
+  --btn:#ECECEE; --btn-fg:#0B0B0C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B0B0C; --surface:#161618; --surface-2:#232326; --line:#2C2C30; --fg:#ECECEE; --muted:#A3A3AE; --faint:#71717C;
+  --other:#45454C; --c1:#8A8A96; --c2:#46464E; --warn:#E0A63A; --night:rgba(70,90,160,.09);
+  --good:#3CCB9C; --good-soft:rgba(60,203,156,.13); --bad:#F06A64; --bad-soft:rgba(240,106,100,.13);
+  --btn:#ECECEE; --btn-fg:#0B0B0C; color-scheme:dark}
+html{font-size:clamp(14px,0.75vmin + 8px,21px);height:100%}
+*{box-sizing:border-box}
+body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-sans);line-height:1.55;overflow:hidden;-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+b,strong{font-weight:600}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+.mono{font-family:var(--f-mono)}
+code{font-family:var(--f-mono);font-size:.88em;background:var(--surface-2);padding:.08em .35em;border-radius:5px}
+
+/* ---------- deck ---------- */
+.deck{position:fixed;inset:0;top:env(safe-area-inset-top,0px);bottom:calc(3.6rem + env(safe-area-inset-bottom,0px))}
+.slide{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;display:flex;opacity:0;visibility:hidden;transform:translateY(12px);
+  transition:opacity .4s ease,transform .5s cubic-bezier(.2,.7,.2,1),visibility 0s linear .5s}
+.slide.active{opacity:1;visibility:visible;transform:none;transition:opacity .4s ease,transform .5s cubic-bezier(.2,.7,.2,1),visibility 0s}
+.wrap{margin:auto;width:100%;max-width:74rem;padding-block:2.4rem 2.2rem;padding-left:max(16px,env(safe-area-inset-left,0px),4vw);padding-right:max(16px,env(safe-area-inset-right,0px),4vw);display:flex;flex-direction:column;gap:1.5rem}
+.notes{display:none}
+.eyebrow{font-size:.9rem;color:var(--muted);font-weight:500;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.025em;text-wrap:balance}
+h1{font-size:clamp(2.6rem,6.2vw,5.2rem);line-height:1.02}
+h2{font-size:clamp(1.9rem,3.6vw,3rem);line-height:1.08}
+h3{font-size:1.2rem;line-height:1.25;letter-spacing:-.015em}
+.lead{font-size:1.25rem;color:var(--muted);max-width:46rem}
+.lead b{color:var(--fg)}
+.slide.active .rise{animation:rise .6s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 80ms + 80ms)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.grid{display:grid;gap:1rem}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:900px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.g2,.g3,.g4{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border-radius:18px;padding:1.15rem 1.25rem;display:flex;flex-direction:column;gap:.5rem;min-width:0}
+.card .k{font-size:.8rem;color:var(--muted);font-weight:500}
+.card.line{background:transparent;border:1px solid var(--line)}
+.pill{display:inline-flex;align-items:center;gap:.4rem;border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:.4rem .85rem;font-size:.88rem;cursor:pointer;white-space:nowrap}
+.pill:hover{background:var(--surface)}
+.pill[aria-pressed="true"],.pill[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.btn{display:inline-flex;align-items:center;gap:.45rem;background:var(--btn);color:var(--btn-fg);border:0;border-radius:999px;padding:.6rem 1.15rem;font-size:.95rem;font-weight:500;cursor:pointer;white-space:nowrap}
+.btn:hover{opacity:.88}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.guide{display:inline-flex;align-items:center;gap:.45rem;font-size:.85rem;color:var(--muted);border:1px dashed var(--faint);border-radius:999px;padding:.3rem .8rem;white-space:nowrap}
+.guide b{color:var(--fg)}
+.say{font-size:1.05rem;border-left:3px solid var(--fg);padding-left:1rem;max-width:48rem}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+
+/* ---------- barra ---------- */
+.bar{position:fixed;left:0;right:0;bottom:0;height:calc(3.6rem + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:var(--bg);border-top:1px solid var(--line);display:flex;align-items:center;gap:1rem;z-index:20}
+.progress{position:absolute;left:0;top:-1px;height:2px;background:var(--fg);width:0;transition:width .45s ease}
+.secname{font-size:.85rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+.secname b{color:var(--fg);font-weight:500}
+.ctrls{display:flex;gap:.35rem;align-items:center}
+.ibtn{background:transparent;border:1px solid var(--line);border-radius:999px;height:2.3rem;min-width:2.3rem;padding:0 .8rem;cursor:pointer;font-size:.85rem;color:var(--muted);display:inline-flex;align-items:center;justify-content:center}
+.ibtn:hover{color:var(--fg);background:var(--surface)}
+.ibtn[aria-pressed="true"]{color:var(--bg);background:var(--fg);border-color:var(--fg)}
+.ibtn.round{padding:0;width:2.3rem}
+.counter{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.timer{font-size:.85rem;color:var(--faint);font-variant-numeric:tabular-nums;cursor:pointer;background:none;border:0;padding:0}
+@media (max-width:640px){.hide-sm{display:none!important}}
+.notes-panel{position:fixed;left:0;right:0;bottom:calc(3.6rem + env(safe-area-inset-bottom,0px));max-height:40vh;overflow:auto;background:var(--surface);border-top:1px solid var(--line);z-index:19;
+  padding-block:1rem 1.2rem;padding-left:max(16px,env(safe-area-inset-left,0px),4vw);padding-right:max(16px,env(safe-area-inset-right,0px),4vw);transform:translateY(105%);transition:transform .3s ease}
+.notes-panel.open{transform:none}
+.notes-panel .k{font-size:.78rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem}
+.notes-panel p+p{margin-top:.5rem}
+.overview{position:fixed;inset:0;bottom:calc(3.6rem + env(safe-area-inset-bottom,0px));background:var(--bg);z-index:25;overflow:auto;
+  padding-block:2rem;padding-left:max(16px,env(safe-area-inset-left,0px),4vw);padding-right:max(16px,env(safe-area-inset-right,0px),4vw)}
+.ov-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:.6rem;max-width:74rem;margin:1rem auto 0}
+.ov-grid button{text-align:left;background:var(--surface);border:1px solid transparent;border-radius:14px;padding:.75rem .9rem;cursor:pointer;display:flex;flex-direction:column;gap:.15rem}
+.ov-grid button:hover,.ov-grid button.cur{border-color:var(--fg)}
+.ov-grid .n{font-size:.75rem;color:var(--muted)}
+.ov-grid .s{font-size:.72rem;color:var(--faint)}
+kbd{font-family:var(--f-mono);font-size:.75rem;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:.05rem .35rem;color:var(--muted)}
+.keys{font-size:.82rem;color:var(--faint);display:flex;gap:1rem;flex-wrap:wrap}
+#tip{position:fixed;z-index:40;pointer-events:none;background:var(--fg);color:var(--bg);font-size:.8rem;padding:.4rem .65rem;border-radius:8px;max-width:18rem;opacity:0;transition:opacity .12s;line-height:1.35}
+#tip.on{opacity:1}
+
+/* ---------- capa ---------- */
+.composer{display:flex;align-items:center;gap:.8rem;border:1px solid var(--line);border-radius:999px;padding:.55rem .55rem .55rem 1.3rem;max-width:44rem;background:var(--bg);box-shadow:0 8px 30px -18px rgba(0,0,0,.25);min-width:0}
+.composer .tx{flex:1;font-size:1.1rem;min-height:1.6rem;min-width:0}
+.send{width:2.4rem;height:2.4rem;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;border:0;font-size:1.1rem;flex:none;cursor:pointer}
+.caret::after{content:"";display:inline-block;width:2px;height:1.1em;background:var(--fg);vertical-align:-.18em;margin-left:2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ---------- QR ---------- */
+.qr{background:#fff;border-radius:18px;padding:14px;display:inline-grid;place-items:center;border:1px solid var(--line);width:max-content;color:#000}
+.qr img,.qr canvas{display:block;width:12rem!important;height:12rem!important}
+.howto{display:flex;flex-direction:column;gap:.9rem}
+.howto .st{display:grid;grid-template-columns:2.2rem 1fr;gap:.8rem;align-items:start}
+.howto .num{width:2.2rem;height:2.2rem;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;font-weight:600}
+.url{font-family:var(--f-mono);font-size:.82rem;color:var(--muted);word-break:break-all}
+
+/* ---------- agenda ---------- */
+.agenda{display:flex;flex-direction:column;gap:.15rem}
+.ag{display:grid;grid-template-columns:5.5rem 1fr auto;gap:1rem;align-items:baseline;padding:.75rem 0;border-bottom:1px solid var(--line)}
+.ag .t{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.95rem}
+.ag .l{font-size:1.15rem;font-weight:500}
+.ag .d{color:var(--muted);font-size:.9rem;text-align:right}
+.ag.hl .l::after{content:"principal";margin-left:.6rem;font-size:.72rem;font-weight:500;background:var(--fg);color:var(--bg);border-radius:999px;padding:.12rem .5rem;vertical-align:.15rem}
+@media (max-width:640px){.ag{grid-template-columns:4.5rem 1fr}.ag .d{display:none}}
+
+/* ---------- e-mail ---------- */
+.mail{border:1px solid var(--line);border-radius:18px;overflow:hidden;max-width:50rem}
+.mail-head{display:grid;grid-template-columns:auto 1fr;gap:.2rem 1rem;padding:1rem 1.3rem;border-bottom:1px solid var(--line);font-size:.92rem;background:var(--surface)}
+.mail-head span:nth-child(odd){color:var(--muted)}
+.mail-body{padding:1.2rem 1.3rem 1.4rem;font-size:1.2rem;min-height:9rem;white-space:pre-line}
+.voices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem}
+@media (max-width:760px){.voices{grid-template-columns:minmax(0,1fr)}}
+.voice .who{font-size:.82rem;color:var(--muted)}
+.voice q{font-size:1.1rem;quotes:"“" "”"}
+
+/* ---------- diagrama LLM ---------- */
+.flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem}
+@media (max-width:760px){.flow{grid-template-columns:minmax(0,1fr)}}
+.fstep{background:var(--surface);border-radius:18px;padding:1rem 1.1rem;display:flex;flex-direction:column;gap:.45rem}
+.fstep .n{font-size:.8rem;color:var(--muted)}
+.fstep .ex{font-family:var(--f-mono);font-size:.82rem;background:var(--bg);border-radius:10px;padding:.5rem .6rem;color:var(--muted)}
+.slide.active .fstep{animation:rise .6s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i) * 220ms + 200ms)}
+.loop{font-size:.95rem;color:var(--muted);display:flex;gap:.6rem;align-items:center}
+.loop::before{content:"↻";font-size:1.4rem;color:var(--fg)}
+
+/* ---------- próxima palavra ---------- */
+.demo{border:1px solid var(--line);border-radius:20px;padding:1.3rem;display:flex;flex-direction:column;gap:1rem;min-width:0}
+.sentence{font-size:1.4rem;font-weight:500;line-height:1.35;min-height:3.8rem;letter-spacing:-.01em}
+.sentence .new{background:var(--fg);color:var(--bg);border-radius:6px;padding:0 .3rem}
+.cands{display:flex;flex-direction:column;gap:.45rem}
+.cand{display:grid;grid-template-columns:7.5rem 1fr 3.2rem;gap:.7rem;align-items:center;font-size:.95rem}
+.cand .track{height:.75rem;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.cand .fill{height:100%;background:var(--other);border-radius:99px;transition:width .45s cubic-bezier(.2,.7,.2,1)}
+.cand.pick .fill{background:var(--fg)}
+.cand.pick .w{font-weight:600}
+.cand .v{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.ctl{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap}
+.ctl label{font-size:.88rem;color:var(--muted)}
+input[type=range]{accent-color:var(--fg);width:12rem;max-width:100%}
+
+/* ---------- tokens ---------- */
+.tokin{width:100%;background:var(--surface);border:1px solid transparent;border-radius:14px;padding:.75rem .9rem;font-size:1.05rem;resize:vertical;min-height:4.5rem}
+.tokin:focus{outline:none;border-color:var(--line);background:var(--bg)}
+.chips{display:flex;flex-wrap:wrap;gap:3px;font-family:var(--f-mono);font-size:.92rem}
+.chips span{padding:.12rem .28rem;border-radius:5px;white-space:pre}
+.chips span:nth-child(odd){background:var(--surface-2)}
+.chips span:nth-child(even){background:var(--other)}
+.stat{background:var(--surface);border-radius:14px;padding:.65rem .9rem;min-width:7.5rem;display:flex;flex-direction:column}
+.stat .v{font-size:1.45rem;font-weight:600;letter-spacing:-.02em;line-height:1.15;font-variant-numeric:tabular-nums}
+.stat .l{font-size:.78rem;color:var(--muted)}
+.stat.good .v{color:var(--good)}.stat.bad .v{color:var(--bad)}
+.stat.dark{background:var(--fg);color:var(--bg)}.stat.dark .l{color:var(--bg);opacity:.75}
+.ctx{display:flex;height:2.4rem;gap:3px;border-radius:10px;overflow:hidden}
+.ctx div{display:flex;align-items:center;padding:0 .6rem;font-size:.78rem;white-space:nowrap;overflow:hidden}
+
+/* ---------- erros ---------- */
+.ex{font-size:.88rem;background:var(--bg);border-radius:12px;padding:.65rem .75rem;display:flex;flex-direction:column;gap:.3rem}
+.ex .u{color:var(--muted)}
+.ex mark{background:var(--bad-soft);color:var(--bad);padding:0 .2rem;border-radius:4px}
+.fix{font-size:.9rem;color:var(--good)}
+.rule{border:1px solid var(--line);border-radius:16px;padding:.9rem 1.1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.rule .tag{background:var(--fg);color:var(--bg);border-radius:999px;padding:.2rem .7rem;font-size:.8rem;font-weight:500}
+
+/* ---------- ferramentas / escada ---------- */
+.tasks{display:flex;flex-wrap:wrap;gap:.45rem}
+.tool{transition:opacity .3s,box-shadow .3s}
+.tools.filtered .tool{opacity:.3}
+.tools.filtered .tool.on{opacity:1;box-shadow:0 0 0 2px var(--fg) inset}
+.tool .names{font-size:.88rem;font-weight:500}
+.ladder{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.6rem;align-items:end}
+.step{background:var(--surface);border-radius:16px;padding:.95rem;display:flex;flex-direction:column;gap:.4rem;min-width:0}
+.step .lv{font-size:.78rem;color:var(--muted)}
+.step .e{font-size:.82rem;color:var(--muted);border-top:1px solid var(--line);padding-top:.45rem}
+.step.now{background:var(--fg);color:var(--bg)}
+.step.now .lv,.step.now .e,.step.now .muted{color:var(--bg);opacity:.75}
+.slide.active .step{animation:climb .6s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i) * 120ms + 150ms)}
+@keyframes climb{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+@media (max-width:900px){.ladder{grid-template-columns:minmax(0,1fr)}.step{margin-top:0!important}}
+
+/* ---------- papéis ---------- */
+.rn{font-family:var(--f-mono);font-size:.8rem;font-weight:500;padding:.2rem .55rem;border-radius:7px;align-self:flex-start;background:var(--fg);color:var(--bg)}
+.split2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.4rem;align-items:start}
+@media (max-width:860px){.split2{grid-template-columns:minmax(0,1fr)}}
+.stack{display:flex;flex-direction:column;gap:.45rem}
+.sm{display:grid;grid-template-columns:6.2rem 1fr;gap:.7rem;background:var(--surface);border-radius:12px;padding:.6rem .8rem;font-size:.92rem;animation:rise .45s ease both}
+.sm .r{font-family:var(--f-mono);font-size:.78rem;color:var(--muted);padding-top:.12rem}
+.sm.new{box-shadow:0 0 0 1.5px var(--fg) inset}
+.annot{font-size:.95rem;color:var(--muted);min-height:2.6rem}
+
+/* ---------- chat ---------- */
+.chat{border:1px solid var(--line);border-radius:22px;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);min-width:0}
+.chat-h{display:flex;align-items:center;justify-content:space-between;gap:.8rem;padding:.7rem 1.1rem;border-bottom:1px solid var(--line);font-size:.88rem;color:var(--muted)}
+.chat-h b{color:var(--fg);font-weight:500}
+.chat-b{flex:1;overflow-y:auto;padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:1.1rem}
+.chat-f{padding:.7rem .9rem .9rem}
+.chat-f .composer{max-width:none;box-shadow:none;background:var(--surface);border-color:transparent;border-radius:24px;align-items:flex-end;padding:.6rem .6rem .6rem 1.1rem}
+.chat-f .composer .tx{font-size:.92rem;line-height:1.5;max-height:7.5rem;overflow:auto;padding-bottom:.35rem}
+.bub{align-self:flex-end;background:var(--surface-2);border-radius:20px;padding:.7rem 1rem;max-width:85%;font-size:.95rem;white-space:pre-wrap;animation:rise .35s ease both}
+.att{align-self:flex-end;display:inline-flex;gap:.5rem;align-items:center;border:1px solid var(--line);border-radius:12px;padding:.45rem .7rem;font-size:.82rem;color:var(--muted)}
+.att::before{content:"▤";font-size:1rem;color:var(--fg)}
+.ai{display:grid;grid-template-columns:1.9rem minmax(0,1fr);gap:.8rem;align-items:start}
+.av{width:1.9rem;height:1.9rem;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:.68rem;font-weight:600;color:var(--muted)}
+.ai-c{display:flex;flex-direction:column;gap:.8rem;min-width:0;font-size:.98rem}
+.think{display:flex;gap:.35rem;align-items:center;color:var(--muted);font-size:.9rem;padding-top:.3rem}
+.think i{width:7px;height:7px;border-radius:50%;background:var(--fg);display:block;animation:pulse 1s infinite}
+.think i:nth-child(2){animation-delay:.15s}.think i:nth-child(3){animation-delay:.3s}
+@keyframes pulse{50%{opacity:.2}}
+.empty{margin:auto;text-align:center;color:var(--muted);font-size:.95rem;display:flex;flex-direction:column;gap:.4rem;align-items:center}
+.empty b{font-size:1.25rem;color:var(--fg);font-weight:600;letter-spacing:-.02em}
+.viz{animation:rise .5s ease both;min-width:0}
+
+/* elo */
+.elo{max-width:84rem;display:grid;grid-template-columns:21rem minmax(0,1fr);gap:2rem;align-items:start}
+@media (max-width:980px){.elo{grid-template-columns:minmax(0,1fr)}}
+.elo aside{display:flex;flex-direction:column;gap:1rem;min-width:0}
+.elo .chat{height:clamp(30rem,calc(100vh - 11rem),56rem)}
+@media (max-width:980px){.elo .chat{height:auto}.elo .chat-b{max-height:70vh;min-height:20rem}}
+.badge{display:inline-flex;align-self:flex-start;background:var(--fg);color:var(--bg);border-radius:999px;padding:.2rem .7rem;font-size:.8rem;font-weight:500}
+.concept{background:var(--surface);border-radius:16px;padding:.9rem 1rem;display:flex;flex-direction:column;gap:.35rem;font-size:.95rem}
+.concept .k{font-size:.78rem;color:var(--muted);font-weight:500}
+.tech{font-size:.88rem;color:var(--muted)}
+.tech b{color:var(--fg)}
+.checkbox{border-top:1px solid var(--line);padding-top:.9rem;display:flex;flex-direction:column;gap:.6rem}
+.checkbox .k{font-size:.78rem;color:var(--good);font-weight:600}
+.vbtn{align-self:flex-start;background:transparent;border:1px solid var(--line);border-radius:999px;padding:.4rem .85rem;cursor:pointer;font-size:.85rem;color:var(--muted)}
+.vbtn[aria-pressed="true"]{border-color:var(--good);color:var(--good);background:var(--good-soft)}
+.dots7{display:flex;gap:5px}
+.dots7 i{width:1.6rem;height:4px;border-radius:99px;background:var(--surface-2)}
+.dots7 i.d{background:var(--good)}.dots7 i.c{background:var(--fg)}
+
+/* tabelas */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;font-size:.86rem;font-variant-numeric:tabular-nums}
+th{font-weight:500;color:var(--muted);text-align:right;padding:.5rem .7rem;border-bottom:1px solid var(--line);background:var(--surface);white-space:nowrap}
+td{padding:.45rem .7rem;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+th:first-child,td:first-child,.tl{text-align:left}
+tr.dup td{background:var(--surface-2)}
+td.miss{color:var(--bad);box-shadow:0 0 0 1.5px var(--bad) inset;border-radius:4px}
+tr.gap td{color:var(--faint);text-align:center}
+tr.crit td{background:var(--bad-soft)}
+.tag2{display:inline-block;font-size:.7rem;border-radius:999px;padding:.05rem .45rem;margin-left:.35rem;background:var(--fg);color:var(--bg);vertical-align:.1rem}
+
+/* gráficos */
+.hbars{display:flex;flex-direction:column;gap:.9rem;padding:1rem 1.1rem;border:1px solid var(--line);border-radius:14px}
+.hrow{display:grid;grid-template-columns:2.6rem minmax(0,1fr) 4rem;gap:.7rem;align-items:center}
+.hrow .nm{font-weight:600}
+.hrow .tr{position:relative;height:1.4rem;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(25% - 1px),var(--line) calc(25% - 1px),var(--line) 25%)}
+.hrow .bf{position:absolute;left:0;top:0;bottom:0;border-radius:0 6px 6px 0;width:0;transition:width 1s cubic-bezier(.2,.7,.2,1)}
+.hrow .vv{text-align:right;font-variant-numeric:tabular-nums;font-weight:500}
+.hrow .sub{grid-column:2/4;display:flex;gap:1.1rem;font-size:.8rem;color:var(--muted);margin-top:-.4rem;flex-wrap:wrap}
+.axis{display:grid;grid-template-columns:2.6rem minmax(0,1fr) 4rem;gap:.7rem}
+.axis div{display:flex;justify-content:space-between;font-size:.72rem;color:var(--faint)}
+.svgbox{border:1px solid var(--line);border-radius:14px;padding:.6rem;overflow-x:auto}
+.svgbox svg{display:block;width:100%;height:auto;min-width:28rem}
+.svgbox text{font-family:var(--f-sans)}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+.legend i{display:inline-block;width:.75rem;height:.75rem;border-radius:3px;margin-right:.35rem;vertical-align:-.1rem}
+.legend i.ln{height:2px;width:1rem;vertical-align:.22rem}
+.heat{display:grid;grid-template-columns:2.6rem repeat(3,minmax(0,1fr));gap:5px;font-variant-numeric:tabular-nums;min-width:0}
+.heat .h{font-size:.78rem;color:var(--muted);display:flex;align-items:center;justify-content:center;padding:.25rem}
+.heat .h.r{justify-content:flex-start;font-weight:600;color:var(--fg)}
+.heat .cell{background:var(--surface);border-radius:12px;padding:.75rem .5rem;display:flex;flex-direction:column;align-items:center;gap:.1rem;opacity:0;transform:scale(.94);border:1.5px solid transparent}
+.heat.show .cell{animation:pop .45s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:calc(var(--i) * 70ms)}
+@keyframes pop{to{opacity:1;transform:none}}
+.heat .cell .v{font-size:1.4rem;font-weight:600;letter-spacing:-.02em}
+.heat .cell .s{font-size:.7rem;color:var(--muted)}
+.heat .cell.crit{background:var(--bad-soft);border-color:var(--bad)}
+.heat .cell.crit .v,.heat .cell.crit .s{color:var(--bad)}
+.splitbar{display:flex;height:2.6rem;gap:3px;border-radius:10px;overflow:hidden}
+.splitbar div{display:flex;align-items:center;padding:0 .7rem;font-size:.8rem;font-weight:500;white-space:nowrap;overflow:hidden;width:0;transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+.bigmoney{font-size:clamp(2.6rem,5.5vw,4.4rem);font-weight:600;letter-spacing:-.035em;line-height:1;font-variant-numeric:tabular-nums}
+.mc{display:grid;grid-template-columns:14rem minmax(0,1fr);gap:1rem}
+@media (max-width:820px){.mc{grid-template-columns:minmax(0,1fr)}}
+.mc .ctrls{display:flex;flex-direction:column;gap:.75rem;background:var(--surface);border-radius:14px;padding:.9rem}
+.mc .ctrls label{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);gap:.5rem}
+.mc .ctrls label b{color:var(--fg);font-weight:600}
+.mc .ctrls input{width:100%}
+.memo{border:1px solid var(--line);border-radius:14px;padding:1.3rem 1.5rem;display:flex;flex-direction:column;gap:.7rem;font-size:.95rem}
+.memo .mh{display:grid;grid-template-columns:auto 1fr;gap:.1rem .9rem;font-size:.82rem;border-bottom:1px solid var(--line);padding-bottom:.7rem}
+.memo .mh span:nth-child(odd){color:var(--muted)}
+.memo h4{margin:0;font-size:1.15rem;font-weight:600;letter-spacing:-.015em}
+.memo ol{margin:0;padding-left:1.2rem;display:flex;flex-direction:column;gap:.4rem}
+.memo li{opacity:0;transform:translateY(6px)}
+.memo.show li{animation:rise .5s ease forwards;animation-delay:calc(var(--i) * 300ms + 200ms)}
+
+/* ---------- construtor ---------- */
+.builder{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:1.4rem}
+@media (max-width:900px){.builder{grid-template-columns:minmax(0,1fr)}}
+.blocks{display:flex;flex-direction:column;gap:.45rem}
+.blk{display:grid;grid-template-columns:2rem 1fr;gap:.7rem;align-items:center;text-align:left;background:var(--surface);border:1.5px solid transparent;border-radius:14px;padding:.6rem .8rem;cursor:pointer}
+.blk .lt{width:2rem;height:2rem;border-radius:50%;border:1.5px solid var(--faint);display:grid;place-items:center;font-weight:600;color:var(--muted)}
+.blk[aria-pressed="true"]{border-color:var(--fg);background:var(--bg)}
+.blk[aria-pressed="true"] .lt{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+.blk .why{font-size:.82rem;color:var(--muted)}
+.meter{display:flex;align-items:center;gap:.8rem}
+.meter .track{flex:1;height:.5rem;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.meter .fill{height:100%;background:var(--fg);transition:width .5s cubic-bezier(.2,.7,.2,1);border-radius:99px}
+.meter .lab{font-size:.88rem;min-width:6.5rem;text-align:right;font-weight:500}
+.seg{animation:hl .8s ease both}
+@keyframes hl{from{background:var(--other)}to{background:transparent}}
+.letters{display:flex;gap:.5rem;flex-wrap:wrap}
+.letter{display:flex;flex-direction:column;gap:.3rem;background:var(--surface);border-radius:18px;padding:1rem;flex:1;min-width:10rem}
+.letter b.l{width:2.6rem;height:2.6rem;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;font-size:1.25rem}
+.letter .q{font-size:.85rem;color:var(--muted)}
+.letter .e{font-size:.85rem;border-top:1px solid var(--line);padding-top:.45rem;margin-top:.15rem}
+.slide.active .letter{animation:rise .5s ease both;animation-delay:calc(var(--i) * 120ms + 150ms)}
+
+/* tipos */
+.tgroups{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+@media (max-width:860px){.tgroups{grid-template-columns:minmax(0,1fr)}}
+.tg{border:1px solid var(--line);border-radius:18px;padding:1.1rem;display:flex;flex-direction:column;gap:.7rem}
+.tg .gq{font-size:.82rem;color:var(--muted)}
+.ti{background:var(--surface);border-radius:12px;padding:.65rem .8rem;display:flex;flex-direction:column;gap:.15rem}
+.ti b{font-size:.98rem}
+.ti span{font-size:.85rem;color:var(--muted)}
+.ti.go{box-shadow:0 0 0 1.5px var(--fg) inset}
+.code{font-family:var(--f-mono);font-size:.86rem;background:var(--surface);border-radius:14px;padding:.9rem 1rem;white-space:pre-wrap;line-height:1.55}
+.verdict{display:inline-flex;align-self:flex-start;align-items:center;gap:.4rem;font-size:.85rem;font-weight:500;border-radius:999px;padding:.2rem .7rem}
+.verdict.no{background:var(--bad-soft);color:var(--bad)}.verdict.ok{background:var(--good-soft);color:var(--good)}
+.cot-steps{display:flex;flex-direction:column;gap:.45rem;margin:0;padding:0;list-style:none}
+.cot-steps li{display:grid;grid-template-columns:1.7rem 1fr;gap:.6rem;align-items:baseline;animation:rise .45s ease both}
+.cot-steps li span.n{width:1.7rem;height:1.7rem;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;font-size:.8rem;font-weight:600}
+
+/* decomposição */
+.tree{display:flex;flex-direction:column;align-items:center}
+.tree .root{background:var(--fg);color:var(--bg);border-radius:16px;padding:.9rem 1.3rem;font-size:1.15rem;font-weight:600;text-align:center}
+.tree .stem{width:2px;height:1.4rem;background:var(--line)}
+.tree .kids{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.6rem;width:100%;border-top:2px solid var(--line);padding-top:1.1rem}
+@media (max-width:980px){.tree .kids{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.tree .kids{grid-template-columns:minmax(0,1fr)}}
+.kid{background:var(--surface);border-radius:14px;padding:.8rem;display:flex;flex-direction:column;gap:.35rem;font-size:.92rem}
+.kid .e{font-size:.75rem;color:var(--muted);font-weight:500}
+.slide.active .kid{animation:rise .5s ease both;animation-delay:calc(var(--i) * 140ms + 300ms)}
+
+/* OEE */
+.oee-bar{display:flex;height:3.4rem;border-radius:12px;overflow:hidden;gap:2px}
+.oee-bar div{display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:500;white-space:nowrap;overflow:hidden;transition:flex-basis .7s cubic-bezier(.2,.7,.2,1);flex:0 0 0}
+.oee-scale{display:flex;justify-content:space-between;font-size:.75rem;color:var(--faint)}
+.formula{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;font-size:1.05rem}
+.formula .f{background:var(--surface);border-radius:14px;padding:.6rem .9rem;display:flex;flex-direction:column}
+.formula .f b{font-size:1.4rem;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.formula .f span{font-size:.78rem;color:var(--muted)}
+.formula .f.res{background:var(--fg);color:var(--bg)}.formula .f.res span{color:var(--bg);opacity:.75}
+.formula .op{color:var(--muted);font-size:1.3rem}
+
+/* chaining */
+.chain{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.4rem;align-items:stretch}
+@media (max-width:900px){.chain{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.lnk{background:var(--surface);border-radius:14px;padding:.75rem .7rem;display:flex;flex-direction:column;gap:.25rem;position:relative}
+.lnk .n{width:1.7rem;height:1.7rem;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;font-size:.8rem;font-weight:600}
+.lnk b{font-size:.95rem}
+.lnk span{font-size:.78rem;color:var(--muted)}
+.lnk .ok{position:absolute;top:.6rem;right:.6rem;color:var(--good);font-size:.85rem;opacity:0}
+.slide.active .lnk{animation:rise .45s ease both;animation-delay:calc(var(--i) * 260ms + 200ms)}
+.slide.active .lnk .ok{animation:fade .3s ease forwards;animation-delay:calc(var(--i) * 260ms + 500ms)}
+@keyframes fade{to{opacity:1}}
+.anat{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem}
+@media (max-width:760px){.anat{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* armadilha */
+.dots9{display:grid;grid-template-columns:5.6rem repeat(10,minmax(0,1fr));gap:5px;align-items:center}
+.dots9 .rl{font-size:.75rem;color:var(--muted);white-space:nowrap}
+.dots9 .rl.hl{color:var(--fg);font-weight:600}
+.dots9 .dt{aspect-ratio:1;max-width:1.4rem;width:100%;border-radius:50%;border:1.5px solid var(--line);justify-self:center}
+.dots9 .dt.on{background:var(--fg);border-color:var(--fg)}
+.slide.active .dots9 .dt.on{animation:pop2 .4s ease both;animation-delay:calc(var(--i) * 60ms + 400ms)}
+@keyframes pop2{from{transform:scale(0)}to{transform:none}}
+
+/* debate e fechamento */
+.qs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}
+@media (max-width:760px){.qs{grid-template-columns:minmax(0,1fr)}}
+.qq{text-align:left;background:var(--surface);border:1.5px solid transparent;border-radius:18px;padding:1.1rem 1.2rem;cursor:pointer;display:flex;flex-direction:column;gap:.5rem}
+.qq .n{font-size:.8rem;color:var(--muted)}
+.qq .qt{font-size:1.2rem;font-weight:600;letter-spacing:-.015em;line-height:1.25}
+.qq .hint{font-size:.92rem;color:var(--muted);display:none;border-top:1px solid var(--line);padding-top:.55rem}
+.qq[aria-expanded="true"]{border-color:var(--fg);background:var(--bg)}
+.qq[aria-expanded="true"] .hint{display:block}
+.qq .more{font-size:.78rem;color:var(--faint)}
+.msgs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+@media (max-width:760px){.msgs{grid-template-columns:minmax(0,1fr)}}
+.msgx{border-top:2px solid var(--fg);padding-top:.8rem;display:flex;flex-direction:column;gap:.35rem}
+.msgx .n{font-size:2.2rem;font-weight:600;letter-spacing:-.04em;line-height:1}
+.quote{font-size:clamp(1.6rem,3.2vw,2.6rem);font-weight:600;letter-spacing:-.025em;line-height:1.12;text-wrap:balance}
+
+/* propósito e objetivos */
+[hidden]{display:none!important}
+.purpose{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+@media (max-width:860px){.purpose{grid-template-columns:minmax(0,1fr)}}
+.objs{display:flex;flex-direction:column}
+.obj{display:grid;grid-template-columns:3rem minmax(0,1fr) auto;gap:1rem;align-items:center;padding:.8rem 0;border-bottom:1px solid var(--line)}
+.obj .n{font-size:1.9rem;font-weight:600;letter-spacing:-.04em;color:var(--faint);line-height:1}
+.obj p{color:var(--muted);font-size:.95rem}
+.obj .pt{font-size:.8rem;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:.2rem .65rem;white-space:nowrap}
+.slide.active .obj{animation:rise .5s ease both;animation-delay:calc(var(--i) * 110ms + 200ms)}
+@media (max-width:640px){.obj{grid-template-columns:2.2rem minmax(0,1fr)}.obj .pt{display:none}}
+
+/* simulação da fábrica */
+.sim{display:grid;grid-template-columns:minmax(0,1fr) 19rem;gap:1.2rem;align-items:start}
+@media (max-width:1000px){.sim{grid-template-columns:minmax(0,1fr)}}
+.sim-stage{border:1px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column;min-width:0;background:var(--bg)}
+.sim-top{display:flex;align-items:center;gap:1rem;padding:.75rem 1rem;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.clock{display:flex;align-items:baseline;gap:.5rem;min-width:11rem}
+.clock b{font-size:1.15rem;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.clock span{font-size:.85rem;color:var(--muted)}
+.tline{flex:1;min-width:11rem;position:relative;height:1.7rem;display:flex;gap:3px}
+.tline div{flex:1;border-radius:8px;background:var(--surface);font-size:.75rem;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:background .3s,color .3s}
+.tline div.on{background:var(--surface-2);color:var(--fg);font-weight:500}
+.tline .hr{white-space:pre}
+@media (max-width:640px){.tline .hr{display:none}}
+.tline i{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--fg);border-radius:2px;left:0}
+.sim canvas{display:block;width:100%;height:clamp(24rem,54vh,32rem)}
+@media (max-width:640px){.sim canvas{height:31rem}}
+.sim-ctl{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;padding:.7rem 1rem;border-top:1px solid var(--line)}
+.sim-ctl .btn{padding:.45rem .95rem;font-size:.85rem}
+.sp{display:flex;gap:2px;background:var(--surface);border-radius:999px;padding:3px}
+.sp button{border:0;background:transparent;border-radius:999px;padding:.28rem .65rem;font-size:.82rem;cursor:pointer;color:var(--muted)}
+.sp button[aria-pressed="true"]{background:var(--bg);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.sim-ctl .legend{margin-left:auto}
+.side{display:flex;flex-direction:column;gap:.8rem;min-width:0}
+.kline{display:grid;grid-template-columns:2.2rem minmax(0,1fr) 3rem;gap:.6rem;align-items:center}
+.kline .tr{height:.5rem;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.kline .tr i{display:block;height:100%;width:0;background:var(--other);border-radius:99px;transition:width .3s}
+.kline.l2 .tr i{background:var(--fg)}
+.kline b{font-variant-numeric:tabular-nums}
+.kline .kv{text-align:right}
+.chainc{display:flex;flex-direction:column}
+.cn{border:1.5px solid var(--line);border-radius:14px;padding:.65rem .85rem;display:flex;flex-direction:column;gap:.12rem;transition:border-color .25s,background .25s}
+.cn .k{font-size:.72rem;color:var(--muted);font-weight:500}
+.cn b{font-size:.95rem;letter-spacing:-.01em}
+.cn .v{font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.cn.on{border-color:var(--bad);background:var(--bad-soft)}
+.cn.on .v,.cn.on .k{color:var(--bad)}
+.arrow{align-self:center;color:var(--faint);line-height:1.5rem;height:1.5rem}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-delay:0s!important;transition-duration:.001ms!important}
+  .heat .cell,.memo li,.lnk .ok{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+
+<div class="deck" id="deck">
+
+<!-- ================= ABERTURA ================= -->
+<section class="slide" data-sec="Abertura" data-title="Capa" data-id="capa">
+  <div class="wrap" style="gap:2rem">
+    <p class="eyebrow rise" style="--i:0">Workshop · Engenharia de Produção · 90 minutos</p>
+    <h1 class="rise" style="--i:1">IA na produção:<br>do prompt à decisão</h1>
+    <p class="lead rise" style="--i:2">Como a IA entende o que você escreve, como escrever prompts que funcionam e como usar uma cadeia de prompts para resolver um problema real de fábrica.</p>
+    <div class="composer rise" style="--i:3"><span class="tx" id="heroTx"></span><button class="send" tabindex="-1" aria-hidden="true">↑</button></div>
+    <div class="keys rise" style="--i:4"><span><kbd>→</kbd> avançar</span><span><kbd>N</kbd> notas</span><span><kbd>O</kbd> todos os slides</span><span><kbd>F</kbd> tela cheia</span><span><kbd>T</kbd> tema</span></div>
+  </div>
+  <aside class="notes"><p><b>Fala (30 s):</b> "Hoje vocês vão aprender a conversar com uma IA do jeito que um engenheiro conversa: com método. E vão usar isso para resolver um problema que vale R$ 1 milhão por ano."</p></aside>
+</section>
+
+<section class="slide" data-sec="Abertura" data-title="Propósito" data-id="proposito">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Por que estamos aqui</p>
+    <h2 class="rise" style="--i:1">Usar IA como um engenheiro usa qualquer ferramenta: com método e senso crítico</h2>
+    <div class="purpose rise" style="--i:2">
+      <div class="card"><span class="k">Como a maioria usa</span><h3>Um buscador que conversa</h3><p class="muted">Pergunta vaga, resposta genérica e ninguém confere. Às vezes ajuda, às vezes engana.</p><div class="ex"><span class="u">"me ajuda a melhorar a produção"</span><span>"Aqui estão 10 dicas gerais…"</span></div></div>
+      <div class="card"><span class="k">O que muda hoje</span><h3>Um parceiro de análise</h3><p class="muted">Você entende como ela funciona, dá contexto, quebra o problema em etapas e confere cada resultado.</p><div class="ex"><span class="u">7 prompts encadeados e 7 checagens</span><span>"A perda está no turno da noite da L2."</span></div></div>
+      <div class="card" style="background:var(--fg);color:var(--bg)"><span class="k" style="color:var(--bg);opacity:.7">Onde você chega</span><h3>Uma decisão com número</h3><p style="opacity:.8">Da planilha crua ao memorando para o CFO, em menos de uma hora, entendendo cada passo.</p></div>
+    </div>
+    <p class="say rise" style="--i:3"><b>Propósito:</b> sair daqui capaz de transformar uma pergunta vaga em uma decisão sustentada por dados, usando IA com método e sem perder o senso crítico de engenheiro.</p>
+  </div>
+  <aside class="notes"><p><b>Fala:</b> "Quase todo mundo aqui já usou ChatGPT. Mas quase todo mundo usa como um Google que conversa. Hoje a ideia é outra: usar como um parceiro de análise, que você sabe guiar e sabe conferir."</p></aside>
+</section>
+
+<section class="slide" data-sec="Abertura" data-title="O que você vai aprender" data-id="aprender">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">O que vamos ensinar</p>
+    <h2 class="rise" style="--i:1">Ao final dos 90 minutos, você vai saber</h2>
+    <div class="objs">
+      <div class="obj" style="--i:0"><span class="n">1</span><div><h3>Por que a IA acerta e por que erra</h3><p>Como um modelo de linguagem gera texto, o que são tokens e contexto, e os erros mais comuns.</p></div><span class="pt">Parte 1</span></div>
+      <div class="obj" style="--i:1"><span class="n">2</span><div><h3>Como uma conversa é montada</h3><p>Os papéis system, user e assistant, e como configurar a instrução de bastidor.</p></div><span class="pt">Parte 2</span></div>
+      <div class="obj" style="--i:2"><span class="n">3</span><div><h3>Como escrever um bom prompt</h3><p>O método CORPO: Contexto, Objetivo, Regras, Papel e Output.</p></div><span class="pt">Parte 3</span></div>
+      <div class="obj" style="--i:3"><span class="n">4</span><div><h3>Como fazer a IA raciocinar melhor</h3><p>Few-shot, cadeia de pensamento e decomposição, com exemplos de produção.</p></div><span class="pt">Parte 3</span></div>
+      <div class="obj" style="--i:4"><span class="n">5</span><div><h3>Como resolver um problema real em etapas</h3><p>Prompt chaining: 7 elos do dado bruto até o memorando para o CFO, com uma checagem em cada elo.</p></div><span class="pt">Parte 4</span></div>
+    </div>
+    <div class="row rise" style="--i:3"><span class="guide">Não precisa saber programar</span><span class="guide">Não precisa pagar ferramenta</span><span class="guide">Você leva o guia com tudo</span></div>
+  </div>
+  <aside class="notes"><p>Leia os 5 itens rapidamente. Diga que cada slide mostra em que parte estamos, e que o guia segue a mesma ordem.</p></aside>
+</section>
+
+<section class="slide" data-sec="Abertura" data-title="Como acompanhar" data-id="guia">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Antes de começar</p>
+    <h2 class="rise" style="--i:1">Abra o guia de estudo no computador ou no celular</h2>
+    <div class="split2 rise" style="--i:2">
+      <div class="howto">
+        <div class="st"><span class="num">1</span><div><h3>Acesse o guia</h3><p class="muted">Digite o endereço ao lado no navegador do computador, ou aponte a câmera do celular para o código. Funciona nos dois.</p></div></div>
+        <div class="st"><span class="num">2</span><div><h3>Abra uma IA gratuita</h3><p class="muted">ChatGPT, Claude, Gemini ou Copilot, numa conversa nova. <b>No computador:</b> guia de um lado, IA do outro. <b>No celular:</b> alterne entre os dois.</p></div></div>
+        <div class="st"><span class="num">3</span><div><h3>Siga o selo dos slides</h3><p class="muted">Quando aparecer <span class="guide">Guia · <b>Módulo 2</b></span>, abra o módulo indicado. O guia mostra um módulo por vez e guarda o seu progresso.</p></div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.9rem;align-items:flex-start;min-width:0">
+        <div class="card" style="gap:.3rem;width:100%"><span class="k">Endereço do guia</span><span id="guideLabel" style="font-size:clamp(1.3rem,2.4vw,1.9rem);font-weight:600;letter-spacing:-.02em;word-break:break-all"></span></div>
+        <div class="row" style="align-items:center;gap:1rem"><div class="qr" id="qr"></div><p class="small muted" style="max-width:14rem">No celular, aponte a câmera para o código. No computador, digite o endereço acima.</p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes"><p>Mostre o endereço e espere 1 minuto. Quem estiver no computador pode deixar o guia e a IA lado a lado; no celular, alternar entre os apps.</p><p>Para trocar o endereço exibido e o QR code, edite as linhas GUIDE_URL e GUIDE_LABEL no início do código.</p></aside>
+</section>
+
+<section class="slide" data-sec="Abertura" data-title="Roteiro" data-id="roteiro">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Roteiro</p>
+    <h2 class="rise" style="--i:1">Primeiro entender a ferramenta. Depois usar de verdade.</h2>
+    <div class="agenda rise" style="--i:2">
+      <div class="ag"><span class="t">0–5</span><span class="l">Abertura e o problema</span><span class="d">o e-mail do CFO</span></div>
+      <div class="ag"><span class="t">5–20</span><span class="l">Como a IA funciona</span><span class="d">próxima palavra, tokens, erros, ferramentas</span></div>
+      <div class="ag"><span class="t">20–32</span><span class="l">System, user e assistant</span><span class="d">como uma conversa é montada</span></div>
+      <div class="ag"><span class="t">32–50</span><span class="l">Escrevendo bons prompts</span><span class="d">método CORPO e tipos de prompt</span></div>
+      <div class="ag hl"><span class="t">50–83</span><span class="l">O experimento</span><span class="d">7 elos para resolver o caso</span></div>
+      <div class="ag"><span class="t">83–90</span><span class="l">Debate e fechamento</span><span class="d">o que levar</span></div>
+    </div>
+  </div>
+  <aside class="notes"><p>Se o tempo apertar, encurte "Ferramentas" ou o debate. Nunca o experimento.</p></aside>
+</section>
+
+<section class="slide" data-sec="Abertura" data-title="O problema" data-id="email">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">O problema que vamos resolver hoje</p>
+    <div class="mail rise" style="--i:1">
+      <div class="mail-head"><span>De</span><span>Ricardo Albuquerque, CFO</span><span>Para</span><span>Mariana Couto, Gerente Industrial</span><span>Assunto</span><span><b>Linha 2</b></span></div>
+      <div class="mail-body" id="mailBody"></div>
+    </div>
+    <div class="voices rise" style="--i:2">
+      <div class="voice"><div class="who">Supervisor da noite</div><q>O problema é a máquina.</q></div>
+      <div class="voice"><div class="who">Fornecedor da L2</div><q>A máquina está perfeita. É a operação.</q></div>
+      <div class="voice"><div class="who">PCP</div><q>Eu só programo conforme a demanda.</q></div>
+    </div>
+    <p class="say rise" style="--i:3">Três opiniões, nenhum dado. No final da aula, vocês vão responder ao CFO com números. Mas antes, precisamos entender a ferramenta.</p>
+  </div>
+  <aside class="notes"><p>Leia o e-mail em voz alta. Enquete rápida: "Quem acha que o problema é a máquina?" Guarde o resultado para o Elo 4.</p></aside>
+</section>
+
+<section class="slide" data-sec="Abertura" data-title="A fábrica em movimento" data-id="simA">
+  <div class="wrap" style="max-width:86rem;gap:1.1rem">
+    <p class="eyebrow rise" style="--i:0">O problema, em movimento · simulação</p>
+    <h2 class="rise" style="--i:1">A L2 é a mais rápida. Por que entrega menos?</h2>
+    <div class="rise" style="--i:2" id="simA"></div>
+  </div>
+  <aside class="notes"><p>Deixe rodar em 2x ou 4x passando pelos três turnos. Pergunte: "o que vocês estão vendo de diferente na linha do meio?" Não revele a causa; o botão "Mostrar a causa" fica para depois do Elo 4.</p><p>A simulação reproduz, acelerado, o padrão da base de dados: 1 segundo ≈ 40 minutos de fábrica.</p></aside>
+</section>
+
+<!-- ================= PARTE 1 ================= -->
+<section class="slide" data-sec="Como a IA funciona" data-title="O que é um LLM" data-id="llm">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 1 · Como a IA funciona</p>
+    <h2 class="rise" style="--i:1">Um LLM é um autocompletar gigante</h2>
+    <p class="lead rise" style="--i:2">Igual à sugestão de palavras do teclado do celular, só que treinado com uma quantidade enorme de texto. Ele faz uma coisa só, muito bem: <b>prever a próxima palavra</b>.</p>
+    <div class="flow">
+      <div class="fstep" style="--i:0"><span class="n">1 · Você escreve</span><h3>O texto entra</h3><span class="ex">Por que a L2 parou?</span></div>
+      <div class="fstep" style="--i:1"><span class="n">2 · Ele pica</span><h3>Vira tokens</h3><span class="ex">Por · que · a · L · 2 · par · ou · ?</span></div>
+      <div class="fstep" style="--i:2"><span class="n">3 · Ele calcula</span><h3>Probabilidades</h3><span class="ex">"A" 31% · "Porque" 24% · "O" 12% …</span></div>
+      <div class="fstep" style="--i:3"><span class="n">4 · Ele escolhe</span><h3>Uma palavra</h3><span class="ex">"A" → acrescenta ao texto</span></div>
+    </div>
+    <p class="loop rise" style="--i:4">E repete: a palavra escolhida volta como entrada, até a resposta terminar.</p>
+    <p class="say rise" style="--i:5">Consequência: ele não consulta uma base de verdades. Ele gera a continuação <b>mais provável</b>. O seu prompt muda essas probabilidades.</p>
+  </div>
+  <aside class="notes"><p><b>Fala:</b> "Toda vez que vocês veem a resposta aparecendo palavra por palavra, é isso acontecendo ao vivo."</p><p>Os números do passo 3 são ilustrativos.</p></aside>
+</section>
+
+<section class="slide" data-sec="Como a IA funciona" data-title="Próxima palavra e temperatura" data-id="nexttok">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 1 · Como a IA funciona</p>
+    <h2 class="rise" style="--i:1">Veja a escolha da próxima palavra</h2>
+    <div class="split2 rise" style="--i:2">
+      <div class="demo">
+        <div class="sentence" id="ntSentence">A disponibilidade da L2 caiu porque o tempo de<span class="caret"></span></div>
+        <div class="cands" id="ntCands"></div>
+        <div class="ctl"><label for="ntTemp">Temperatura <b id="ntTv">0,7</b></label><input type="range" id="ntTemp" min="0.1" max="2" step="0.1" value="0.7"></div>
+        <div class="ctl"><button class="btn" id="ntGo">Gerar próxima palavra</button><button class="btn ghost" id="ntReset">Reiniciar</button><span class="small muted" id="ntMsg"></span></div>
+        <p class="small muted">Simulação ilustrativa.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <div class="card"><span class="k">O que a demonstração mostra</span><p>Cada barra é a chance de uma palavra ser a próxima. O modelo sorteia uma delas, respeitando essas chances.</p></div>
+        <div class="card"><span class="k">Temperatura baixa</span><p>Quase sempre escolhe a mais provável. Use para <b>cálculo, relatório e extração de dados</b>.</p></div>
+        <div class="card"><span class="k">Temperatura alta</span><p>Dá mais chance às palavras improváveis. Use para <b>brainstorm e ideias</b>.</p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes"><p><b>Ação:</b> temperatura 0,2 e clique 3 vezes: sai "setup". Suba para 1,8 e clique: aparecem "almoço", "ciclo".</p><p>Nas ferramentas gratuitas não dá para mexer na temperatura diretamente, mas pedir "seja criativo" ou "seja preciso" tem efeito parecido.</p></aside>
+</section>
+
+<section class="slide" data-sec="Como a IA funciona" data-title="Tokens e contexto" data-id="tokens">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 1 · Como a IA funciona</p>
+    <h2 class="rise" style="--i:1">Ela lê pedaços de texto e só enxerga o que está na conversa</h2>
+    <div class="split2 rise" style="--i:2">
+      <div class="demo">
+        <label for="tokIn" class="small muted">Digite um pedido e veja como ele é picado em tokens</label>
+        <textarea id="tokIn" class="tokin">Calcule o OEE da linha L2 no turno da noite e compare com a média dos turnos de dia.</textarea>
+        <div class="chips" id="tokChips"></div>
+        <div class="row"><div class="stat"><span class="v" id="tokN">0</span><span class="l">tokens, aproximado</span></div><div class="stat"><span class="v" id="tokC">0</span><span class="l">caracteres</span></div></div>
+        <p class="small muted">Divisão simplificada. Cada modelo tem o seu vocabulário.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <div class="card"><span class="k">Janela de contexto</span><p>Tudo que o modelo vê numa conversa: instruções, sua mensagem, os dados colados e as respostas anteriores. <b>O que não está ali não existe para ele.</b></p>
+          <div class="ctx"><div style="flex:1;background:var(--fg);color:var(--bg)">instruções</div><div style="flex:1;background:var(--c1);color:var(--bg)">prompt</div><div style="flex:4;background:var(--other)">dados colados</div><div style="flex:3;background:var(--surface-2)">respostas</div><div style="flex:3;border:1px dashed var(--line);color:var(--muted)">livre</div></div></div>
+        <div class="card"><span class="k">Na prática</span><p>Nome de coluna claro e com unidade (<code>parada_setup_min</code>) evita confusão. Em conversa longa, repita as premissas importantes.</p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes"><p>Peça a um aluno uma frase e digite no campo. Mostre que siglas e números viram vários tokens.</p></aside>
+</section>
+
+<section class="slide" data-sec="Como a IA funciona" data-title="Onde a IA erra" data-id="erra">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 1 · Como a IA funciona</p>
+    <h2 class="rise" style="--i:1">Quatro erros que você precisa reconhecer</h2>
+    <div class="grid g4 rise" style="--i:2">
+      <div class="card"><span class="k">Alucinação</span><h3>Inventa com confiança</h3><div class="ex"><span class="u">Qual norma ABNT define OEE?</span><span>A <mark>NBR 15.932</mark> estabelece…</span></div><p class="fix">Peça a fonte e confira.</p></div>
+      <div class="card"><span class="k">Conta longa</span><h3>Erra aritmética</h3><div class="ex"><span class="u">Some a produção dos 90 turnos.</span><span>Total: <mark>1.842.310</mark> unidades.</span></div><p class="fix">Peça para calcular com código e confira um número.</p></div>
+      <div class="card"><span class="k">Excesso de certeza</span><h3>Correlação vira causa</h3><div class="ex"><span class="u">Por que a noite é pior?</span><span><mark>A equipe da noite é pior.</mark></span></div><p class="fix">Pergunte o que os dados não permitem concluir.</p></div>
+      <div class="card"><span class="k">Contexto perdido</span><h3>Esquece premissas</h3><div class="ex"><span class="u">(20 mensagens depois)</span><span>Usando margem de <mark>R$ 1,00</mark>…</span></div><p class="fix">Repita as premissas em cada etapa.</p></div>
+    </div>
+    <div class="rule rise" style="--i:3"><span class="tag">Regra de ouro</span><p>Dado sigiloso da empresa não vai para ferramenta pública. Use a versão corporativa aprovada pela TI, ou dados fictícios como os de hoje.</p></div>
+  </div>
+  <aside class="notes"><p>A "NBR 15.932" foi inventada para o exemplo. Fala: "A IA acelera a análise. Quem assina é o engenheiro."</p></aside>
+</section>
+
+<section class="slide" data-sec="Como a IA funciona" data-title="Ferramentas" data-id="tools">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 1 · Ferramentas</p>
+    <h2 class="rise" style="--i:1">Qual ferramenta para qual tarefa?</h2>
+    <div class="tasks rise" style="--i:2" id="taskBtns" role="group" aria-label="Escolha uma tarefa">
+      <button class="pill" data-m="chat,code,sheet">Analisar uma planilha</button>
+      <button class="pill" data-m="sheet">Montar uma fórmula no Excel</button>
+      <button class="pill" data-m="bi">Perguntar à base da empresa</button>
+      <button class="pill" data-m="auto">Alerta quando o OEE cair</button>
+      <button class="pill" data-m="res">Estudar uma norma</button>
+      <button class="pill" data-m="vis">Defeito por imagem</button>
+      <button class="pill" data-m="chat">Relatório para a diretoria</button>
+    </div>
+    <div class="grid g4 tools rise" style="--i:3" id="toolGrid">
+      <div class="card tool" data-c="chat"><span class="k">Assistentes de conversa</span><span class="names">ChatGPT · Claude · Gemini · Copilot</span><p class="small muted">Pensar, escrever, analisar arquivos.</p></div>
+      <div class="card tool" data-c="sheet"><span class="k">IA na planilha</span><span class="names">Copilot no Excel · Gemini no Sheets</span><p class="small muted">Fórmulas e tabelas sem sair da planilha.</p></div>
+      <div class="card tool" data-c="code"><span class="k">Análise com código</span><span class="names">Modos de análise de dados · Colab</span><p class="small muted">A IA escreve e roda Python: contas confiáveis.</p></div>
+      <div class="card tool" data-c="bi"><span class="k">BI conversacional</span><span class="names">Copilot no Power BI · Databricks Genie</span><p class="small muted">Perguntas em português nos dados oficiais.</p></div>
+      <div class="card tool" data-c="auto"><span class="k">Automação e agentes</span><span class="names">Power Automate · n8n · Make</span><p class="small muted">Rotinas: alertas, relatórios, abertura de OS.</p></div>
+      <div class="card tool" data-c="res"><span class="k">Pesquisa e estudo</span><span class="names">Perplexity · NotebookLM</span><p class="small muted">Respostas com fontes; estudar seus PDFs.</p></div>
+      <div class="card tool" data-c="vis"><span class="k">Visão computacional</span><span class="names">Roboflow · Landing AI</span><p class="small muted">Inspeção visual e contagem na linha.</p></div>
+      <div class="card tool" data-c="dev"><span class="k">Código assistido</span><span class="names">GitHub Copilot · Cursor · Claude Code</span><p class="small muted">Automatizar análises em Python ou SQL.</p></div>
+    </div>
+    <p class="small muted rise" style="--i:4">As marcas mudam rápido. Aprenda a categoria e o método.</p>
+  </div>
+  <aside class="notes"><p>Clique nas tarefas e deixe a turma adivinhar antes. Para hoje, qualquer assistente de conversa gratuito resolve.</p></aside>
+</section>
+
+<section class="slide" data-sec="Como a IA funciona" data-title="Do copiloto ao agente" data-id="ladder">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 1 · Possibilidades</p>
+    <h2 class="rise" style="--i:1">Até onde isso vai numa fábrica</h2>
+    <div class="ladder">
+      <div class="step" style="--i:0;margin-top:8rem"><span class="lv">Nível 1</span><h3>Copiloto</h3><p class="small muted">Você pergunta, ele explica.</p><span class="e">"Me explique SMED."</span></div>
+      <div class="step now" style="--i:1;margin-top:6rem"><span class="lv">Nível 2 · hoje</span><h3>Copiloto com dados</h3><p class="small muted">Você entrega a base, ele analisa.</p><span class="e">"Calcule o OEE desta base."</span></div>
+      <div class="step" style="--i:2;margin-top:4rem"><span class="lv">Nível 3</span><h3>IA conectada</h3><p class="small muted">Lê direto do MES ou do ERP.</p><span class="e">"Qual o OEE da L2 ontem?"</span></div>
+      <div class="step" style="--i:3;margin-top:2rem"><span class="lv">Nível 4</span><h3>Agente</h3><p class="small muted">Monitora e age dentro de regras.</p><span class="e">"Setup acima de 30 min: avise o supervisor."</span></div>
+      <div class="step" style="--i:4"><span class="lv">Nível 5</span><h3>Operação assistida</h3><p class="small muted">Vários agentes; o humano aprova.</p><span class="e">"PCP e manutenção replanejam; o gerente aprova."</span></div>
+    </div>
+    <p class="say rise" style="--i:5">Em todos os níveis, quem define o problema e assina a decisão é o engenheiro.</p>
+  </div>
+  <aside class="notes"><p>"O que vocês treinam hoje, quebrar o problema e validar cada etapa, é o mesmo raciocínio usado para desenhar um agente."</p></aside>
+</section>
+
+<!-- ================= PARTE 2 ================= -->
+<section class="slide" data-sec="System, user e assistant" data-title="Os três papéis" data-id="papeis">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 2 · Como uma conversa é montada</p>
+    <h2 class="rise" style="--i:1">Toda conversa tem três tipos de mensagem</h2>
+    <div class="grid g3 rise" style="--i:2">
+      <div class="card"><span class="rn">system</span><h3>A instrução de bastidor</h3><p class="muted">Define o comportamento na conversa inteira: tom, regras, especialidade.</p><p class="small"><b>Quem escreve:</b> a empresa da ferramenta ou você, nas configurações. Normalmente fica escondida.</p></div>
+      <div class="card"><span class="rn">user</span><h3>O que você escreve</h3><p class="muted">É o seu prompt: pergunta, tarefa, dados colados.</p><p class="small"><b>Quem escreve:</b> você, a cada mensagem enviada.</p></div>
+      <div class="card"><span class="rn">assistant</span><h3>O que o modelo responde</h3><p class="muted">A resposta volta para a conversa e vira contexto da próxima mensagem.</p><p class="small"><b>Detalhe:</b> em uso avançado, dá para escrever exemplos de respostas no papel de assistente para ele imitar.</p></div>
+    </div>
+    <p class="say rise" style="--i:3">Analogia: o <b>system</b> é o crachá e o manual do funcionário. O <b>user</b> é o pedido do cliente. O <b>assistant</b> é o que o funcionário responde, e tudo fica registrado no histórico do atendimento.</p>
+  </div>
+  <aside class="notes"><p>Ênfase: "assistant" não é só a resposta; ela vira contexto. Por isso uma resposta errada no começo contamina o resto da conversa.</p></aside>
+</section>
+
+<section class="slide" data-sec="System, user e assistant" data-title="O que o modelo recebe" data-id="bastidores">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 2 · Por trás da tela</p>
+    <h2 class="rise" style="--i:1">A cada mensagem, o modelo relê a conversa inteira</h2>
+    <div class="split2 rise" style="--i:2">
+      <div class="chat" style="min-height:24rem">
+        <div class="chat-h"><b>O que você vê</b><span>tela de chat</span></div>
+        <div class="chat-b" id="bsChat"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.8rem">
+        <div class="card line"><span class="k">O que o modelo recebe</span><div class="stack" id="bsStack"></div></div>
+        <p class="annot" id="bsNote"></p>
+        <div class="row"><button class="btn" id="bsNext">Próxima mensagem</button><button class="btn ghost" id="bsReset">Recomeçar</button></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes"><p><b>Ação:</b> clique "Próxima mensagem" 4 vezes. Na quarta, mostre que a pergunta "calcule para 90%, 95% e 98%" só faz sentido porque o modelo recebeu a conversa anterior.</p><p>Fala: "O modelo não tem memória. A ferramenta reenvia o histórico. Abriu conversa nova, começou do zero."</p></aside>
+</section>
+
+<section class="slide" data-sec="System, user e assistant" data-title="O efeito do system prompt" data-id="sysdemo">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 2 · O poder do system prompt</p>
+    <h2 class="rise" style="--i:1">Mesma pergunta, instrução de bastidor diferente</h2>
+    <div class="row rise" style="--i:2" id="sysPills" role="tablist">
+      <button class="pill" role="tab" data-s="0" aria-selected="true">Professor paciente</button>
+      <button class="pill" role="tab" data-s="1" aria-selected="false">Consultor sênior</button>
+      <button class="pill" role="tab" data-s="2" aria-selected="false">Só tabelas</button>
+    </div>
+    <div class="chat rise" style="--i:3;max-width:56rem">
+      <div class="chat-h"><span><span class="rn" style="font-size:.72rem">system</span>&nbsp; <span id="sysText"></span></span></div>
+      <div class="chat-b" style="min-height:17rem"><div class="bub">O que é OEE?</div><div class="ai"><span class="av">IA</span><div class="ai-c" id="sysAns"></div></div></div>
+    </div>
+  </div>
+  <aside class="notes"><p>Troque entre as três instruções. O conceito é o mesmo; tom, profundidade e formato mudam completamente.</p><p>Em seguida, mande os alunos para o Exercício 1 do guia.</p></aside>
+</section>
+
+<section class="slide" data-sec="System, user e assistant" data-title="Sua vez · Exercício 1" data-id="ex1">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Sua vez · 5 minutos <span class="guide">Guia · <b>Módulo 2</b></span></p>
+    <h2 class="rise" style="--i:1">Configure a sua instrução de bastidor</h2>
+    <div class="split2 rise" style="--i:2">
+      <div class="howto">
+        <div class="st"><span class="num">1</span><div><h3>Conversa nova</h3><p class="muted">Cole a Instrução A como primeira mensagem, ou nas configurações da ferramenta.</p></div></div>
+        <div class="st"><span class="num">2</span><div><h3>Pergunte</h3><p class="muted"><code>O que é OEE?</code></p></div></div>
+        <div class="st"><span class="num">3</span><div><h3>Repita com a Instrução B</h3><p class="muted">Em outra conversa. Compare as duas respostas.</p></div></div>
+      </div>
+      <div class="card line"><span class="k">Onde fica o system prompt</span>
+        <div class="tbl"><table><tbody>
+          <tr><td class="tl"><b>ChatGPT</b></td><td class="tl">Instruções personalizadas, Projetos, GPTs</td></tr>
+          <tr><td class="tl"><b>Claude</b></td><td class="tl">Instruções do Projeto, preferências</td></tr>
+          <tr><td class="tl"><b>Gemini</b></td><td class="tl">Gems</td></tr>
+          <tr><td class="tl"><b>Qualquer uma</b></td><td class="tl">Primeira mensagem da conversa</td></tr>
+        </tbody></table></div>
+        <p class="small muted">Os nomes mudam com frequência.</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes"><p>Circule pela sala. Pergunte a 2 ou 3 alunos qual diferença mais chamou atenção.</p></aside>
+</section>
+
+<!-- ================= PARTE 3 ================= -->
+<section class="slide" data-sec="Bons prompts" data-title="Método CORPO" data-id="corpo">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 3 · Escrevendo bons prompts</p>
+    <h2 class="rise" style="--i:1">Um bom prompt tem CORPO</h2>
+    <p class="lead rise" style="--i:2">Cinco coisas que a IA não tem como adivinhar. Se faltar uma, ela preenche com o palpite mais provável, que nem sempre é o que você queria.</p>
+    <div class="letters">
+      <div class="letter" style="--i:0"><b class="l">C</b><b>Contexto</b><span class="q">Qual é a situação?</span><span class="e">3 linhas de envase, 3 turnos, 10 dias de dados.</span></div>
+      <div class="letter" style="--i:1"><b class="l">O</b><b>Objetivo</b><span class="q">O que exatamente eu quero?</span><span class="e">OEE por linha, com os 3 fatores.</span></div>
+      <div class="letter" style="--i:2"><b class="l">R</b><b>Regras</b><span class="q">O que não pode acontecer?</span><span class="e">Remover duplicadas. Não inventar dados.</span></div>
+      <div class="letter" style="--i:3"><b class="l">P</b><b>Papel</b><span class="q">Com que olhar responder?</span><span class="e">Engenheiro sênior, especialista em TPM.</span></div>
+      <div class="letter" style="--i:4"><b class="l">O</b><b>Output</b><span class="q">Em que formato?</span><span class="e">Tabela e uma frase final.</span></div>
+    </div>
+    <p class="say rise" style="--i:5">A ordem de escrita pode variar. O importante é ter as cinco partes.</p>
+  </div>
+  <aside class="notes"><p>Peça para a turma repetir: C-O-R-P-O. No guia, o Módulo 3 tem um montador onde eles preenchem cada letra.</p></aside>
+</section>
+
+<section class="slide" data-sec="Bons prompts" data-title="Monte o prompt" data-id="builder">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 3 · Na prática</p>
+    <h2 class="rise" style="--i:1">Ligue cada parte do CORPO e veja a resposta mudar</h2>
+    <div class="builder rise" style="--i:2">
+      <div style="display:flex;flex-direction:column;gap:.9rem;min-width:0">
+        <div class="blocks" id="blocks"></div>
+        <div class="meter"><div class="track"><div class="fill" id="pMeter"></div></div><span class="lab" id="pLab">Vago</span></div>
+      </div>
+      <div class="chat" style="min-width:0">
+        <div class="chat-b" style="min-height:24rem">
+          <div class="bub" id="pText"></div>
+          <div class="ai"><span class="av">IA</span><div class="ai-c" id="pResp"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes"><p><b>Ordem sugerida:</b> Objetivo → Contexto → Papel → Regras → Output. Comente cada mudança.</p><p><b>Ponto alto:</b> sem "Regras", a IA usa a linha duplicada e o OEE da L2 sai diferente. Ligue "Regras" e mostre a correção.</p><p>Respostas simuladas, mas com os números reais do caso.</p></aside>
+</section>
+
+<section class="slide" data-sec="Bons prompts" data-title="Tipos de prompt" data-id="tipos">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 3 · Tipos de prompt</p>
+    <h2 class="rise" style="--i:1">Sete jeitos de pedir, em três grupos</h2>
+    <div class="tgroups rise" style="--i:2">
+      <div class="tg"><h3>Como você ensina</h3><span class="gq">Você dá exemplos ou não?</span>
+        <div class="ti"><b>Zero-shot</b><span>Pede direto, sem exemplos.</span></div>
+        <div class="ti go"><b>Few-shot</b><span>Mostra exemplos do que quer antes de pedir.</span></div></div>
+      <div class="tg"><h3>Como ela pensa</h3><span class="gq">Você controla o raciocínio.</span>
+        <div class="ti go"><b>Cadeia de pensamento</b><span>Raciocínio passo a passo antes da conclusão.</span></div>
+        <div class="ti go"><b>Decomposição</b><span>Quebra o problema em perguntas menores.</span></div>
+        <div class="ti"><b>Autocrítica</b><span>Revisa a própria resposta como um crítico.</span></div></div>
+      <div class="tg"><h3>Como ela responde</h3><span class="gq">Você controla a entrega.</span>
+        <div class="ti"><b>Papel</b><span>Define o olhar profissional.</span></div>
+        <div class="ti"><b>Saída estruturada</b><span>Define o formato exato.</span></div></div>
+    </div>
+    <p class="small muted rise" style="--i:3">Os destacados têm um slide próprio a seguir. Todos estão no guia, com modelo para copiar.</p>
+  </div>
+  <aside class="notes"><p>Não precisa decorar os nomes. O importante é saber qual alavanca usar: exemplos, raciocínio ou formato.</p></aside>
+</section>
+
+<section class="slide" data-sec="Bons prompts" data-title="Zero-shot e few-shot" data-id="fewshot">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 3 · Como você ensina</p>
+    <h2 class="rise" style="--i:1">Quando o critério é seu, mostre exemplos</h2>
+    <div class="split2 rise" style="--i:2">
+      <div class="card line"><span class="k">Zero-shot · sem exemplos</span><div class="code">Classifique "falta de tampa" numa das 6 grandes perdas do TPM.</div>
+        <div class="ai"><span class="av">IA</span><div class="ai-c"><p>"Falta de tampa" pode ser classificada como <b>Quebra/falha</b> ou como <b>Pequenas paradas</b>, dependendo do contexto…</p><span class="verdict no">Vago: ela não sabe o seu critério</span></div></div></div>
+      <div class="card line"><span class="k">Few-shot · com 3 exemplos</span><div class="code">"troca de rótulo" → Setup e ajustes
+"motor queimou" → Quebra
+"esperando garrafa" → Pequenas paradas
+Classifique: "falta de tampa"</div>
+        <div class="ai"><span class="av">IA</span><div class="ai-c"><p>"falta de tampa" → <b>Pequenas paradas</b></p><span class="verdict ok">Segue o padrão dos exemplos</span></div></div></div>
+    </div>
+    <p class="say rise" style="--i:3">Os exemplos viram um molde: a IA copia o formato e a lógica, <b>inclusive os erros</b>. Capriche nos exemplos.</p>
+  </div>
+  <aside class="notes"><p>Fala: "Few-shot é como treinar um estagiário mostrando três notas fiscais já lançadas antes de pedir que ele lance a quarta."</p></aside>
+</section>
+
+<section class="slide" data-sec="Bons prompts" data-title="Cadeia de pensamento" data-id="cot">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 3 · Como ela pensa</p>
+    <h2 class="rise" style="--i:1">Cadeia de pensamento: fazer a conta no papel</h2>
+    <div class="split2 rise" style="--i:2">
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <div class="card"><span class="k">Pergunta</span><p>Uma linha de 60 un/min tem turno de 480 min. Ficou <b>120 min parada</b> e <b>6%</b> virou refugo. Quantas unidades boas saíram?</p></div>
+        <div class="row"><button class="btn ghost" id="cotA">Responder direto</button><button class="btn" id="cotB">Responder passo a passo</button></div>
+        <div class="card line" style="min-height:11rem"><div class="ai"><span class="av">IA</span><div class="ai-c" id="cotOut"><p class="muted">Escolha um dos botões.</p></div></div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <div class="card"><span class="k">Por que funciona</span><p>Cada palavra escrita vira contexto para a próxima. Respondendo direto, o modelo precisa "acertar de cabeça". Escrevendo os passos, cada conta intermediária fica registrada e ajuda a seguinte.</p></div>
+        <div class="card"><span class="k">Como pedir</span><div class="code">Antes de responder, liste as premissas e mostre cada cálculo passo a passo. Só então dê o resultado.</div></div>
+        <p class="small muted">Modelos com modo de "raciocínio" já fazem isso por dentro. Mesmo assim, pedir os passos visíveis permite auditar a conta.</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes"><p>Clique primeiro em "Responder direto": ela esquece a parada. Depois "passo a passo".</p><p>Esse é o Exercício 3 do guia (Módulo 4); eles testam na própria IA.</p></aside>
+</section>
+
+<section class="slide" data-sec="Bons prompts" data-title="Decomposição" data-id="decomp">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 3 · Como ela pensa</p>
+    <h2 class="rise" style="--i:1">Decomposição: quebrar a pergunta grande em pequenas</h2>
+    <div class="tree rise" style="--i:2">
+      <div class="root">Por que a L2 rende menos?</div>
+      <div class="stem"></div>
+      <div class="kids">
+        <div class="kid" style="--i:0"><span class="e">Antes de tudo · Elo 1</span>Os dados estão certos?</div>
+        <div class="kid" style="--i:1"><span class="e">Elo 2</span>A perda é de parada, lentidão ou refugo?</div>
+        <div class="kid" style="--i:2"><span class="e">Elo 3</span>Qual motivo de parada pesa mais?</div>
+        <div class="kid" style="--i:3"><span class="e">Elo 4</span>É igual em todos os turnos?</div>
+        <div class="kid" style="--i:4"><span class="e">Elo 5</span>Quanto isso custa por ano?</div>
+        <div class="kid" style="--i:5"><span class="e">Elos 6 e 7</span>O que fazer e quanto rende?</div>
+      </div>
+    </div>
+    <div class="split2 rise" style="--i:3">
+      <p class="say">Uma pergunta vaga gera uma resposta vaga. Seis perguntas pequenas, em ordem, geram uma análise. É o mesmo raciocínio do DMAIC.</p>
+      <div class="code">Antes de qualquer análise, quebre este problema em 4 a 6 sub-perguntas, em ordem lógica, e diga que dado responde cada uma. Não responda ainda.</div>
+    </div>
+  </div>
+  <aside class="notes"><p>Mostre que cada caixinha vira um elo do experimento. Você pode decompor sozinho ou pedir para a IA propor (prompt ao lado). Exercício 4 do guia (Módulo 4).</p></aside>
+</section>
+
+<section class="slide" data-sec="Bons prompts" data-title="Três ideias parecidas" data-id="compare">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 3 · Não confunda</p>
+    <h2 class="rise" style="--i:1">Cadeia de pensamento, decomposição e prompt chaining</h2>
+    <div class="grid g3 rise" style="--i:2">
+      <div class="card"><span class="k">Dentro de UMA resposta</span><h3>Cadeia de pensamento</h3><p class="muted">A IA mostra o raciocínio antes de concluir.</p><div class="code">"Mostre cada cálculo antes do resultado."</div></div>
+      <div class="card"><span class="k">Antes de começar</span><h3>Decomposição</h3><p class="muted">Gera a lista de perguntas menores. Pode ser feita por você ou pela IA.</p><div class="code">"Quebre o problema em sub-perguntas."</div></div>
+      <div class="card" style="background:var(--fg);color:var(--bg)"><span class="k" style="color:var(--bg);opacity:.75">VÁRIAS mensagens em sequência</span><h3>Prompt chaining</h3><p style="opacity:.8">Cada sub-pergunta vira um prompt. Você confere o resultado antes de mandar o próximo.</p><div class="code" style="background:rgba(127,127,127,.18);color:inherit">Elo 1 → checagem → Elo 2 → checagem → …</div></div>
+    </div>
+    <p class="say rise" style="--i:3">No experimento usamos as três juntas: <b>decompomos</b> o problema, <b>encadeamos</b> um prompt por pergunta e, nas contas, pedimos <b>cadeia de pensamento</b>.</p>
+  </div>
+  <aside class="notes"><p>Slide importante para fixar. Pergunte: "Em qual delas o engenheiro participa no meio?" Resposta: chaining.</p></aside>
+</section>
+
+<section class="slide" data-sec="Bons prompts" data-title="Sua vez · Exercícios 2 a 4" data-id="ex2">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Sua vez · 8 minutos <span class="guide">Guia · <b>Módulos 3 e 4</b></span></p>
+    <h2 class="rise" style="--i:1">Pratique as três técnicas</h2>
+    <div class="grid g3 rise" style="--i:2">
+      <div class="card"><span class="k">Exercício 2 · CORPO</span><h3>Conserte um prompt fraco</h3><div class="code">Me ajuda a melhorar o estoque.</div><p class="small muted">Reescreva com Contexto, Objetivo, Regras, Papel e Output.</p></div>
+      <div class="card"><span class="k">Exercício 3 · Cadeia de pensamento</span><h3>Teste a conta</h3><p class="small muted">Envie a pergunta da linha de 60 un/min com e sem "mostre cada cálculo". Compare.</p></div>
+      <div class="card"><span class="k">Exercício 4 · Decomposição</span><h3>Quebre um problema seu</h3><p class="small muted">Ex.: "o lead time de entrega aumentou 30% este ano". As sub-perguntas fazem sentido?</p></div>
+    </div>
+  </div>
+  <aside class="notes"><p>Peça 2 voluntários para ler o prompt reescrito do Exercício 2. Comente o que ficou faltando no CORPO.</p></aside>
+</section>
+
+<!-- ================= EXPERIMENTO ================= -->
+<section class="slide" data-sec="O experimento" data-title="Como vamos trabalhar" data-id="chain">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 4 · O experimento</p>
+    <h2 class="rise" style="--i:1">Sete elos, uma conversa, uma checagem entre cada elo</h2>
+    <div class="chain">
+      <div class="lnk" style="--i:0"><span class="n">1</span><b>Entender</b><span>Os dados estão certos?</span><span class="ok">✓</span></div>
+      <div class="lnk" style="--i:1"><span class="n">2</span><b>Medir</b><span>Qual o OEE?</span><span class="ok">✓</span></div>
+      <div class="lnk" style="--i:2"><span class="n">3</span><b>Priorizar</b><span>Qual a maior perda?</span><span class="ok">✓</span></div>
+      <div class="lnk" style="--i:3"><span class="n">4</span><b>Investigar</b><span>Onde ela acontece?</span><span class="ok">✓</span></div>
+      <div class="lnk" style="--i:4"><span class="n">5</span><b>Quantificar</b><span>Quanto custa?</span><span class="ok">✓</span></div>
+      <div class="lnk" style="--i:5"><span class="n">6</span><b>Simular</b><span>Vale investir?</span><span class="ok">✓</span></div>
+      <div class="lnk" style="--i:6"><span class="n">7</span><b>Decidir</b><span>O que dizer ao CFO?</span><span class="ok">✓</span></div>
+    </div>
+    <div class="card line rise" style="--i:3"><span class="k">Como acompanhar cada elo no seu guia</span>
+      <div class="anat">
+        <div><b>1. Prompt</b><p class="small muted">Copie e envie na sua IA.</p></div>
+        <div><b>2. O que observar</b><p class="small muted">O que a resposta deve conter.</p></div>
+        <div><b>3. Checagem</b><p class="small muted">Uma conferência rápida, feita por você.</p></div>
+        <div><b>4. Gabarito</b><p class="small muted">Os números certos, para comparar.</p></div>
+      </div>
+    </div>
+    <p class="say rise" style="--i:4">O ✓ entre os elos é o engenheiro. Erro no Elo 2 que passa sem checagem contamina o Elo 7.</p>
+  </div>
+  <aside class="notes"><p>Antes do Elo 1, os alunos precisam colar a base na conversa. O botão "Copiar base" fica no Módulo 5 do guia (e no Elo 1 do Módulo 6).</p></aside>
+</section>
+
+<section class="slide" data-sec="O experimento" data-title="O caso Envasa" data-id="caso">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 4 · Briefing <span class="guide">Guia · <b>Módulo 5</b></span></p>
+    <h2 class="rise" style="--i:1">Envasa Bebidas: três linhas, três turnos, duas semanas</h2>
+    <div class="grid g3 rise" style="--i:2">
+      <div class="card"><span class="k">Linha 1</span><span class="bigmoney" style="font-size:2.4rem">50 <span class="small muted">un/min</span></span><p class="small muted">Antiga</p></div>
+      <div class="card" style="background:var(--fg);color:var(--bg)"><span class="k" style="color:var(--bg);opacity:.75">Linha 2</span><span class="bigmoney" style="font-size:2.4rem">60 <span class="small" style="opacity:.7">un/min</span></span><p class="small" style="opacity:.75">Nova · R$ 4 milhões há 18 meses</p></div>
+      <div class="card"><span class="k">Linha 3</span><span class="bigmoney" style="font-size:2.4rem">50 <span class="small muted">un/min</span></span><p class="small muted">Antiga</p></div>
+    </div>
+    <div class="row rise" style="--i:3">
+      <div class="stat"><span class="v">R$ 0,40</span><span class="l">margem por unidade boa</span></div>
+      <div class="stat"><span class="v">R$ 1,50</span><span class="l">custo por unidade refugada</span></div>
+      <div class="stat"><span class="v">250</span><span class="l">dias por ano</span></div>
+      <div class="stat"><span class="v">480 min</span><span class="l">por turno</span></div>
+    </div>
+    <p class="say rise" style="--i:4">A base tem uma linha por turno: paradas por motivo, número de trocas, produção e refugo. São 91 registros, com <b>dois defeitos escondidos</b> de propósito.</p>
+  </div>
+  <aside class="notes"><p>Peça para copiarem a base no guia (Módulo 5 ou Elo 1 do Módulo 6) e colarem junto com o prompt do Elo 1.</p></aside>
+</section>
+
+<section class="slide" data-sec="O experimento" data-title="O que é OEE" data-id="oee">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 4 · Conceito antes de calcular</p>
+    <h2 class="rise" style="--i:1">OEE: de tudo que dava para produzir, quanto virou produto bom?</h2>
+    <div class="row rise" style="--i:2" id="oeeSel" role="tablist">
+      <button class="pill" data-g="L1" aria-selected="true">L1 · média</button>
+      <button class="pill" data-g="dia" aria-selected="false">L2 · turnos de dia</button>
+      <button class="pill" data-g="noite" aria-selected="false">L2 · turno da noite</button>
+    </div>
+    <div class="rise" style="--i:3;display:flex;flex-direction:column;gap:.5rem">
+      <p class="small muted">Um turno de 480 minutos, dividido em onde o tempo foi parar</p>
+      <div class="oee-bar" id="oeeBar"></div>
+      <div class="oee-scale"><span>0 min</span><span>120</span><span>240</span><span>360</span><span>480 min</span></div>
+      <div class="legend"><span><i style="background:var(--fg)"></i>Produto bom</span><span><i style="background:var(--c1)"></i>Parada</span><span><i style="background:var(--c2)"></i>Lentidão</span><span><i style="background:var(--bad)"></i>Refugo</span></div>
+    </div>
+    <div class="formula rise" style="--i:4" id="oeeFormula"></div>
+    <div class="grid g3 rise" style="--i:5">
+      <div class="card"><span class="k">Disponibilidade</span><p class="small">A máquina ficou ligada? Tempo rodando ÷ tempo planejado. <b>Cai com paradas.</b></p></div>
+      <div class="card"><span class="k">Performance</span><p class="small">Rodou na velocidade certa? O que produziu ÷ o que daria na velocidade nominal. <b>Cai com lentidão.</b></p></div>
+      <div class="card"><span class="k">Qualidade</span><p class="small">O que saiu prestava? Unidades boas ÷ produzidas. <b>Cai com refugo.</b></p></div>
+    </div>
+  </div>
+  <aside class="notes"><p>Clique em L1, depois L2 dia, depois L2 noite. Não explique a noite ainda; deixe a turma estranhar. A descoberta formal vem no Elo 4.</p><p>Se quiser segurar a surpresa, mostre só L1 e L2 dia.</p></aside>
+</section>
+
+<section class="slide" data-sec="O experimento" data-title="Elo 1 · Entender a base" data-id="e0"><div class="wrap elo" data-step="0"></div>
+  <aside class="notes"><p><b>Ação:</b> Enter para enviar. Pergunte antes: "o que vocês esperam que ela encontre?"</p><p>A duplicata infla a produção da L2 Tarde. Sem tirar, o OEE sai errado no próximo elo.</p></aside></section>
+<section class="slide" data-sec="O experimento" data-title="Elo 2 · Medir o OEE" data-id="e1"><div class="wrap elo" data-step="1"></div>
+  <aside class="notes"><p>Peça que alguém confira a conta da primeira linha na calculadora do celular. É o hábito mais importante do dia.</p></aside></section>
+<section class="slide" data-sec="O experimento" data-title="Elo 3 · Pareto" data-id="e2"><div class="wrap elo" data-step="2"></div>
+  <aside class="notes"><p>Setup lidera de longe. Gancho para o próximo elo: "por que a máquina mais nova faz setups tão longos?"</p></aside></section>
+<section class="slide" data-sec="O experimento" data-title="Elo 4 · Investigar" data-id="e3"><div class="wrap elo" data-step="3"></div>
+  <aside class="notes"><p><b>Momento-chave.</b> Antes de enviar, pergunte qual célula vai acender. Depois, retome a enquete do início: quem achava que era a máquina?</p></aside></section>
+
+<section class="slide" data-sec="O experimento" data-title="A causa, desenhada" data-id="simB">
+  <div class="wrap" style="max-width:86rem;gap:1.1rem">
+    <p class="eyebrow rise" style="--i:0">Parte 4 · O que o Elo 4 descobriu</p>
+    <h2 class="rise" style="--i:1">A causa, desenhada</h2>
+    <div class="rise" style="--i:2" id="simB"></div>
+  </div>
+  <aside class="notes"><p>Agora com a causa ligada. Espere uma troca na noite: a barra passa da marca "dia: 21 min", a primeira caixa acende e, logo depois, o refugo cai na bandeja. Leia a cadeia da direita de cima para baixo.</p><p>Gancho para o próximo slide: "Então a culpa é da equipe da noite?"</p></aside>
+</section>
+
+<section class="slide" data-sec="O experimento" data-title="Correlação não é causa" data-id="trap">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 4 · Pausa crítica</p>
+    <h2 class="rise" style="--i:1">"A equipe da noite é ruim"? Os dados não permitem dizer isso.</h2>
+    <div class="split2 rise" style="--i:2">
+      <div class="card line" style="gap:.8rem"><span class="k">Turnos com 2 ou mais trocas · cada bolinha é um turno</span><div class="dots9" id="dots9"></div>
+        <p class="small muted">Todos os turnos com muitas trocas são da noite da L2. Equipe e número de trocas andam juntos. Só com esses dados, não dá para separar um do outro.</p></div>
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <div class="card"><span class="k">Analogia</span><p>Venda de sorvete e afogamentos sobem juntos no verão. Sorvete não afoga ninguém: o calor causa os dois.</p></div>
+        <div class="card"><span class="k">O que sabemos com certeza</span><p>A diferença entre noite e dia é real, não é acaso (teste estatístico com p &lt; 0,0001). E mesmo <b>por troca</b>, a noite leva <b id="spn1">45 min</b> contra <b id="spn0">21 min</b> no resto da fábrica: o <b>método</b> de setup pesa.</p></div>
+        <div class="card" style="background:var(--fg);color:var(--bg)"><span class="k" style="color:var(--bg);opacity:.75">Como descobrir · experimento de 2 semanas</span><p>O PCP passa metade das trocas da L2 para o dia. Se o tempo longo seguir a <b>equipe</b>: treinamento. Se seguir a <b>troca</b>: método, mix ou ferramental.</p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes"><p>Insista: antes de culpar pessoas, desenhe um experimento. O prompt que faz a IA chegar aqui está no guia, no Módulo 6, depois do Elo 4.</p></aside>
+</section>
+
+<section class="slide" data-sec="O experimento" data-title="Elo 5 · Quanto custa" data-id="e4"><div class="wrap elo" data-step="4"></div>
+  <aside class="notes"><p>"Diretor não aprova projeto por OEE. Aprova por real." Deixe o número crescer antes de falar.</p></aside></section>
+<section class="slide" data-sec="O experimento" data-title="Elo 6 · Simular" data-id="e5"><div class="wrap elo" data-step="5"></div>
+  <aside class="notes"><p>Depois de enviar, mexa nos controles com a turma. Pergunte: "a partir de que investimento o projeto deixa de se pagar em 12 meses?"</p></aside></section>
+<section class="slide" data-sec="O experimento" data-title="Elo 7 · Decidir" data-id="e6"><div class="wrap elo" data-step="6"></div>
+  <aside class="notes"><p>Pirâmide de Minto (método criado na McKinsey): conclusão primeiro. O debate com dilema real é o "método do caso" usado em escolas como Harvard. Pergunte: "vocês assinariam isso?"</p></aside></section>
+
+<!-- ================= ENCERRAMENTO ================= -->
+<section class="slide" data-sec="Encerramento" data-title="Debate" data-id="debate">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Encerramento · Debate</p>
+    <h2 class="rise" style="--i:1">Os dados dizem quanto. Vocês decidem o que fazer.</h2>
+    <div class="qs rise" style="--i:2" id="qs">
+      <button class="qq" aria-expanded="false"><span class="n">Pergunta 1</span><span class="qt">O supervisor da noite deveria ser responsabilizado?</span><span class="hint">Os dados mostram onde está a perda, não quem a causa. Equipe e número de trocas estão misturados. Responsabilizar antes do experimento é decidir sem evidência.</span><span class="more">clique para ver o que os dados dizem</span></button>
+      <button class="qq" aria-expanded="false"><span class="n">Pergunta 2</span><span class="qt">Se o PCP concentra trocas à noite para proteger o dia, ele está errado?</span><span class="hint">Talvez não, se o setup noturno fosse rápido. O problema é a combinação: muitas trocas num turno sem padrão de setup.</span><span class="more">clique para ver o que os dados dizem</span></button>
+      <button class="qq" aria-expanded="false"><span class="n">Pergunta 3</span><span class="qt">E se a margem caísse para R$ 0,20?</span><span class="hint">O refugo evitado passa a pesar mais, porque o custo de R$ 1,50 não muda. Volte ao Elo 6 e teste.</span><span class="more">clique para ver o que os dados dizem</span></button>
+      <button class="qq" aria-expanded="false"><span class="n">Pergunta 4</span><span class="qt">Onde a IA ajudou, e onde poderia ter levado ao erro?</span><span class="hint">Ajudou: velocidade, cruzamentos, contas, texto. Riscos: a duplicata, a aritmética e transformar correlação em culpa.</span><span class="more">clique para ver o que os dados dizem</span></button>
+    </div>
+  </div>
+  <aside class="notes"><p>A pergunta 1 costuma render a melhor discussão. Deixe a turma se dividir antes de revelar.</p></aside>
+</section>
+
+<section class="slide" data-sec="Encerramento" data-title="Para levar" data-id="close">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Encerramento · Para levar <span class="guide">Guia · <b>Módulo 7</b></span></p>
+    <div class="msgs rise" style="--i:1">
+      <div class="msgx"><span class="n">1</span><h3>Prompt bom tem CORPO</h3><p class="muted">Contexto, Objetivo, Regras, Papel e Output.</p></div>
+      <div class="msgx"><span class="n">2</span><h3>Análise boa é uma cadeia</h3><p class="muted">Decomponha, encadeie e confira cada elo.</p></div>
+      <div class="msgx"><span class="n">3</span><h3>Termine em reais e decisão</h3><p class="muted">Com incerteza explícita e sem confundir correlação com culpa.</p></div>
+    </div>
+    <p class="quote rise" style="--i:2">A IA achou o padrão em minutos. Quem transformou isso em uma decisão de R$ 1 milhão foi o engenheiro.</p>
+    <div class="card rise" style="--i:3"><span class="k">Desafio para casa</span><p>Refaça os 7 elos com dados do seu estágio ou TCC, sem dados sigilosos. Troque só o contexto e as premissas. O guia continua disponível.</p></div>
+  </div>
+  <aside class="notes"><p>Leia a frase em voz alta e pare. Lembre que o guia fica com eles.</p></aside>
+</section>
+
+</div>
+
+<div class="notes-panel" id="notesPanel" aria-live="polite"><div class="k">Notas do apresentador</div><div id="notesBody"></div></div>
+<div class="overview" id="overview" hidden><div style="max-width:74rem;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap"><h2>Todos os slides</h2><div class="keys"><span><kbd>←</kbd><kbd>→</kbd> navegar</span><span><kbd>Enter</kbd> enviar prompt</span><span><kbd>N</kbd> notas</span><span><kbd>Esc</kbd> fechar</span></div></div><div class="ov-grid" id="ovGrid"></div></div>
+<div id="tip" role="tooltip"></div>
+
+<nav class="bar" aria-label="Navegação da apresentação">
+  <div class="progress" id="progress"></div>
+  <div class="secname" id="secname"></div>
+  <button class="timer hide-sm" id="timer" title="Tempo decorrido · clique para zerar">00:00</button>
+  <span class="counter" id="counter"></span>
+  <div class="ctrls">
+    <button class="ibtn hide-sm" id="bNotes" aria-pressed="false" title="Notas (N)">Notas</button>
+    <button class="ibtn hide-sm" id="bOver" title="Todos os slides (O)">Slides</button>
+    <button class="ibtn hide-sm" id="bTheme" title="Tema claro ou escuro (T)">Tema</button>
+    <button class="ibtn round" id="bPrev" aria-label="Slide anterior">←</button>
+    <button class="ibtn round" id="bNext" aria-label="Próximo slide">→</button>
+  </div>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* Endereço do guia: troque pelo link do seu site. GUIDE_LABEL é o texto curto exibido no slide. */
+const GUIDE_URL=location.origin+'/';
+const GUIDE_LABEL='';
+const RAW = `data;linha;turno;operador;produto;tempo_planejado_min;parada_setup_min;parada_quebra_min;parada_falta_material_min;parada_ajustes_min;n_setups;velocidade_nominal_un_min;qtd_produzida;qtd_refugo
+2026-10-05;L1;Manhã;Ana;Chá 1L;480;19;15;0;6;1;50;20004;215
+2026-10-05;L1;Tarde;Bruno;Suco 1L;480;0;0;0;6;0;50;20998;221
+2026-10-05;L1;Noite;Carla;Chá 1L;480;21;0;15;6;1;50;20078;302
+2026-10-05;L2;Manhã;Diego;Suco 1L;480;0;20;10;5;0;60;24525;254
+2026-10-05;L2;Tarde;Elisa;Chá 1L;480;21;0;15;6;1;60;23501;340
+2026-10-05;L2;Noite;Fábio;Suco 1L;480;82;20;15;33;2;60;16208;987
+2026-10-05;L3;Manhã;Gustavo;Suco 500ml;480;18;20;0;12;1;50;19367;259
+2026-10-05;L3;Tarde;Helena;Suco 1L;480;22;15;0;9;1;50;18985;217
+2026-10-05;L3;Noite;Igor;Suco 500ml;480;0;10;15;12;0;50;20212;320
+2026-10-06;L1;Manhã;Ana;Suco 500ml;480;18;0;15;11;1;50;18963;241
+2026-10-06;L1;Tarde;Bruno;Suco 500ml;480;18;0;15;14;1;50;19644;325
+2026-10-06;L1;Noite;Carla;Suco 500ml;480;20;15;15;12;1;50;18060;194
+2026-10-06;L2;Manhã;Diego;Suco 500ml;480;23;0;0;9;1;60;24160;433
+2026-10-06;L2;Tarde;;Chá 1L;480;23;15;0;5;1;60;24029;308
+2026-10-06;L2;Noite;Fábio;Suco 500ml;480;94;0;0;26;2;60;18077;1047
+2026-10-06;L3;Manhã;Gustavo;Suco 500ml;480;0;15;10;13;0;50;19374;214
+2026-10-06;L3;Tarde;Helena;Suco 1L;480;20;15;0;15;1;50;19630;346
+2026-10-06;L3;Noite;Igor;Chá 1L;480;0;0;0;15;0;50;20320;282
+2026-10-07;L1;Manhã;Ana;Chá 1L;480;0;10;0;7;0;50;20490;265
+2026-10-07;L1;Tarde;Bruno;Suco 500ml;480;19;0;10;15;1;50;19791;260
+2026-10-07;L1;Noite;Carla;Suco 500ml;480;18;15;10;5;1;50;18823;336
+2026-10-07;L2;Manhã;Diego;Chá 1L;480;0;10;15;5;0;60;23385;339
+2026-10-07;L2;Tarde;Elisa;Suco 1L;480;0;20;0;6;0;60;24855;370
+2026-10-07;L2;Noite;Fábio;Suco 500ml;480;135;20;0;28;3;60;14358;858
+2026-10-07;L3;Manhã;Gustavo;Suco 500ml;480;21;10;0;7;1;50;19141;243
+2026-10-07;L3;Tarde;Helena;Suco 500ml;480;24;0;15;5;1;50;19016;334
+2026-10-07;L3;Noite;Igor;Suco 1L;480;0;20;0;13;0;50;19620;297
+2026-10-08;L1;Manhã;Ana;Suco 1L;480;24;10;15;10;1;50;19250;247
+2026-10-08;L1;Tarde;Bruno;Suco 1L;480;22;10;0;14;1;50;19718;352
+2026-10-08;L1;Noite;Carla;Suco 1L;480;0;15;0;8;0;50;20360;261
+2026-10-08;L2;Manhã;Diego;Suco 500ml;480;0;10;10;9;0;60;23586;350
+2026-10-08;L2;Tarde;Elisa;Suco 1L;480;24;10;0;6;1;60;23053;272
+2026-10-08;L2;Noite;Fábio;Chá 1L;480;129;15;15;29;3;60;14436;910
+2026-10-08;L3;Manhã;Gustavo;Chá 1L;480;0;0;10;8;0;50;20528;234
+2026-10-08;L3;Tarde;Helena;Suco 1L;480;18;15;10;11;1;50;19268;205
+2026-10-08;L3;Noite;Igor;Suco 1L;480;0;0;0;14;0;50;21302;350
+2026-10-09;L1;Manhã;Ana;Suco 1L;480;24;15;0;7;1;50;19376;214
+2026-10-09;L1;Tarde;Bruno;Suco 1L;480;23;0;15;7;1;50;19271;327
+2026-10-09;L1;Noite;Carla;Suco 500ml;480;0;0;0;13;0;50;20417;299
+2026-10-09;L2;Manhã;Diego;Chá 1L;480;21;0;0;10;1;60;24619;376
+2026-10-09;L2;Tarde;Elisa;Suco 500ml;480;24;20;0;13;1;60;22058;310
+2026-10-09;L2;Tarde;Elisa;Suco 500ml;480;24;20;0;13;1;60;22058;310
+2026-10-09;L2;Noite;Fábio;Chá 1L;480;98;0;0;24;2;60;17692;1141
+2026-10-09;L3;Manhã;Gustavo;Chá 1L;480;0;20;15;13;0;50;19201;311
+2026-10-09;L3;Tarde;Helena;Chá 1L;480;0;0;0;5;0;50;21525;302
+2026-10-09;L3;Noite;Igor;Chá 1L;480;0;0;10;10;0;50;20625;289
+2026-10-12;L1;Manhã;Ana;Suco 1L;480;0;10;10;13;0;50;19936;275
+2026-10-12;L1;Tarde;Bruno;Suco 1L;480;22;10;15;8;1;50;19345;214
+2026-10-12;L1;Noite;Carla;Chá 1L;480;21;10;0;15;1;50;18975;200
+2026-10-12;L2;Manhã;Diego;Suco 1L;480;24;0;0;15;1;60;23803;265
+2026-10-12;L2;Tarde;Elisa;Suco 1L;480;19;0;10;12;1;60;22909;351
+2026-10-12;L2;Noite;Fábio;Chá 1L;480;92;20;10;31;2;60;15888;895
+2026-10-12;L3;Manhã;Gustavo;Suco 500ml;480;18;10;15;12;1;50;18836;191
+2026-10-12;L3;Tarde;Helena;Suco 1L;480;22;10;15;6;1;50;18505;321
+2026-10-12;L3;Noite;Igor;Suco 1L;480;0;10;0;5;0;50;21258;243
+2026-10-13;L1;Manhã;Ana;Suco 500ml;480;24;10;10;7;1;50;19137;270
+2026-10-13;L1;Tarde;Bruno;Suco 1L;480;20;0;0;5;1;50;20656;236
+2026-10-13;L1;Noite;Carla;Suco 500ml;480;18;0;0;6;1;50;20439;240
+2026-10-13;L2;Manhã;Diego;Chá 1L;480;0;0;0;13;0;60;24799;429
+2026-10-13;L2;Tarde;Elisa;Suco 1L;480;0;20;0;6;0;60;25010;302
+2026-10-13;L2;Noite;Fábio;Suco 500ml;480;88;10;15;27;2;60;16774;1064
+2026-10-13;L3;Manhã;Gustavo;Chá 1L;480;24;0;0;5;1;50;19413;307
+2026-10-13;L3;Tarde;Helena;Suco 500ml;480;0;15;0;12;0;50;19623;324
+2026-10-13;L3;Noite;Igor;Suco 1L;480;21;20;10;13;1;50;18272;214
+2026-10-14;L1;Manhã;Ana;Suco 1L;480;19;0;10;10;1;50;20262;338
+2026-10-14;L1;Tarde;Bruno;Suco 500ml;480;0;10;10;7;0;50;19554;299
+2026-10-14;L1;Noite;Carla;Suco 1L;480;23;10;15;8;1;50;19113;198
+2026-10-14;L2;Manhã;Diego;Chá 1L;480;0;15;0;9;0;60;24127;304
+2026-10-14;L2;Tarde;Elisa;Suco 500ml;480;19;0;0;8;1;60;23956;239
+2026-10-14;L2;Noite;Fábio;Suco 1L;480;94;10;15;33;2;60;15988;1047
+2026-10-14;L3;Manhã;Gustavo;Suco 500ml;480;24;0;0;11;1;50;19918;261
+2026-10-14;L3;Tarde;Helena;Suco 1L;480;23;0;0;14;1;50;20321;341
+2026-10-14;L3;Noite;Igor;Suco 500ml;480;23;20;10;10;1;50;18832;262
+2026-10-15;L1;Manhã;Ana;Chá 1L;480;22;0;0;13;1;50;19972;316
+2026-10-15;L1;Tarde;Bruno;Suco 1L;480;0;0;15;15;0;50;20640;312
+2026-10-15;L1;Noite;Carla;Suco 1L;480;0;0;0;6;0;50;20917;284
+2026-10-15;L2;Manhã;Diego;Suco 1L;480;18;20;0;12;1;60;22596;308
+2026-10-15;L2;Tarde;Elisa;Suco 500ml;480;22;20;0;15;1;60;22627;361
+2026-10-15;L2;Noite;Fábio;Suco 500ml;480;123;10;0;26;3;60;16120;1120
+2026-10-15;L3;Manhã;Gustavo;Suco 1L;480;18;15;0;5;1;50;19824;300
+2026-10-15;L3;Tarde;Helena;Chá 1L;480;19;10;0;15;1;50;19720;245
+2026-10-15;L3;Noite;Igor;Chá 1L;480;0;15;0;12;0;50;19844;305
+2026-10-16;L1;Manhã;Ana;Suco 1L;480;0;15;0;13;0;50;19823;272
+2026-10-16;L1;Tarde;Bruno;Chá 1L;480;19;10;0;12;1;50;18900;258
+2026-10-16;L1;Noite;Carla;Chá 1L;480;20;15;0;8;1;50;18888;202
+2026-10-16;L2;Manhã;Diego;Suco 1L;480;20;10;0;14;1;60;23785;334
+2026-10-16;L2;Tarde;Elisa;Suco 500ml;480;20;0;10;12;1;60;23222;261
+2026-10-16;L2;Noite;Fábio;Suco 500ml;480;138;10;0;31;3;60;14787;775
+2026-10-16;L3;Manhã;Gustavo;Suco 1L;480;0;10;10;6;0;50;20802;240
+2026-10-16;L3;Tarde;Helena;Chá 1L;480;20;10;0;6;1;50;19615;352
+2026-10-16;L3;Noite;Igor;Chá 1L;480;0;15;0;5;0;50;20167;209`;
+
+/*COMPUTE-START*/
+const PREM = {margem:0.40, custoRef:1.50, dias:250};
+const LINES = ['L1','L2','L3'], TURNOS = ['Manhã','Tarde','Noite'];
+const MOT = [['parada_setup_min','Setup'],['parada_ajustes_min','Ajustes'],['parada_quebra_min','Quebra'],['parada_falta_material_min','Falta de material']];
+function parseCSV(t){
+  const L=t.trim().split('\n'); const h=L[0].split(';');
+  return L.slice(1).map((l,idx)=>{const v=l.split(';'); const o={_raw:l,_i:idx};
+    h.forEach((k,i)=>{const s=v[i]; o[k]=(s!==''&&!isNaN(+s))?+s:s;});
+    o.parado=o.parada_setup_min+o.parada_quebra_min+o.parada_falta_material_min+o.parada_ajustes_min;
+    o.oper=o.tempo_planejado_min-o.parado; o.boas=o.qtd_produzida-o.qtd_refugo;
+    o.oee=o.boas/(o.tempo_planejado_min*o.velocidade_nominal_un_min); return o;});
+}
+const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0);
+const mean=(a,f)=>sum(a,f)/a.length;
+function kpi(g){
+  const plan=sum(g,r=>r.tempo_planejado_min), op=sum(g,r=>r.oper), teo=sum(g,r=>r.oper*r.velocidade_nominal_un_min), prod=sum(g,r=>r.qtd_produzida), ref=sum(g,r=>r.qtd_refugo);
+  const D=op/plan,P=prod/teo,Q=(prod-ref)/prod; return {D,P,Q,OEE:D*P*Q,prod,ref,boas:prod-ref,setup:sum(g,r=>r.parada_setup_min),nset:sum(g,r=>r.n_setups),n:g.length};
+}
+function minutes(g){
+  const n=g.length; const par=sum(g,r=>r.parado)/n; const perf=sum(g,r=>r.oper-r.qtd_produzida/r.velocidade_nominal_un_min)/n; const refm=sum(g,r=>r.qtd_refugo/r.velocidade_nominal_un_min)/n; const good=sum(g,r=>r.boas/r.velocidade_nominal_un_min)/n;
+  return {...kpi(g),par,perf,refm,good};
+}
+function welch(a,b){
+  const ma=a.reduce((s,x)=>s+x,0)/a.length, mb=b.reduce((s,x)=>s+x,0)/b.length;
+  const va=a.reduce((s,x)=>s+(x-ma)**2,0)/(a.length-1), vb=b.reduce((s,x)=>s+(x-mb)**2,0)/(b.length-1);
+  const se2=va/a.length+vb/b.length, t=(ma-mb)/Math.sqrt(se2);
+  const df=se2**2/((va/a.length)**2/(a.length-1)+(vb/b.length)**2/(b.length-1));
+  return {t,df,ma,mb};
+}
+function mulberry(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function tri(u,a,c,b){const F=(c-a)/(b-a);return u<F?a+Math.sqrt(u*(b-a)*(c-a)):b-Math.sqrt((1-u)*(b-a)*(b-c));}
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+function analyze(){
+  const raw=parseCSV(RAW); const seen=new Map(); const dups=[];
+  raw.forEach(r=>{if(seen.has(r._raw))dups.push({first:seen.get(r._raw),second:r._i});else seen.set(r._raw,r._i);});
+  const dupSet=new Set(dups.map(d=>d.second));
+  const clean=raw.filter(r=>!dupSet.has(r._i));
+  const missing=raw.filter(r=>r.operador==='');
+  const by=(rows,l,t)=>rows.filter(r=>r.linha===l&&(!t||r.turno===t));
+  const line={}, lineRaw={}, cell={};
+  LINES.forEach(l=>{line[l]=kpi(by(clean,l)); lineRaw[l]=kpi(by(raw,l)); TURNOS.forEach(t=>cell[l+t]=kpi(by(clean,l,t)));});
+  const L2=by(clean,'L2'); const night=L2.filter(r=>r.turno==='Noite'), day=L2.filter(r=>r.turno!=='Noite');
+  const pareto=MOT.map(([k,n])=>({k,n,min:sum(L2,r=>r[k])})).sort((a,b)=>b.min-a.min);
+  const totPar=sum(pareto,x=>x.min); let acc=0; pareto.forEach(x=>{x.pct=x.min/totPar; acc+=x.pct; x.cum=acc;});
+  const setupBy={}; LINES.forEach(l=>setupBy[l]=line[l].setup);
+  const shift={}; TURNOS.forEach(t=>{const g=by(clean,'L2',t); shift[t]={...kpi(g),spn:sum(g,r=>r.parada_setup_min)/Math.max(1,sum(g,r=>r.n_setups)),aj:mean(g,r=>r.parada_ajustes_min),refp:sum(g,r=>r.qtd_refugo)/sum(g,r=>r.qtd_produzida)};});
+  const dayK={...kpi(day),spn:sum(day,r=>r.parada_setup_min)/sum(day,r=>r.n_setups)};
+  const others=clean.filter(r=>!(r.linha==='L2'&&r.turno==='Noite')&&r.n_setups>0);
+  const spnOthers=sum(others,r=>r.parada_setup_min)/sum(others,r=>r.n_setups);
+  const goodDay=mean(day,r=>r.boas), goodNight=mean(night,r=>r.boas), diffGood=goodDay-goodNight;
+  const refDay=mean(day,r=>r.qtd_refugo), refNight=mean(night,r=>r.qtd_refugo), diffRef=refNight-refDay;
+  const lossMargin=diffGood*PREM.margem*PREM.dias, lossRef=diffRef*PREM.custoRef*PREM.dias;
+  const W=welch(night.map(r=>r.oee),day.map(r=>r.oee));
+  const nightBase={setup:mean(night,r=>r.parada_setup_min),ref:refNight,rate:mean(night,r=>r.qtd_produzida/r.oper),Q:shift['Noite'].Q};
+  const mins={L1:minutes(by(clean,'L1')),dia:minutes(day),noite:minutes(night)};
+  return {raw,clean,dups,missing,line,lineRaw,cell,pareto,totPar,setupBy,shift,dayK,spnOthers,diffGood,diffRef,lossMargin,lossRef,W,night,nightBase,mins};
+}
+function oeeAfter(night,red,rr){
+  let boas=0; const plan=sum(night,r=>r.tempo_planejado_min*r.velocidade_nominal_un_min);
+  night.forEach(r=>{const op2=r.oper+r.parada_setup_min*red; const prod2=r.qtd_produzida/r.oper*op2; const ref2=r.qtd_refugo/r.qtd_produzida*prod2*(1-rr); boas+=prod2-ref2;});
+  return boas/plan;
+}
+function monteCarlo(nb,o){
+  const N=20000, rnd=mulberry(20261018), g=new Float64Array(N);
+  for(let i=0;i<N;i++){
+    const red=tri(rnd(),clamp(o.red-0.15,0.01,0.95),o.red,clamp(o.red+0.15,0.02,0.98));
+    const rr=tri(rnd(),clamp(o.rr-0.2,0.01,0.95),o.rr,clamp(o.rr+0.2,0.02,0.99));
+    const mg=0.35+rnd()*0.10;
+    g[i]=(nb.setup*red*nb.rate*nb.Q*mg + nb.ref*rr*(PREM.custoRef+mg))*PREM.dias;
+  }
+  const s=Array.from(g).sort((a,b)=>a-b); const q=p=>s[Math.min(N-1,Math.floor(p*N))];
+  const npv=gain=>-o.inv+[1,2,3].reduce((acc,t)=>acc+gain/Math.pow(1+o.rate,t),0);
+  const pay12=s.filter(x=>o.inv/x*12<=12).length/N;
+  return {s,N,p5:q(.05),p50:q(.5),p95:q(.95),npv5:npv(q(.05)),npv50:npv(q(.5)),npv95:npv(q(.95)),pb50:o.inv/q(.5)*12,pay12,min:s[0],max:s[N-1]};
+}
+/*COMPUTE-END*/
+
+const R=analyze();
+const fmtN=new Intl.NumberFormat('pt-BR',{maximumFractionDigits:0});
+const num=x=>fmtN.format(Math.round(x));
+const pct=(x,d=1)=>(x*100).toFixed(d).replace('.',',')+'%';
+const dec=(x,d=1)=>x.toFixed(d).replace('.',',');
+const brlk=x=>'R$ '+num(x/1000)+' mil';
+const brlm=x=>'R$ '+(x/1e6).toFixed(2).replace('.',',')+' mi';
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const RM=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const sleep=ms=>new Promise(r=>setTimeout(r,RM?0:ms));
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let runGen=0;
+let mcState={red:.40,rr:.50,inv:190000,rate:.12}; let MC=null;
+
+/* ============ DECK ============ */
+const slides=$$('.slide'); const N=slides.length; let cur=-1;
+$('#ovGrid').innerHTML=slides.map((s,i)=>`<button data-go="${i}"><span class="n">${i+1}</span><span>${esc(s.dataset.title)}</span><span class="s">${esc(s.dataset.sec)}</span></button>`).join('');
+$('#ovGrid').addEventListener('click',e=>{const b=e.target.closest('[data-go]'); if(b){go(+b.dataset.go); toggleOverview(false);}});
+const enterHooks={}, leaveHooks={};
+function go(i){
+  i=Math.max(0,Math.min(N-1,i)); if(i===cur)return;
+  const prev=slides[cur]; if(prev){const id=prev.dataset.id; leaveHooks[id]&&leaveHooks[id](prev);}
+  runGen++;
+  slides.forEach((s,j)=>{s.classList.toggle('active',j===i); if(j===i)s.removeAttribute('inert'); else s.setAttribute('inert','');});
+  cur=i; const s=slides[i]; s.scrollTop=0;
+  $('#secname').innerHTML=`<b>${esc(s.dataset.sec)}</b> · ${esc(s.dataset.title)}`;
+  $('#counter').textContent=`${i+1} / ${N}`;
+  $('#progress').style.width=((i+1)/N*100)+'%';
+  $('#notesBody').innerHTML=(s.querySelector('.notes')||{}).innerHTML||'<p class="muted">Sem notas.</p>';
+  $$('#ovGrid button').forEach((b,k)=>b.classList.toggle('cur',k===i));
+  try{history.replaceState(null,'','#s'+(i+1));}catch(e){}
+  const id=s.dataset.id; enterHooks[id]&&enterHooks[id](s);
+  const el=s.querySelector('.elo'); if(el) enterElo(el);
+  if(i>0) startTimer();
+}
+$('#bNext').onclick=()=>go(cur+1); $('#bPrev').onclick=()=>go(cur-1);
+function toggleNotes(force){const p=$('#notesPanel'); const on=force??!p.classList.contains('open'); p.classList.toggle('open',on); $('#bNotes').setAttribute('aria-pressed',on);}
+function toggleOverview(force){const o=$('#overview'); const on=force??o.hidden; o.hidden=!on;}
+function fullscreen(){try{if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});else document.documentElement.requestFullscreen().catch(()=>{});}catch(e){}}
+function toggleTheme(){const r=document.documentElement; const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme=dark?'light':'dark';}
+$('#bNotes').onclick=()=>toggleNotes(); $('#bOver').onclick=()=>toggleOverview(); $('#bTheme').onclick=toggleTheme;
+document.addEventListener('keydown',e=>{
+  const t=e.target;
+  if(t.matches&&t.matches('input,textarea,select')){if(e.key==='Escape')t.blur();return;}
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  if(t.matches&&t.matches('button')&&(e.key===' '||e.key==='Enter'))return;
+  switch(e.key){
+    case 'ArrowRight':case 'PageDown':case ' ':e.preventDefault();go(cur+1);break;
+    case 'ArrowLeft':case 'PageUp':e.preventDefault();go(cur-1);break;
+    case 'Home':go(0);break; case 'End':go(N-1);break;
+    case 'n':case 'N':toggleNotes();break; case 'o':case 'O':toggleOverview();break; case 'f':case 'F':fullscreen();break; case 't':case 'T':toggleTheme();break;
+    case 'Escape':toggleOverview(false);toggleNotes(false);break;
+    case 'Enter':{const el=slides[cur].querySelector('.elo'); if(el){e.preventDefault(); runElo(el);} break;}
+  }
+});
+let tx=null,ty=null;
+$('#deck').addEventListener('touchstart',e=>{if(e.target.closest('.tbl,.svgbox,input,textarea,.chat-b')){tx=null;return;} tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+$('#deck').addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty; if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.6)go(cur+(dx<0?1:-1)); tx=null;},{passive:true});
+let t0=null;
+function startTimer(){if(t0)return;t0=Date.now();setInterval(()=>{const s=Math.floor((Date.now()-t0)/1000);$('#timer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');},1000);}
+$('#timer').onclick=()=>{t0=Date.now();$('#timer').textContent='00:00';};
+const tip=$('#tip');
+document.addEventListener('pointermove',e=>{const el=e.target.closest&&e.target.closest('[data-tip]'); if(!el){tip.classList.remove('on');return;} tip.textContent=el.dataset.tip; tip.classList.add('on'); const w=tip.offsetWidth,h=tip.offsetHeight; let x=e.clientX+14,y=e.clientY-h-12; if(x+w>innerWidth-8)x=e.clientX-w-14; if(y<8)y=e.clientY+18; tip.style.left=x+'px'; tip.style.top=y+'px';});
+
+/* digitação */
+async function typeChars(el,text,gen,speed=16,step=2){
+  if(RM){el.textContent=text;return true;}
+  el.textContent='';
+  for(let i=0;i<text.length;i+=step){if(gen!==runGen)return false; el.textContent=text.slice(0,i+step); await new Promise(r=>setTimeout(r,speed));}
+  el.textContent=text; return true;
+}
+async function typeHTML(el,html,gen,speed=16,scroller){
+  if(RM){el.innerHTML=html;return true;}
+  const plain=html.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').trim(); const words=plain.split(/(\s+)/); let acc=''; el.textContent='';
+  for(const w of words){if(gen!==runGen)return false; acc+=w; el.textContent=acc; if(scroller)scroller.scrollTop=scroller.scrollHeight; if(w.trim())await new Promise(r=>setTimeout(r,speed+Math.random()*speed));}
+  el.innerHTML=html; return true;
+}
+function countUp(el,to,fmt,dur=1400){if(RM){el.textContent=fmt(to);return;} const s=performance.now(); const f=t=>{const k=Math.min(1,(t-s)/dur); el.textContent=fmt(to*(1-Math.pow(1-k,3))); if(k<1)requestAnimationFrame(f);}; requestAnimationFrame(f);}
+
+/* ============ CAPA ============ */
+const HERO='Por que a linha mais nova da fábrica rende menos que as antigas?';
+$('#heroTx').textContent=HERO;
+enterHooks.capa=async()=>{const el=$('#heroTx'); if(el.dataset.done)return; const gen=runGen; el.classList.add('caret'); el.textContent=''; await sleep(500); const ok=await typeChars(el,HERO,gen,38,1); if(ok)el.dataset.done=1; else el.textContent=HERO;};
+
+/* ============ GUIA / QR ============ */
+$('#guideLabel').textContent=GUIDE_LABEL||GUIDE_URL.replace(/^https?:\/\//,'').replace(/\/$/,'');
+try{ if(window.QRCode){ new QRCode($('#qr'),{text:GUIDE_URL,width:240,height:240,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M}); } else { $('#qr').textContent='Use o endereço acima'; } }catch(e){ $('#qr').textContent='Use o endereço acima'; }
+
+/* ============ EMAIL ============ */
+const MAIL='Mariana,\n\nA L2 custou R$ 4 milhões há 18 meses e rende menos que as linhas antigas. Quero uma recomendação na sexta: investimos para corrigir ou paramos de programar produto nela?\n\nRicardo';
+$('#mailBody').textContent=MAIL;
+enterHooks.email=async()=>{const el=$('#mailBody'); if(el.dataset.done)return; const gen=runGen; el.classList.add('caret'); el.textContent=''; await sleep(400); const ok=await typeChars(el,MAIL,gen,14); el.classList.remove('caret'); if(ok)el.dataset.done=1; else el.textContent=MAIL;};
+
+/* ============ PRÓXIMA PALAVRA ============ */
+const NT=[['setup',0.46],['parada',0.21],['troca',0.14],['manutenção',0.09],['ciclo',0.06],['almoço',0.04]];
+function ntProbs(T){const w=NT.map(([k,p])=>[k,Math.pow(p,1/T)]); const s=w.reduce((a,x)=>a+x[1],0); return w.map(([k,v])=>[k,v/s]);}
+function ntRender(pick){const T=+$('#ntTemp').value; $('#ntTv').textContent=dec(T); const P=ntProbs(T);
+  $('#ntCands').innerHTML=P.map(([k,p])=>`<div class="cand${pick===k?' pick':''}"><span class="w">${k}</span><div class="track"><div class="fill" style="width:${(p*100).toFixed(1)}%"></div></div><span class="v">${pct(p,0)}</span></div>`).join('');}
+$('#ntTemp').addEventListener('input',()=>ntRender());
+$('#ntGo').onclick=async()=>{const P=ntProbs(+$('#ntTemp').value); let u=Math.random(),k=P[P.length-1][0]; for(const [w,p] of P){if((u-=p)<=0){k=w;break;}}
+  for(let i=0;i<(RM?0:8);i++){ntRender(P[i%P.length][0]); await new Promise(r=>setTimeout(r,60+i*18));}
+  ntRender(k); $('#ntSentence').innerHTML=`A disponibilidade da L2 caiu porque o tempo de <span class="new">${k}</span>`; $('#ntMsg').textContent=`Escolhida: “${k}” (${pct(P.find(x=>x[0]===k)[1],0)})`;};
+$('#ntReset').onclick=()=>{$('#ntSentence').innerHTML='A disponibilidade da L2 caiu porque o tempo de<span class="caret"></span>'; $('#ntMsg').textContent=''; ntRender();};
+ntRender();
+
+/* ============ TOKENS ============ */
+function toyTokens(s){const out=[]; const parts=s.match(/\s*[\p{L}]+|\s*\d+|\s*[^\s\p{L}\d]/gu)||[];
+  parts.forEach(p=>{const lead=p.match(/^\s*/)[0], core=p.slice(lead.length);
+    if(/^\d+$/.test(core)){for(let i=0;i<core.length;i+=3)out.push((i===0?lead:'')+core.slice(i,i+3));return;}
+    if(core.length<=5){out.push(p);return;}
+    const ch=[]; let r=core; while(r.length>5){const n=r.length>8?4:Math.ceil(r.length/2); ch.push(r.slice(0,n)); r=r.slice(n);} ch.push(r);
+    ch.forEach((c,i)=>out.push((i===0?lead:'')+c));});
+  return out;}
+function tokRender(){const v=$('#tokIn').value; const t=toyTokens(v); $('#tokChips').innerHTML=t.map(x=>`<span>${esc(x)}</span>`).join(''); $('#tokN').textContent=num(t.length); $('#tokC').textContent=num(v.length);}
+$('#tokIn').addEventListener('input',tokRender); tokRender();
+
+/* ============ FERRAMENTAS ============ */
+$$('#taskBtns .pill').forEach(b=>b.setAttribute('aria-pressed','false'));
+$('#taskBtns').addEventListener('click',e=>{const b=e.target.closest('.pill'); if(!b)return; const on=b.getAttribute('aria-pressed')!=='true';
+  $$('#taskBtns .pill').forEach(x=>x.setAttribute('aria-pressed','false')); const g=$('#toolGrid');
+  if(on){b.setAttribute('aria-pressed','true'); const m=b.dataset.m.split(','); g.classList.add('filtered'); $$('.tool',g).forEach(t=>t.classList.toggle('on',m.includes(t.dataset.c)));}
+  else{g.classList.remove('filtered'); $$('.tool',g).forEach(t=>t.classList.remove('on'));}});
+
+/* ============ BASTIDORES ============ */
+const BS=[
+ {chat:null,stack:[['system','Você é um assistente útil. Responda em português.']],note:'Antes de você digitar qualquer coisa, a ferramenta já colocou uma instrução de bastidor (system). Você não vê, mas o modelo recebe.'},
+ {chat:['u','O que é OEE?'],stack:[['user','O que é OEE?']],note:'Você envia a primeira mensagem (user). O modelo recebe a instrução de bastidor e a sua pergunta.'},
+ {chat:['a','OEE é a eficiência global do equipamento: Disponibilidade × Performance × Qualidade. Mostra quanto do tempo planejado virou produto bom.'],stack:[['assistant','OEE é a eficiência global do equipamento: Disponibilidade × Performance × Qualidade…']],note:'A resposta (assistant) aparece para você e também entra no histórico.'},
+ {chat:['u','Calcule para 90%, 95% e 98%.'],stack:[['user','Calcule para 90%, 95% e 98%.']],note:'Segunda pergunta. Repare: ela não diz "OEE". O modelo recebe a lista inteira de novo, por isso entende do que você está falando.'},
+ {chat:['a','0,90 × 0,95 × 0,98 = 0,838. O OEE é de aproximadamente 83,8%.'],stack:[['assistant','0,90 × 0,95 × 0,98 = 0,838 → OEE ≈ 83,8%.']],note:'Abriu uma conversa nova? A lista começa vazia de novo. O modelo não tem memória própria; quem guarda o histórico é a ferramenta.'}
+];
+let bsI=0;
+function bsRender(){
+  const chat=$('#bsChat'), st=$('#bsStack'); chat.innerHTML=''; st.innerHTML='';
+  for(let i=0;i<=bsI;i++){const s=BS[i];
+    if(s.chat){chat.insertAdjacentHTML('beforeend', s.chat[0]==='u'?`<div class="bub">${esc(s.chat[1])}</div>`:`<div class="ai"><span class="av">IA</span><div class="ai-c"><p>${esc(s.chat[1])}</p></div></div>`);}
+    s.stack.forEach(([r,t])=>st.insertAdjacentHTML('beforeend',`<div class="sm${i===bsI?' new':''}"><span class="r">${r}</span><span>${esc(t)}</span></div>`));}
+  if(bsI===0) chat.innerHTML='<div class="empty"><b>Nova conversa</b><span>Nada aparece para você ainda.</span></div>';
+  $('#bsNote').textContent=BS[bsI].note; $('#bsNext').disabled=bsI>=BS.length-1; $('#bsNext').style.opacity=bsI>=BS.length-1?.4:1;
+}
+$('#bsNext').onclick=()=>{if(bsI<BS.length-1){bsI++;bsRender();}}; $('#bsReset').onclick=()=>{bsI=0;bsRender();}; bsRender();
+
+/* ============ SYSTEM DEMO ============ */
+const SYS=[
+ {s:'Você é um professor paciente. Use analogias e um exemplo simples.',a:'<p>Pense num turno de 8 horas. O OEE responde: de tudo que a máquina <b>poderia</b> ter produzido, quanto virou peça boa de verdade?</p><p>Ele junta três perguntas: a máquina ficou ligada? (Disponibilidade) Rodou na velocidade certa? (Performance) Saiu peça boa? (Qualidade). Multiplique as três.</p><p>Exemplo: 90% × 95% × 98% ≈ <b>84%</b>.</p>'},
+ {s:'Você é um consultor sênior. No máximo 3 frases, com números e uma recomendação.',a:'<p>OEE = Disponibilidade × Performance × Qualidade. A referência de classe mundial costuma ser citada como 85%, e muitas plantas operam perto de 60%. Abaixo disso, comece pelas paradas: costumam ser a maior perda.</p>'},
+ {s:'Responda apenas com uma tabela, sem texto.',a:'<div class="tbl"><table><thead><tr><th>Fator</th><th class="tl">Pergunta</th><th class="tl">Fórmula</th></tr></thead><tbody><tr><td>Disponibilidade</td><td class="tl">Ficou ligada?</td><td class="tl">tempo rodando ÷ planejado</td></tr><tr><td>Performance</td><td class="tl">Na velocidade certa?</td><td class="tl">produzido ÷ capacidade</td></tr><tr><td>Qualidade</td><td class="tl">Saiu bom?</td><td class="tl">boas ÷ produzidas</td></tr><tr><td><b>OEE</b></td><td class="tl">Quanto virou produto bom?</td><td class="tl">D × P × Q</td></tr></tbody></table></div>'}
+];
+let sysI=0;
+async function sysShow(i){sysI=i; $$('#sysPills .pill').forEach(b=>b.setAttribute('aria-selected',String(+b.dataset.s===i))); $('#sysText').textContent=SYS[i].s; const gen=++runGen; await typeHTML($('#sysAns'),SYS[i].a,gen,12);}
+$('#sysPills').addEventListener('click',e=>{const b=e.target.closest('.pill'); if(b)sysShow(+b.dataset.s);});
+$('#sysText').textContent=SYS[0].s; $('#sysAns').innerHTML=SYS[0].a;
+
+/* ============ CONSTRUTOR CORPO ============ */
+const BLOCKS=[
+ {id:'c',l:'C',name:'Contexto',why:'Evita que ela adivinhe o cenário.',w:22,text:'A base tem 10 dias de produção de 3 linhas de envase (L1, L2, L3) em 3 turnos. A L2 é a mais nova e roda a 60 un/min.'},
+ {id:'o',l:'O',name:'Objetivo',why:'Diz exatamente o que entregar.',w:30,text:'Calcule o OEE por linha, separando Disponibilidade, Performance e Qualidade.'},
+ {id:'r',l:'R',name:'Regras',why:'Fecha as portas para o erro.',w:16,text:'Remova linhas duplicadas antes de calcular. Não invente dados.'},
+ {id:'p',l:'P',name:'Papel',why:'Puxa vocabulário e rigor de especialista.',w:16,text:'Você é um engenheiro de produção sênior, especialista em TPM.'},
+ {id:'out',l:'O',name:'Output',why:'Deixa a resposta pronta para usar.',w:16,text:'Responda em tabela e feche com uma frase apontando a linha mais crítica.'}
+];
+const bS={}; BLOCKS.forEach(b=>bS[b.id]=false);
+$('#blocks').innerHTML=BLOCKS.map(b=>`<button class="blk" data-b="${b.id}" aria-pressed="false"><span class="lt">${b.l}</span><span><b>${b.name}</b><br><span class="why">${b.why}</span></span></button>`).join('');
+$('#blocks').addEventListener('click',e=>{const b=e.target.closest('.blk'); if(!b)return; bS[b.dataset.b]=!bS[b.dataset.b]; b.setAttribute('aria-pressed',bS[b.dataset.b]); renderBuilder(b.dataset.b);});
+function renderBuilder(changed){
+  const order=['p','c','o','r','out']; const parts=order.filter(id=>bS[id]).map(id=>{const b=BLOCKS.find(x=>x.id===id); return `<span${id===changed?' class="seg"':''}>${esc(b.text)}</span>`;});
+  if(!bS.o) parts.push('<span>Analisa essa planilha de produção.</span>');
+  $('#pText').innerHTML=parts.join(' ');
+  const score=BLOCKS.reduce((s,b)=>s+(bS[b.id]?b.w:0),0)+(bS.o?0:5);
+  $('#pMeter').style.width=Math.min(100,score)+'%'; $('#pLab').textContent=score>=95?'Profissional':score>=65?'Bom':score>=35?'Razoável':'Vago';
+  $('#pResp').innerHTML=builderResponse();
+}
+function builderResponse(){
+  const s=bS;
+  if(!s.o){ if(s.c||s.p) return `<p>Entendi o cenário: três linhas de envase em três turnos. O que você quer que eu analise? Posso calcular OEE, montar um Pareto ou comparar turnos.</p><p class="small muted">Sem objetivo, ela devolve a pergunta.</p>`;
+    return `<p>A planilha mostra dados de produção de três linhas. Há variações na quantidade produzida e algumas paradas. Recomendo analisar com mais detalhe para identificar oportunidades de melhoria.</p><p class="small muted">Genérico: nada que você já não soubesse.</p>`; }
+  const src=s.r?R.line:R.lineRaw; const crit=LINES.reduce((a,l)=>src[l].OEE<src[a].OEE?l:a,'L1'); let out='';
+  if(s.p) out+=`<p>Pela decomposição clássica do TPM (OEE = Disponibilidade × Performance × Qualidade):</p>`;
+  if(s.out){ out+=`<div class="tbl"><table><thead><tr><th>Linha</th><th>Disp.</th><th>Perf.</th><th>Qual.</th><th>OEE</th></tr></thead><tbody>${LINES.map(l=>`<tr${l===crit?' class="crit"':''}><td>${l}</td><td>${pct(src[l].D)}</td><td>${pct(src[l].P)}</td><td>${pct(src[l].Q)}</td><td><b>${pct(src[l].OEE)}</b></td></tr>`).join('')}</tbody></table></div><p><b>Linha mais crítica: ${crit}</b> (${pct(src[crit].OEE)}).${s.p?' A perda dominante é de Disponibilidade; próximo passo: Pareto de paradas.':''}</p>`; }
+  else out+=`<p>O OEE ficou em ${LINES.map(l=>`${l} ${pct(src[l].OEE)}`).join(', ')}. A ${crit} tem a disponibilidade mais baixa (${pct(src[crit].D)}).${s.p?' Do ponto de vista de TPM, a perda dominante é de Disponibilidade.':''}</p>`;
+  if(s.c) out+=`<p class="small">Resultado contraintuitivo: a linha mais nova e mais rápida é a menos eficiente.</p>`;
+  out+= s.r?`<p class="small" style="color:var(--good)">Removi 1 linha duplicada (09/10 · L2 · Tarde) antes de calcular.</p>`:`<p class="small" style="color:var(--bad)">Usei os ${R.raw.length} registros, incluindo uma linha duplicada. O OEE da L2 saiu ${pct(R.lineRaw.L2.OEE,2)} em vez de ${pct(R.line.L2.OEE,2)}.</p>`;
+  return out;
+}
+renderBuilder();
+
+/* ============ COT ============ */
+$('#cotA').onclick=async()=>{const gen=++runGen; await typeHTML($('#cotOut'),'<p>Cerca de <b>27.000 unidades boas</b>.</p><span class="verdict no">✗ Errado: usou os 480 min e esqueceu a parada</span>',gen,30);};
+$('#cotB').onclick=async()=>{const gen=++runGen; const o=$('#cotOut'); o.innerHTML='<p class="small muted">Premissas: roda na velocidade nominal quando ligada; refugo sobre o produzido.</p><ol class="cot-steps" id="cotList"></ol>';
+  const st=['Tempo rodando: 480 − 120 = <b>360 min</b>','Produção: 360 × 60 = <b>21.600 un</b>','Refugo: 6% de 21.600 = <b>1.296 un</b>','Boas: 21.600 − 1.296 = <b>20.304 un</b>'];
+  for(let i=0;i<st.length;i++){await sleep(650); if(gen!==runGen)return; $('#cotList').insertAdjacentHTML('beforeend',`<li><span class="n">${i+1}</span><span>${st[i]}</span></li>`);}
+  await sleep(400); if(gen===runGen)o.insertAdjacentHTML('beforeend','<span class="verdict ok">✓ Certo: 20.304 unidades boas</span>');};
+
+/* ============ OEE CONCEITO ============ */
+let oeeG='L1';
+function oeeRender(){
+  const m=R.mins[oeeG]; const segs=[['good',m.good,'var(--fg)','var(--bg)','Produto bom'],['par',m.par,'var(--c1)','var(--bg)','Parada'],['perf',m.perf,'var(--c2)','var(--fg)','Lentidão'],['ref',m.refm,'var(--bad)','#fff','Refugo']];
+  const bar=$('#oeeBar'); if(!bar.children.length) bar.innerHTML=segs.map(s=>`<div data-k="${s[0]}" style="background:${s[2]};color:${s[3]}"></div>`).join('');
+  segs.forEach(s=>{const d=$(`[data-k="${s[0]}"]`,bar); d.style.flexBasis=(s[1]/480*100)+'%'; d.textContent=s[1]>=40?`${s[4]} · ${num(s[1])} min`:(s[1]>=14?num(s[1]):''); d.dataset.tip=`${s[4]}: ${dec(s[1])} min por turno, em média`;});
+  $('#oeeFormula').innerHTML=`<div class="f"><b>${pct(m.D,0)}</b><span>Disponibilidade</span></div><span class="op">×</span><div class="f"><b>${pct(m.P,0)}</b><span>Performance</span></div><span class="op">×</span><div class="f"><b>${pct(m.Q,0)}</b><span>Qualidade</span></div><span class="op">=</span><div class="f res"><b>${pct(m.OEE,0)}</b><span>OEE</span></div>`;
+  $$('#oeeSel .pill').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.g===oeeG)));
+}
+$('#oeeSel').addEventListener('click',e=>{const b=e.target.closest('.pill'); if(b){oeeG=b.dataset.g; oeeRender();}});
+oeeRender();
+
+/* ============ ARMADILHA ============ */
+(function(){const days=[...new Set(R.clean.map(r=>r.data))]; let h='',i=0;
+  LINES.forEach(l=>TURNOS.forEach(t=>{const hl=l==='L2'&&t==='Noite'; h+=`<span class="rl${hl?' hl':''}">${l} · ${t}</span>`; days.forEach(d=>{const r=R.clean.find(x=>x.linha===l&&x.turno===t&&x.data===d); const on=r&&r.n_setups>=2; h+=`<span class="dt${on?' on':''}" style="--i:${on?i++:0}" data-tip="${d.slice(8)}/${d.slice(5,7)} · ${l} · ${t}: ${r?r.n_setups:0} troca(s)"></span>`;});}));
+  $('#dots9').innerHTML=h; $('#spn1').textContent=num(R.shift.Noite.spn)+' min'; $('#spn0').textContent=num(R.spnOthers)+' min';})();
+
+/* ============ DEBATE ============ */
+$('#qs').addEventListener('click',e=>{const b=e.target.closest('.qq'); if(!b)return; const on=b.getAttribute('aria-expanded')!=='true'; b.setAttribute('aria-expanded',on); $('.more',b).textContent=on?'clique para esconder':'clique para ver o que os dados dizem';});
+
+/* ============ ELOS (chat) ============ */
+const ELOS=[
+ {t:'Entender a base',q:'Os dados estão certos?',tec:'Papel + regra "não calcule ainda"',
+  concept:'Dado sujo gera conta errada com cara de certa. Antes de calcular, conferimos: o número de linhas bate? Há repetidas? Campos vazios? Aqui deveriam ser 90 turnos (10 dias × 3 linhas × 3 turnos).',
+  prompt:'Você é engenheiro de produção sênior. Vou colar uma base de produção logo abaixo. Descreva cada coluna, aponte dados faltantes, linhas duplicadas e valores suspeitos. Ainda não calcule nada.',attach:true,
+  check:'Procure a data 09/10 na base: a linha da L2, Tarde, aparece duas vezes?',render:renderE1},
+ {t:'Medir o OEE',q:'Qual linha rende menos?',tec:'Objetivo com a fórmula explícita',
+  concept:'OEE = Disponibilidade × Performance × Qualidade. Dar a fórmula no prompt evita que a IA invente a própria definição.',
+  prompt:'Remova a linha duplicada. Calcule o OEE por linha: Disponibilidade = tempo operando ÷ tempo planejado; Performance = produzido ÷ (tempo operando × velocidade nominal); Qualidade = (produzido − refugo) ÷ produzido. Mostre uma tabela com os três fatores e o OEE.',
+  check:'',render:renderE2},
+ {t:'Priorizar com Pareto',q:'Qual parada pesa mais na L2?',tec:'Objetivo focado em uma pergunta',
+  concept:'Pareto: ordenar as causas da maior para a menor. Normalmente poucas causas explicam quase toda a perda (regra 80/20). É onde agir primeiro.',
+  prompt:'Some os minutos parados da L2 por motivo e faça um Pareto, do maior para o menor, com % e % acumulado. Qual motivo responde pela maior parte da perda? Compare o setup da L2 com o das outras linhas.',
+  check:'Some a coluna de setup só da L2 e compare com o total do Pareto.',render:renderE3},
+ {t:'Investigar a causa',q:'A perda é igual em todos os turnos?',tec:'Decomposição: abrir por outra dimensão',
+  concept:'Média esconde padrão. Abrimos o mesmo indicador por turno para ver onde a perda realmente acontece.',
+  prompt:'Abra o OEE de cada linha por turno. Para a L2, compare número de setups, tempo médio por setup, minutos de ajuste e % de refugo entre os turnos. Existe um padrão que não aparecia olhando a linha inteira?',
+  check:'A "noite ruim" aparece em todos os 10 dias ou só em alguns?',render:renderE4},
+ {t:'Quantificar em reais',q:'Quanto isso custa por ano?',tec:'Regras com premissas explícitas',
+  concept:'Valor em risco = (produção que deixou de acontecer × margem) + (refugo extra × custo do refugo), por ano. Dar as premissas impede a IA de inventar preços.',
+  prompt:'Se o turno da noite da L2 produzisse tanto quanto a média dos turnos de dia da L2, quantas unidades boas a mais teríamos por turno? Com margem de R$ 0,40/un, refugo a R$ 1,50/un e 250 dias/ano, quanto a empresa perde por ano? Separe perda por produção e por refugo. Mostre as contas.',
+  check:'Refaça na calculadora: diferença por turno × 0,40 × 250.',render:renderE5},
+ {t:'Simular o projeto',q:'Vale a pena investir?',tec:'Cadeia de pensamento + saída estruturada',
+  concept:'Monte Carlo: em vez de apostar em um número, sorteamos 20.000 combinações plausíveis das premissas e olhamos a faixa. Payback: em quantos meses o dinheiro volta. VPL: quanto o projeto vale hoje.',
+  prompt:'Simule um projeto de SMED, kit de troca rápida e treinamento na noite da L2, com investimento de R$ 190 mil. Use Monte Carlo com 20.000 cenários variando redução do setup, redução do refugo e margem. Liste as premissas antes. Entregue P5, P50 e P95 do ganho anual, payback e VPL de 3 anos a 12% a.a., em tabela.',
+  check:'Pergunte: quais premissas mais mexem no resultado? Teste o pior caso nos controles.',render:renderE6},
+ {t:'Decidir e comunicar',q:'O que dizer ao CFO?',tec:'Papel + output (pirâmide de Minto)',
+  concept:'Memorando no formato pirâmide de Minto: a recomendação vem na primeira linha, depois os argumentos com números, depois o próximo passo. Quem lê decide sem precisar chegar ao fim.',
+  prompt:'Com base em toda a análise desta conversa, escreva um memorando de uma página para o CFO no formato pirâmide de Minto: recomendação primeiro, depois 3 argumentos com números, depois o próximo passo. Não invente números.',
+  check:'Confira cada número do memorando com os elos anteriores.',render:renderE7}
+];
+const validated=new Set();
+function dots(k){return ELOS.map((_,i)=>`<i class="${validated.has(i)?'d':i===k?'c':''}"></i>`).join('');}
+function buildElo(el){
+  const k=+el.dataset.step, E=ELOS[k]; const ex=R.raw[0];
+  const chk=E.check||`Refaça uma linha na calculadora: 05/10 · L1 · Manhã → ${num(ex.boas)} ÷ (480 × 50) = ${pct(ex.oee)}.`;
+  el.innerHTML=`<aside>
+      <div class="dots7" aria-hidden="true">${dots(k)}</div>
+      <span class="badge">Elo ${k+1} de 7</span>
+      <h2 style="font-size:clamp(1.7rem,2.6vw,2.3rem)">${E.t}</h2>
+      <p class="lead" style="font-size:1.1rem">${E.q}</p>
+      <div class="concept"><span class="k">Conceito em 30 segundos</span><p>${E.concept}</p></div>
+      <p class="tech">Técnica de prompt: <b>${E.tec}</b></p>
+      <div class="checkbox"><span class="k">Checagem do engenheiro</span><p class="small">${chk}</p><button class="vbtn" aria-pressed="${validated.has(k)}">${validated.has(k)?'✓ Validado':'Marcar como validado'}</button></div>
+      <span class="guide">Guia · <b>Módulo 6 · Elo ${k+1}</b></span>
+    </aside>
+    <div class="chat">
+      <div class="chat-h"><b>Copiloto</b><span>conversa do experimento</span></div>
+      <div class="chat-b"><div class="empty"><b>Elo ${k+1}</b><span>Pressione Enter ou clique na seta para enviar.</span></div></div>
+      <div class="chat-f"><div class="composer"><span class="tx"></span><button class="send" aria-label="Enviar prompt">↑</button></div></div>
+    </div>`;
+  el.dataset.state='idle';
+  $('.composer .tx',el).textContent=E.prompt;
+  $('.send',el).onclick=()=>runElo(el);
+  $('.vbtn',el).onclick=e=>{const b=e.currentTarget; if(validated.has(k))validated.delete(k); else validated.add(k); b.setAttribute('aria-pressed',validated.has(k)); b.textContent=validated.has(k)?'✓ Validado':'Marcar como validado'; $('.dots7',el).innerHTML=dots(k);};
+}
+$$('.elo').forEach(buildElo);
+async function enterElo(el){
+  const k=+el.dataset.step; $('.dots7',el).innerHTML=dots(k);
+  if(el.dataset.state==='running'){el.dataset.state='idle'; $('.chat-b',el).innerHTML='<div class="empty"><b>Interrompido</b><span>Pressione Enter para enviar de novo.</span></div>'; $('.chat-f',el).hidden=false; $('.composer .tx',el).textContent=ELOS[k].prompt;}
+  if(el.dataset.state!=='idle'||el.dataset.typed)return;
+  const tx=$('.composer .tx',el); const gen=runGen; tx.textContent=''; await sleep(400); const ok=await typeChars(tx,ELOS[k].prompt,gen,8,3); if(ok)el.dataset.typed=1; else tx.textContent=ELOS[k].prompt;
+}
+async function runElo(el){
+  if(el.dataset.state!=='idle')return; const gen=runGen; const k=+el.dataset.step, E=ELOS[k];
+  el.dataset.state='running'; el.dataset.typed=1;
+  const body=$('.chat-b',el); $('.chat-f',el).hidden=true;
+  body.innerHTML=(E.attach?`<span class="att">producao.csv · ${R.raw.length} linhas</span>`:'')+`<div class="bub">${esc(E.prompt)}</div><div class="ai"><span class="av">IA</span><div class="ai-c"><div class="think"><i></i><i></i><i></i><span>&nbsp;analisando ${R.raw.length} registros</span></div></div></div>`;
+  const out=$('.ai-c',body); await sleep(1100); if(gen!==runGen)return;
+  const r=E.render(); out.innerHTML='';
+  const lead=document.createElement('p'); out.append(lead);
+  if(!await typeHTML(lead,r.lead,gen,14,body))return;
+  const viz=document.createElement('div'); viz.className='viz'; viz.innerHTML=r.viz; out.append(viz);
+  await sleep(60); r.after&&r.after(viz); body.scrollTop=body.scrollHeight; await sleep(r.wait||700); if(gen!==runGen)return;
+  const sm=document.createElement('p'); sm.className='sum'; out.append(sm);
+  if(!await typeHTML(sm,typeof r.summary==='function'?r.summary():r.summary,gen,14,body))return;
+  body.scrollTop=body.scrollHeight; el.dataset.state='done';
+}
+
+function renderE1(){
+  const d=R.dups[0], m=R.missing[0]; const ids=[m._i-1,m._i,m._i+1,null,d.first-1,d.first,d.second,d.second+1];
+  const cols=[['data','Data'],['linha','Linha'],['turno','Turno'],['operador','Operador'],['parada_setup_min','Setup'],['qtd_produzida','Produzida'],['qtd_refugo','Refugo']];
+  const body=ids.map(i=>{if(i===null)return `<tr class="gap"><td colspan="${cols.length}">⋯</td></tr>`; const r=R.raw[i]; const isDup=i===d.first||i===d.second;
+    return `<tr class="${isDup?'dup':''}">${cols.map(([k],ci)=>{const v=r[k]; const miss=k==='operador'&&v===''; const txt=miss?'vazio':(typeof v==='number'?num(v):esc(k==='data'?v.slice(8)+'/'+v.slice(5,7):v)); return `<td class="${ci<4?'tl':''}${miss?' miss':''}">${txt}${ci===2&&isDup?'<span class="tag2">repetida</span>':''}</td>`;}).join('')}</tr>`;}).join('');
+  return {lead:`Recebi <b>${R.raw.length} registros</b> com 14 colunas: 10 dias (05 a 16/10), 3 linhas e 3 turnos. Cada registro é um turno de 480 minutos.`,
+    viz:`<div class="row" style="margin-bottom:.7rem"><div class="stat"><span class="v">${R.raw.length}</span><span class="l">registros recebidos</span></div><div class="stat"><span class="v">90</span><span class="l">esperados</span></div><div class="stat bad"><span class="v">${R.dups.length}</span><span class="l">linha repetida</span></div><div class="stat bad"><span class="v">${R.missing.length}</span><span class="l">campo vazio</span></div></div><div class="tbl"><table><thead><tr>${cols.map(([,l],ci)=>`<th class="${ci<4?'tl':''}">${l}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>`,
+    summary:`Encontrei dois problemas: <b>(1)</b> o registro de 09/10 · L2 · Tarde aparece duas vezes, o que infla a produção desse turno; <b>(2)</b> o operador está vazio em 06/10 · L2 · Tarde. Recomendo remover a linha repetida antes de calcular.`};
+}
+function renderE2(){
+  const rows=LINES.map(l=>{const k=R.line[l]; const c=l==='L2'?'var(--fg)':'var(--other)'; return `<div class="hrow"><span class="nm">${l}</span><div class="tr"><div class="bf" data-w="${(k.OEE*100).toFixed(2)}" style="background:${c}" data-tip="${l}: ${pct(k.D)} × ${pct(k.P)} × ${pct(k.Q)} = ${pct(k.OEE)}"></div></div><span class="vv">${pct(k.OEE)}</span><div class="sub"><span>Disponib. ${pct(k.D)}</span><span>Perform. ${pct(k.P)}</span><span>Qualid. ${pct(k.Q)}</span></div></div>`;}).join('');
+  return {lead:`Removi a linha repetida (${R.clean.length} turnos válidos) e calculei <b>OEE = Disponibilidade × Performance × Qualidade</b> por linha.`,
+    viz:`<div class="hbars">${rows}<div class="axis"><span></span><div><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div><span></span></div></div>`,
+    after:v=>$$('.bf',v).forEach(b=>requestAnimationFrame(()=>b.style.width=b.dataset.w+'%')),wait:1100,
+    summary:`A L2 tem o pior OEE: <b>${pct(R.line.L2.OEE)}</b>, contra ${pct(R.line.L1.OEE)} da L1 e ${pct(R.line.L3.OEE)} da L3. A maior diferença está na <b>Disponibilidade</b> (${pct(R.line.L2.D)} contra ${pct(R.line.L1.D)}): a L2 fica mais tempo parada.`};
+}
+function renderE3(){
+  const P=R.pareto; const W=620,H=250,ml=44,mr=16,mt=20,mb=40; const iw=W-ml-mr, ih=H-mt-mb; const bw=iw/P.length; const y=v=>mt+ih*(1-v);
+  let g=''; [0,.25,.5,.75,1].forEach(t=>{g+=`<line x1="${ml}" x2="${W-mr}" y1="${y(t)}" y2="${y(t)}" style="stroke:var(--line)"/><text x="${ml-8}" y="${y(t)+4}" text-anchor="end" font-size="11" style="fill:var(--faint)">${t*100}%</text>`;});
+  const bars=P.map((p,i)=>{const x=ml+i*bw+bw*.2, w=bw*.6, hh=ih*p.pct; return `<g data-tip="${p.n}: ${num(p.min)} min (${pct(p.pct,0)} do tempo parado)"><rect class="pb" x="${x}" y="${y(0)}" width="${w}" height="0" data-y="${y(p.pct)}" data-h="${hh}" rx="6" style="fill:${i===0?'var(--fg)':'var(--other)'}"/><rect x="${x}" y="${mt}" width="${w}" height="${ih}" fill="transparent"/><text x="${x+w/2}" y="${y(p.pct)-8}" text-anchor="middle" font-size="12" style="fill:var(--fg)">${num(p.min)} min</text><text x="${x+w/2}" y="${H-mb+20}" text-anchor="middle" font-size="12" style="fill:var(--muted)">${p.n}</text></g>`;}).join('');
+  const pts=P.map((p,i)=>[ml+i*bw+bw/2,y(p.cum)]);
+  const line=`<polyline class="cum" points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" style="stroke:var(--bad);stroke-width:2;stroke-dasharray:1000;stroke-dashoffset:1000;transition:stroke-dashoffset 1.2s ease .5s"/>`+pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="4.5" style="fill:var(--bad);stroke:var(--bg);stroke-width:2" data-tip="Acumulado: ${pct(P[i].cum,0)}"/>`).join('');
+  const s=R.setupBy;
+  return {lead:`Somei os <b>${num(R.totPar)} minutos parados</b> da L2 nas duas semanas, por motivo, do maior para o menor.`,
+    viz:`<div class="legend" style="margin-bottom:.5rem"><span><i style="background:var(--fg)"></i>% do tempo parado</span><span><i class="ln" style="background:var(--bad)"></i>% acumulado</span></div><div class="svgbox"><svg viewBox="0 0 ${W} ${H}">${g}${bars}${line}</svg></div><div class="row" style="margin-top:.7rem"><div class="stat"><span class="v">${num(s.L1)}</span><span class="l">min de setup · L1</span></div><div class="stat dark"><span class="v">${num(s.L2)}</span><span class="l">min de setup · L2</span></div><div class="stat"><span class="v">${num(s.L3)}</span><span class="l">min de setup · L3</span></div></div>`,
+    after:v=>{$$('.pb',v).forEach(b=>{b.style.transition='all .9s cubic-bezier(.2,.7,.2,1)'; requestAnimationFrame(()=>{b.setAttribute('y',b.dataset.y);b.setAttribute('height',b.dataset.h);});}); const c=$('.cum',v); requestAnimationFrame(()=>c.style.strokeDashoffset='0');},wait:1300,
+    summary:`<b>Setup</b> responde por ${pct(P[0].pct,0)} do tempo parado da L2, e o setup da L2 é <b>${dec(s.L2/s.L1)} vezes</b> o da L1. Pergunta para o próximo elo: por que a máquina mais nova faz trocas tão longas?`};
+}
+function renderE4(){
+  let cells=`<div></div>${TURNOS.map(t=>`<div class="h">${t}</div>`).join('')}`; let i=0;
+  LINES.forEach(l=>{cells+=`<div class="h r">${l}</div>`; TURNOS.forEach(t=>{const k=R.cell[l+t]; const crit=k.OEE<.65; cells+=`<div class="cell${crit?' crit':''}" style="--i:${i++}" data-tip="${l} · ${t}: OEE ${pct(k.OEE)} · ${k.nset} trocas em 10 turnos"><span class="v">${pct(k.OEE,0)}</span><span class="s">${crit?'⚠ crítico':'OEE'}</span></div>`;});});
+  const sh=R.shift; const rows=TURNOS.map(t=>{const k=sh[t]; return `<tr${t==='Noite'?' class="crit"':''}><td>${t}</td><td>${pct(k.OEE)}</td><td>${k.nset}</td><td>${num(k.spn)} min</td><td>${dec(k.aj)} min</td><td>${pct(k.refp)}</td></tr>`;}).join('');
+  return {lead:`Abri o OEE de cada linha por turno e, para a L2, cruzei com trocas, ajustes e refugo.`,
+    viz:`<div class="heat" style="max-width:30rem">${cells}</div><div class="tbl" style="margin-top:.8rem"><table><thead><tr><th>L2 · turno</th><th>OEE</th><th>Trocas</th><th>Min/troca</th><th>Ajustes</th><th>Refugo</th></tr></thead><tbody>${rows}</tbody></table></div>`,
+    after:v=>$('.heat',v).classList.add('show'),wait:1400,
+    summary:`<b>A L2 não é ruim; o turno da noite da L2 é.</b> De dia ela roda com OEE de ${pct(R.dayK.OEE,0)}, igual às outras. À noite concentra ${sh.Noite.nset} das ${R.line.L2.nset} trocas, cada troca leva ${num(sh.Noite.spn)} min (contra ${num(R.dayK.spn)}) e o refugo sobe para ${pct(sh.Noite.refp)}.`};
+}
+function renderE5(){
+  const tot=R.lossMargin+R.lossRef, f1=R.lossMargin/tot;
+  return {lead:`Comparei a noite da L2 com a média dos turnos de dia da própria L2: <b>${num(R.diffGood)} unidades boas a menos</b> e <b>${num(R.diffRef)} refugos a mais</b> por turno.`,
+    viz:`<div style="display:flex;flex-direction:column;gap:.9rem"><div><span class="small muted">Valor em risco por ano</span><div class="bigmoney" id="bm">R$ 0</div></div>
+      <div class="splitbar"><div style="background:var(--fg);color:var(--bg)" data-w="${(f1*100).toFixed(1)}">Produção perdida</div><div style="background:var(--bad);color:#fff" data-w="${((1-f1)*100).toFixed(1)}">Refugo</div></div>
+      <div class="row"><div class="stat"><span class="v" id="m1">R$ 0</span><span class="l">${num(R.diffGood)} un × R$ 0,40 × 250 dias</span></div><div class="stat"><span class="v" id="m2">R$ 0</span><span class="l">${num(R.diffRef)} un × R$ 1,50 × 250 dias</span></div></div></div>`,
+    after:v=>{countUp($('#bm',v),tot,brlm,1800); countUp($('#m1',v),R.lossMargin,brlk); countUp($('#m2',v),R.lossRef,brlk); $$('.splitbar div',v).forEach(d=>requestAnimationFrame(()=>d.style.width=d.dataset.w+'%'));},wait:1800,
+    summary:`Cerca de <b>${brlm(tot)} por ano</b> em risco, concentrado em um único turno de uma única linha. ${pct(f1,0)} vem de produção que deixa de acontecer.`};
+}
+function mcSummary(){return `Em <b>${pct(MC.pay12,0)}</b> dos cenários o projeto se paga em até 12 meses. Ganho provável de <b>${brlk(MC.p50)} por ano</b> (entre ${brlk(MC.p5)} e ${brlk(MC.p95)}). O OEE da noite iria de ${pct(R.shift.Noite.OEE,0)} para ${pct(oeeAfter(R.night,mcState.red,mcState.rr),0)}.`;}
+function renderE6(){
+  return {lead:`Premissas: o setup cai entre ${pct(mcState.red-.15,0)} e ${pct(mcState.red+.15,0)} (mais provável ${pct(mcState.red,0)}); o refugo cai entre ${pct(mcState.rr-.2,0)} e ${pct(mcState.rr+.2,0)}; margem entre R$ 0,35 e R$ 0,45. Sorteei <b>20.000 combinações</b> e calculei o ganho de cada uma.`,
+    viz:`<div class="mc"><div class="ctrls">
+      <label for="mcRed">Redução do setup <b id="mcRedV"></b></label><input type="range" id="mcRed" min="0.2" max="0.6" step="0.05" value="${mcState.red}">
+      <label for="mcRr">Redução do refugo <b id="mcRrV"></b></label><input type="range" id="mcRr" min="0.2" max="0.8" step="0.05" value="${mcState.rr}">
+      <label for="mcInv">Investimento <b id="mcInvV"></b></label><input type="range" id="mcInv" min="100000" max="600000" step="10000" value="${mcState.inv}">
+      <label for="mcRate">Taxa de desconto <b id="mcRateV"></b></label><input type="range" id="mcRate" min="0.08" max="0.2" step="0.01" value="${mcState.rate}">
+    </div><div style="display:flex;flex-direction:column;gap:.7rem;min-width:0"><div class="row" id="mcStats"></div>
+      <div class="legend"><span><i style="background:var(--other)"></i>Nº de cenários por faixa de ganho anual</span><span><i class="ln" style="background:var(--fg)"></i>Pessimista · provável · otimista</span></div>
+      <div class="svgbox" id="mcHist"></div></div></div>`,
+    after:v=>{$$('input',v).forEach(inp=>inp.addEventListener('input',()=>{mcState={red:+$('#mcRed').value,rr:+$('#mcRr').value,inv:+$('#mcInv').value,rate:+$('#mcRate').value}; drawMC(false); const sm=v.parentElement.querySelector('.sum'); if(sm)sm.innerHTML=mcSummary();})); drawMC(true);},wait:1300,
+    summary:()=>mcSummary()};
+}
+function drawMC(anim){
+  const o={...mcState}; MC=monteCarlo(R.nightBase,o);
+  $('#mcRedV').textContent=pct(o.red,0); $('#mcRrV').textContent=pct(o.rr,0); $('#mcInvV').textContent=brlk(o.inv); $('#mcRateV').textContent=pct(o.rate,0)+' a.a.';
+  $('#mcStats').innerHTML=`<div class="stat dark"><span class="v">${brlk(MC.p50)}</span><span class="l">ganho anual provável</span></div><div class="stat"><span class="v">${dec(MC.pb50)} meses</span><span class="l">payback</span></div><div class="stat"><span class="v">${brlk(MC.npv50)}</span><span class="l">VPL em 3 anos</span></div><div class="stat ${MC.pay12>=.9?'good':MC.pay12>=.5?'':'bad'}"><span class="v">${pct(MC.pay12,0)}</span><span class="l">${MC.pay12>=.9?'✓':'⚠'} chance de pagar em 12 meses</span></div>`;
+  const B=32, lo=MC.min, hi=MC.max, bw0=(hi-lo)/B; const bins=new Array(B).fill(0); MC.s.forEach(x=>bins[Math.min(B-1,Math.floor((x-lo)/bw0))]++);
+  const W=640,H=220,ml=20,mr=20,mt=26,mb=32, iw=W-ml-mr, ih=H-mt-mb, mx=Math.max(...bins); const X=v=>ml+(v-lo)/(hi-lo)*iw; const bw=iw/B;
+  let s=`<line x1="${ml}" x2="${W-mr}" y1="${mt+ih}" y2="${mt+ih}" style="stroke:var(--line)"/>`;
+  bins.forEach((c,i)=>{const h=ih*c/mx; const x=ml+i*bw; s+=`<g data-tip="${brlk(lo+i*bw0)} a ${brlk(lo+(i+1)*bw0)}: ${num(c)} cenários"><rect class="hb" x="${x+1}" y="${mt+ih-h}" width="${Math.max(1,bw-2)}" height="${h}" rx="3" style="fill:var(--other);${anim&&!RM?`transform-origin:${x}px ${mt+ih}px;transform:scaleY(0);transition:transform .7s cubic-bezier(.2,.7,.2,1) ${i*18}ms`:''}"/><rect x="${x}" y="${mt}" width="${bw}" height="${ih}" fill="transparent"/></g>`;});
+  [[MC.p5,'Pessimista','end'],[MC.p50,'Provável','middle'],[MC.p95,'Otimista','start']].forEach(([v,l,a])=>{const x=X(v); s+=`<line x1="${x}" x2="${x}" y1="${mt-4}" y2="${mt+ih}" style="stroke:var(--fg);stroke-width:1.5;stroke-dasharray:4 3"/><text x="${x+(a==='end'?-4:a==='start'?4:0)}" y="${mt-10}" text-anchor="${a}" font-size="11" style="fill:var(--fg)">${l} ${brlk(v)}</text>`;});
+  for(let v=Math.ceil(lo/50000)*50000; v<=hi; v+=50000) s+=`<text x="${X(v)}" y="${H-10}" text-anchor="middle" font-size="11" style="fill:var(--faint)">${num(v/1000)} mil</text>`;
+  $('#mcHist').innerHTML=`<svg viewBox="0 0 ${W} ${H}">${s}</svg>`;
+  if(anim&&!RM) requestAnimationFrame(()=>requestAnimationFrame(()=>$$('#mcHist .hb').forEach(r=>r.style.transform='scaleY(1)')));
+}
+function renderE7(){
+  const tot=R.lossMargin+R.lossRef; if(!MC)MC=monteCarlo(R.nightBase,mcState);
+  return {lead:`Escrevi o memorando no formato <b>pirâmide de Minto</b>: recomendação primeiro, argumentos com números, próximo passo no fim.`,
+    viz:`<div class="memo"><div class="mh"><span>Para</span><span>Ricardo Albuquerque, CFO</span><span>De</span><span>Mariana Couto, Gerente Industrial</span><span>Assunto</span><span>Linha 2: recomendação</span></div>
+      <h4>Recomendação: manter a L2 e investir ${brlk(mcState.inv)} em padronização de setup no turno da noite.</h4>
+      <ol><li style="--i:0"><b>A L2 não tem problema de máquina.</b> De dia, opera com OEE de ${pct(R.dayK.OEE,0)}, no nível das linhas antigas, e produz mais por ser mais rápida.</li>
+      <li style="--i:1"><b>A perda está na noite</b> (OEE de ${pct(R.shift.Noite.OEE,0)}) e custa cerca de ${brlm(tot)} por ano, por trocas que levam o dobro do tempo e refugo após as trocas.</li>
+      <li style="--i:2"><b>O investimento se paga em ${dec(MC.pb50)} meses</b> no cenário provável; em ${pct(MC.pay12,0)} dos 20.000 cenários simulados, em menos de 12 meses.</li>
+      <li style="--i:3"><b>Próximo passo:</b> experimento de 2 semanas redistribuindo trocas entre turnos, para confirmar a causa antes de qualquer decisão sobre pessoas.</li></ol></div>`,
+    after:v=>$('.memo',v).classList.add('show'),wait:1700,
+    summary:`Pronto para sexta-feira. Sete prompts, sete checagens e uma decisão com número.`};
+}
+
+/* ============ SIMULAÇÃO DA FÁBRICA ============ */
+const SIM_T=['Manhã','Tarde','Noite'];
+function rpath(c,x,y,w,h,r){c.beginPath(); if(c.roundRect)c.roundRect(x,y,w,h,r); else c.rect(x,y,w,h);}
+class FactorySim{
+  constructor(root,cause,warmTo){
+    this.root=root; this.cause=cause; this.speed=1; this.playing=!RM; this.raf=null; this.lastHud=0;
+    root.innerHTML=`<div class="sim">
+      <div class="sim-stage">
+        <div class="sim-top"><div class="clock"><b class="ck">06:00</b><span class="ckd">Dia 1 · Manhã</span></div><div class="tline"><div>Manhã<span class="hr"> · 06–14h</span></div><div>Tarde<span class="hr"> · 14–22h</span></div><div>Noite<span class="hr"> · 22–06h</span></div><i></i></div></div>
+        <canvas aria-label="Simulação animada das três linhas de envase ao longo dos turnos"></canvas>
+        <div class="sim-ctl">
+          <button class="btn sm-play">${this.playing?'Pausar':'Iniciar'}</button>
+          <div class="sp" role="group" aria-label="Velocidade"><button data-v="1" aria-pressed="true">1x</button><button data-v="2" aria-pressed="false">2x</button><button data-v="4" aria-pressed="false">4x</button></div>
+          <button class="btn ghost sm-night">Ir para a noite</button>
+          <button class="pill sm-cause" aria-pressed="false">Mostrar a causa</button>
+          <div class="legend"><span><i style="background:var(--good);border-radius:50%"></i>rodando</span><span><i style="background:var(--warn);border-radius:50%"></i>ajuste</span><span><i style="background:var(--bad);border-radius:50%"></i>parada ou troca</span><span><i style="background:var(--bad)"></i>garrafa com defeito</span></div>
+        </div>
+      </div>
+      <div class="side sym">
+        <div class="card line"><span class="k">OEE acumulado na simulação</span>
+          ${['L1','L2','L3'].map((l,i)=>`<div class="kline${i===1?' l2':''}"><b>${l}</b><div class="tr"><i></i></div><b class="kv">—</b></div>`).join('')}
+        </div>
+        <div class="card"><span class="k">Como ler a fábrica</span><p class="small">Cada faixa é uma linha de envase. A garrafa entra vazia, é <b>enchida</b>, <b>tampada</b>, <b>rotulada</b> e passa pela <b>câmera de inspeção</b>. Defeito cai na caixa de refugo; produto bom vai para o palete.</p><p class="small muted">A torre de luz mostra o estado: verde rodando, amarelo em ajuste, vermelho parada ou em troca de formato.</p></div>
+        <div class="card"><span class="k">A pergunta</span><p>A L2 é a mais rápida da fábrica. Por que entrega o pior OEE?</p><p class="small muted">Acompanhe a linha do meio passando pelos três turnos. O que muda à noite?</p></div>
+      </div>
+      <div class="side cau">
+        <span class="small muted">A cadeia da causa</span>
+        <div class="chainc">
+          <div class="cn"><span class="k">1 · Programação</span><b>Trocas concentradas na noite</b><span class="v"></span></div><span class="arrow">↓</span>
+          <div class="cn"><span class="k">2 · Método</span><b>Troca sem padrão leva o dobro</b><span class="v"></span></div><span class="arrow">↓</span>
+          <div class="cn"><span class="k">3 · Qualidade</span><b>Ajuste e refugo logo após a troca</b><span class="v"></span></div><span class="arrow">↓</span>
+          <div class="cn"><span class="k">4 · Resultado</span><b>OEE da noite despenca</b><span class="v"></span></div>
+        </div>
+      </div>
+    </div>`;
+    this.cv=$('canvas',root); this.ctx=this.cv.getContext('2d');
+    this.reset(); this.resize(); this.ff(warmTo);
+    if(cause){ let k=0; while(k++<4000 && !(this.shift===2 && this.lines[1].mode==='setup' && (this.t%480)-this.lines[1].cur.start>14)) this.step(1/60); }
+    this.bind(); this.resize(); this.setCause(cause);
+    addEventListener('resize',()=>{this.resize(); this.draw();});
+  }
+  reset(){
+    this.rnd=mulberry(42); this.t=0; this.shift=-1; this.items=[];
+    this.real=0; this.lines=['L1','L2','L3'].map((id,i)=>({id,i,vel:id==='L2'?60:50,mode:'run',until:0,post:0,prod:i,ev:[],spawn:0,belt:0,cur:null,st:{},vis:{ok:0,rej:0},opx:null,flash:-9}));
+    this.lines.forEach(l=>['all',...SIM_T].forEach(k=>l.st[k]={plan:0,good:0,ref:0,setups:0,setupMin:0}));
+  }
+  startShift(s){
+    this.lines.forEach(l=>{
+      const isN=l.id==='L2'&&s===2; const ev=[];
+      const n=isN?(this.rnd()<.4?3:2):(this.rnd()<.7?1:0);
+      for(let k=0;k<n;k++) ev.push({type:'setup',t:clamp((k+.5)*480/n+(this.rnd()-.5)*70,15,430),dur:isN?43+this.rnd()*5:19+this.rnd()*4,adj:isN?12:5});
+      if(this.rnd()<.5) ev.push({type:'stop',t:30+this.rnd()*410,dur:15,label:'quebra'});
+      if(this.rnd()<.35) ev.push({type:'stop',t:30+this.rnd()*410,dur:12,label:'falta de material'});
+      ev.sort((a,b)=>a.t-b.t); l.ev=ev; l.vis={ok:0,rej:0};
+      if(l.mode!=='run'){l.until-=480; if(l.cur)l.cur.start-=480;} l.post-=480;
+    });
+  }
+  step(dtR){
+    const dt=dtR*40*this.speed; this.t+=dt; this.real+=dtR; const tod=this.t%1440; const s=Math.floor(tod/480);
+    if(s!==this.shift){this.shift=s; this.startShift(s);}
+    const ts=tod%480, name=SIM_T[s];
+    this.lines.forEach(l=>{
+      const isN=l.id==='L2'&&s===2; const st=l.st[name], all=l.st.all;
+      if(l.mode==='run'&&l.ev.length&&ts>=l.ev[0].t){const e=l.ev.shift(); l.cur={...e,start:ts}; l.until=ts+e.dur; l.mode=e.type==='setup'?'setup':'stop'; if(e.type==='setup'){st.setups++; all.setups++; st.setupMin+=e.dur; all.setupMin+=e.dur;}}
+      if(l.mode!=='run'&&ts>=l.until){ if(l.mode==='setup'){l.mode='adj'; l.until=ts+l.cur.adj; l.prod=(l.prod+1)%3;} else { if(l.cur&&l.cur.type==='setup') l.post=ts+(isN?34:12); l.mode='run'; l.cur=null; } }
+      st.plan+=dt; all.plan+=dt;
+      if(l.mode==='run'){
+        const perf=isN?.82:.89, u=l.vel*perf*dt, inPost=ts<l.post, rr=inPost?(isN?.17:.03):.013;
+        st.good+=u*(1-rr); st.ref+=u*rr; all.good+=u*(1-rr); all.ref+=u*rr;
+        l.spawn+=u/(this.div||360); while(l.spawn>=1){l.spawn--; this.items.push({l:l.i,f:0,bad:this.rnd()<(inPost&&isN?.3:rr),shape:l.prod,y:0,vy:0,fall:false});}
+        l.belt+=l.vel/60/180*dt;
+      }
+    });
+    for(const it of this.items){ const l=this.lines[it.l];
+      if(it.fall){ it.vy+=dtR*420; it.y+=it.vy*dtR; }
+      else if(l.mode==='run'){ it.f+=l.vel/60/180*dt; if(it.bad&&it.f>=.68){it.fall=true; it.vy=-20; l.flash=this.real; l.vis.rej++;} } }
+    this.items=this.items.filter(it=>{ if(it.fall) return it.y<30; if(it.f>=1){this.lines[it.l].vis.ok++; return false;} return true; });
+  }
+  ff(target){ const sp=this.speed; this.speed=4; while(this.t<target) this.step(.05); this.speed=sp; }
+  resize(){ const r=this.cv.getBoundingClientRect(); const d=devicePixelRatio||1; this.w=r.width; this.h=r.height; this.cv.width=Math.max(1,Math.round(r.width*d)); { const nar=r.width<640, bl=r.width-(nar?62:108)-(nar?58:146)-(nar?36:66)-(nar?6:14); this.div=clamp(240000/Math.max(120,bl),300,1400); } this.cv.height=Math.max(1,Math.round(r.height*d)); this.ctx.setTransform(d,0,0,d,0,0); }
+  draw(){
+    const c=this.ctx, W=this.w, H=this.h; if(!W||!H)return;
+    const cs=getComputedStyle(document.documentElement), C=k=>cs.getPropertyValue(k).trim();
+    const fg=C('--fg'),bg=C('--bg'),mu=C('--muted'),fa=C('--faint'),ln=C('--line'),bad=C('--bad'),good=C('--good'),warn=C('--warn'),badS=C('--bad-soft'),night=C('--night'),c1=C('--c1'),c2=C('--c2');
+    const F=(w,sz)=>`${w} ${sz}px Geist, system-ui, -apple-system, "Segoe UI", sans-serif`;
+    const nar=W<640, R=this.real||0, tod=this.t%1440, s=this.shift, ts=tod%480, hour=(6+tod/60)%24;
+    c.clearRect(0,0,W,H); c.textAlign='left'; c.textBaseline='alphabetic';
+    if(s===2){c.fillStyle=night; c.fillRect(0,0,W,H);}
+    /* céu: sol de dia, lua e estrelas à noite */
+    const skyH=nar?42:52, isDay=hour>=6&&hour<18, pp=isDay?(hour-6)/12:((hour+6)%24)/12;
+    const ax=W*.08+pp*W*.78, ay=skyH-14-Math.sin(pp*Math.PI)*(skyH-28);
+    c.strokeStyle=fg; c.fillStyle=fg; c.lineWidth=1.4;
+    if(isDay){c.beginPath(); c.arc(ax,ay,5.5,0,7); c.stroke(); for(let a=0;a<8;a++){const an=a*Math.PI/4+R*.2; c.beginPath(); c.moveTo(ax+Math.cos(an)*8.5,ay+Math.sin(an)*8.5); c.lineTo(ax+Math.cos(an)*11.5,ay+Math.sin(an)*11.5); c.stroke();}}
+    else{c.save(); c.beginPath(); c.arc(ax,ay,7,0,7); c.clip(); c.beginPath(); c.rect(ax-9,ay-9,18,18); c.arc(ax+4,ay-3,6,0,7); c.fill('evenodd'); c.restore();
+      c.fillStyle=fa; [[.15,.35],[.3,.18],[.47,.42],[.63,.22],[.8,.38],[.9,.15]].forEach(([fx,fy],j)=>{c.globalAlpha=.5+.5*Math.abs(Math.sin(R*1.3+j)); c.beginPath(); c.arc(W*fx,skyH*fy+3,1.2,0,7); c.fill();}); c.globalAlpha=1;}
+    /* telhado em dente de serra e chaminé */
+    const ry=skyH; c.strokeStyle=fg; c.lineWidth=1.5; c.beginPath(); c.moveTo(8,ry);
+    const tooth=nar?34:52; let rx=8; while(rx+tooth<=W-64){c.lineTo(rx,ry-12); c.lineTo(rx+tooth,ry); rx+=tooth;} c.lineTo(W-8,ry); c.stroke();
+    const chx=W-44; c.beginPath(); c.moveTo(chx,ry); c.lineTo(chx,ry-28); c.lineTo(chx+11,ry-28); c.lineTo(chx+11,ry); c.stroke();
+    if(this.lines.some(l=>l.mode==='run')){c.strokeStyle=fa; c.lineWidth=1.2; for(let k2=0;k2<3;k2++){const ph=(R*.5+k2/3)%1; c.globalAlpha=1-ph; c.beginPath(); c.arc(chx+6+ph*12,ry-32-ph*14,2+ph*4,0,7); c.stroke();} c.globalAlpha=1;}
+    /* geometria */
+    const hdr=nar?8:22, ly0=ry+hdr, lh=(H-ly0-4)/3;
+    const xLab=nar?6:16, xA=nar?50:88, xS=nar?62:108, hudW=nar?58:146, palW=nar?36:66, xE=W-hudW-palW-(nar?6:14), bl=xE-xS;
+    const FX={fill:.17,cap:.33,lab:.49,insp:.65,bin:.71}, X=f=>xS+f*bl;
+    if(!nar){c.fillStyle=mu; c.font=F(500,10.5); c.textAlign='center';
+      [['Entrada',.03],['Enchedora',FX.fill],['Tampadora',FX.cap],['Rotuladora',FX.lab],['Inspeção',FX.insp]].forEach(([t,f])=>c.fillText(t,X(f),ry+15));
+      c.fillText('Expedição',xE+palW/2+5,ry+15); c.fillText('Painel',W-hudW/2,ry+15); c.textAlign='left';}
+    const bottle=(x,yb,type,level,capped,labeled,flag)=>{
+      const tall=type!==1, h=tall?(nar?14:17):(nar?10:12), w=nar?7:9, nh=tall?5:4, nw=w*.46, top=yb-h;
+      c.lineWidth=1.1; c.strokeStyle=flag?bad:fg; c.fillStyle=bg; rpath(c,x-w/2,top,w,h,2); c.fill();
+      if(level>0){const lv=(h-2)*level; c.fillStyle=flag?bad:(type===2?c1:c2); c.globalAlpha=flag?.45:1; c.fillRect(x-w/2+1,yb-1-lv,w-2,lv); c.globalAlpha=1;}
+      if(labeled){c.fillStyle=flag?bad:fg; c.fillRect(x-w/2,top+h*.36,w,h*.28);}
+      rpath(c,x-w/2,top,w,h,2); c.stroke();
+      c.beginPath(); c.moveTo(x-nw/2,top); c.lineTo(x-nw/2,top-nh); c.lineTo(x+nw/2,top-nh); c.lineTo(x+nw/2,top); c.stroke();
+      if(capped){c.fillStyle=flag?bad:fg; const ex=type===2?1.4:.6; c.fillRect(x-nw/2-ex,top-nh-2.6,nw+ex*2,2.6);}
+    };
+    this.lines.forEach((l,i)=>{
+      const y0=ly0+lh*i, yb=y0+lh*.72, isN=l.id==='L2'&&s===2, hl=this.cause&&isN, run=l.mode==='run', inSet=l.mode==='setup'||l.mode==='adj';
+      if(i>0){c.strokeStyle=ln; c.lineWidth=1; c.beginPath(); c.moveTo(8,y0); c.lineTo(W-8,y0); c.stroke();}
+      if(hl){c.fillStyle=badS; rpath(c,6,y0+3,W-12,lh-6,14); c.fill();}
+      /* nome da linha */
+      c.fillStyle=hl?bad:fg; c.font=F(600,nar?13:16); c.fillText(l.id,xLab,yb-16);
+      c.fillStyle=mu; c.font=F(400,nar?9.5:11); c.fillText(nar?`${l.vel}/min`:`${l.vel} un/min`,xLab,yb-1);
+      /* torre de luz (andon) */
+      const lamp=run?2:(l.mode==='adj'?1:0), blink=(l.mode==='setup'||l.mode==='stop')?Math.sin(R*7)>-.3:true;
+      c.strokeStyle=fg; c.lineWidth=1.2; c.beginPath(); c.moveTo(xA,yb-14); c.lineTo(xA,yb+14); c.stroke();
+      [bad,warn,good].forEach((col,j)=>{const yy=yb-40+j*9; c.beginPath(); c.arc(xA,yy,3.7,0,7); if(j===lamp&&blink){c.fillStyle=col; c.fill();} else {c.strokeStyle=ln; c.lineWidth=1.1; c.stroke();}});
+      /* operador */
+      const tgt=inSet?X(FX.fill)+(nar?18:26):X(.075); if(l.opx==null)l.opx=tgt; l.opx+=(tgt-l.opx)*.06;
+      const xo=l.opx; c.fillStyle=hl&&inSet?bad:fa; c.beginPath(); c.arc(xo,yb-45,4.3,0,7); c.fill(); rpath(c,xo-5.5,yb-39,11,13,4.5); c.fill();
+      if(inSet){const wa=Math.sin(R*6)*.6-.6; c.strokeStyle=hl?bad:fg; c.lineWidth=1.6; c.beginPath(); c.moveTo(xo-6,yb-33); c.lineTo(xo-6+Math.cos(wa)*-10,yb-33+Math.sin(wa)*10); c.stroke(); c.beginPath(); c.arc(xo-6+Math.cos(wa)*-11.5,yb-33+Math.sin(wa)*11.5,2.2,0,7); c.stroke();}
+      /* esteira com roletes */
+      c.strokeStyle=fg; c.lineWidth=1.6; c.beginPath(); c.moveTo(xS,yb); c.lineTo(xE,yb); c.stroke();
+      c.strokeStyle=ln; c.lineWidth=1; c.beginPath(); c.moveTo(xS,yb+7); c.lineTo(xE,yb+7); c.stroke();
+      const rs=13, off=((l.belt*bl)%rs+rs)%rs; c.strokeStyle=fa; c.lineWidth=1;
+      for(let x=xS+6;x<xE-3;x+=rs){c.beginPath(); c.arc(x,yb+3.5,2.1,0,7); c.stroke();}
+      c.beginPath(); for(let x=xS+rs-off;x<xE;x+=rs){c.moveTo(x,yb+1.6); c.lineTo(x-2.2,yb+5.4);} c.stroke();
+      c.strokeStyle=ln; c.lineWidth=1.2; c.beginPath(); for(const f of [.03,.35,.67,.97]){c.moveTo(X(f),yb+7); c.lineTo(X(f),yb+18);} c.stroke();
+      const bob=run?Math.max(0,Math.sin(R*9+i*1.7))*4:0;
+      c.lineWidth=1.4; c.strokeStyle=fg;
+      /* enchedora */
+      const xf=X(FX.fill); c.beginPath(); c.moveTo(xf,y0+6); c.lineTo(xf,yb-56); c.stroke();
+      c.fillStyle=bg; rpath(c,xf-17,yb-56,34,14,3); c.fill(); c.stroke();
+      c.beginPath(); c.moveTo(xf-6,yb-42); c.lineTo(xf-6,yb-31+bob); c.moveTo(xf+6,yb-42); c.lineTo(xf+6,yb-31+bob); c.stroke();
+      if(run&&bob>2){c.fillStyle=c2; c.fillRect(xf-7,yb-30+bob,2,3); c.fillRect(xf+5,yb-30+bob,2,3);}
+      /* tampadora */
+      const xc=X(FX.cap), ang=l.belt*70; c.beginPath(); c.moveTo(xc,yb-50); c.lineTo(xc,yb-32+bob*.6); c.stroke(); c.fillStyle=fg; rpath(c,xc-6,yb-32+bob*.6,12,4,1.5); c.fill();
+      c.fillStyle=bg; c.beginPath(); c.arc(xc,yb-52,5.5,0,7); c.fill(); c.stroke(); c.beginPath(); c.moveTo(xc,yb-52); c.lineTo(xc+Math.cos(ang)*5.5,yb-52+Math.sin(ang)*5.5); c.stroke();
+      /* rotuladora */
+      const xl=X(FX.lab), a2=l.belt*50; c.fillStyle=bg; c.beginPath(); c.arc(xl,yb-42,8,0,7); c.fill(); c.stroke(); c.beginPath(); c.arc(xl,yb-42,2.6,0,7); c.stroke();
+      c.beginPath(); c.moveTo(xl+Math.cos(a2)*2.6,yb-42+Math.sin(a2)*2.6); c.lineTo(xl+Math.cos(a2)*8,yb-42+Math.sin(a2)*8); c.stroke();
+      c.strokeStyle=fa; c.lineWidth=1; c.beginPath(); c.moveTo(xl+7.5,yb-39); c.lineTo(xl+4,yb-12); c.stroke();
+      /* inspeção (câmera) */
+      const xi=X(FX.insp), fl=(R-(l.flash??-9))<.45; c.lineWidth=1.4; c.strokeStyle=fl?bad:fg; c.fillStyle=fl?badS:bg; rpath(c,xi-10,yb-57,20,12,3); c.fill(); c.stroke();
+      c.beginPath(); c.arc(xi,yb-45,2.5,0,7); c.stroke();
+      c.setLineDash([2,3]); c.strokeStyle=fl?bad:fa; c.lineWidth=1.1; c.beginPath(); c.moveTo(xi-2,yb-43); c.lineTo(xi-9,yb-24); c.moveTo(xi+2,yb-43); c.lineTo(xi+9,yb-24); c.stroke(); c.setLineDash([]);
+      /* caixa de refugo */
+      const xb=X(FX.bin), lv=Math.min(1,(l.vis.rej||0)/22); c.strokeStyle=hl?bad:fg; c.lineWidth=1.3;
+      if(lv>0){c.fillStyle=bad; c.globalAlpha=.8; c.fillRect(xb-10.5,yb+36-14*lv,21,14*lv); c.globalAlpha=1;}
+      c.beginPath(); c.moveTo(xb-14,yb+20); c.lineTo(xb-11,yb+36); c.lineTo(xb+11,yb+36); c.lineTo(xb+14,yb+20); c.stroke();
+      if(!nar){c.fillStyle=mu; c.font=F(400,10); c.fillText(`refugo ${l.vis.rej||0}`,xb+18,yb+33);}
+      /* palete de expedição */
+      const px=xE+(nar?4:10), pw=palW-(nar?6:12); c.strokeStyle=fg; c.lineWidth=1.3; c.beginPath(); c.moveTo(px,yb+2); c.lineTo(px+pw,yb+2);
+      for(const q of [2,pw/2,pw-2]){c.moveTo(px+q,yb+2); c.lineTo(px+q,yb+7);} c.stroke();
+      const nb=Math.floor((l.vis.ok||0)/6)%13, bw2=(pw-1)/3, bh=nar?7:10; c.lineWidth=1;
+      for(let b=0;b<Math.min(nb,12);b++){const bx=px+.5+(b%3)*bw2, by=yb+1-bh*(1+Math.floor(b/3)); c.fillStyle=bg; c.strokeStyle=fg; rpath(c,bx,by,bw2-1.5,bh-1.5,1.5); c.fill(); c.stroke();}
+      /* garrafas */
+      for(const it of this.items){ if(it.l!==i)continue;
+        let x=X(it.f), yy=yb; const flag=it.fall||(it.bad&&it.f>=FX.insp);
+        if(it.fall){const x0=X(FX.insp+.03), q=Math.min(1,it.y/24); x=x0+(xb-x0)*q; yy=yb+it.y;}
+        bottle(x,yy,it.shape,it.f<FX.fill?0:(it.bad?.42:.84),it.f>=FX.cap,it.f>=FX.lab,flag);
+      }
+      /* estado: troca, ajuste, parada */
+      if(l.mode!=='run'&&l.cur){
+        const el=Math.max(0,ts-l.cur.start), txt=l.mode==='setup'?`troca de formato · ${Math.round(el)} min`:l.mode==='adj'?'ajuste após a troca':`parada · ${l.cur.label}`;
+        c.font=F(500,nar?11:12); const tw=c.measureText(txt).width+22, cx=X(.41), px2=Math.max(xS,cx-tw/2), py=y0+5;
+        c.fillStyle=hl?badS:bg; rpath(c,px2,py,tw,21,10.5); c.fill(); c.strokeStyle=hl?bad:fg; c.lineWidth=1; c.stroke();
+        c.fillStyle=hl?bad:fg; c.fillText(txt,px2+11,py+14.5);
+        if(l.mode==='setup'){const bw=nar?100:150, bx=px2+tw+10, by=py+8.5;
+          if(bx+bw<xE){c.fillStyle=ln; rpath(c,bx,by,bw,4,2); c.fill(); c.fillStyle=hl?bad:fg; rpath(c,bx,by,Math.min(bw,bw*el/50),4,2); c.fill();
+            if(this.cause){const mx=bx+bw*21/50; c.strokeStyle=mu; c.setLineDash([2,2]); c.beginPath(); c.moveTo(mx,by-5); c.lineTo(mx,by+9); c.stroke(); c.setLineDash([]); if(!nar){c.fillStyle=mu; c.font=F(400,10); c.fillText('padrão do dia: 21 min',mx-38,by+19);}}}}
+      }
+      if(hl&&run&&ts<l.post&&!nar){c.fillStyle=bad; c.font=F(600,11); c.fillText('refugo após a troca',xb+18,yb+20);}
+      /* painel de OEE */
+      const a=l.st.all, sh=l.st[SIM_T[s]], oee=a.plan?a.good/(a.plan*l.vel):0, oS=sh.plan?sh.good/(sh.plan*l.vel):0, hx=W-hudW+(nar?4:16);
+      c.fillStyle=mu; c.font=F(400,nar?9.5:11); c.fillText(nar?'OEE':'OEE acumulado',hx,yb-30);
+      c.fillStyle=(this.cause&&l.id==='L2')?bad:fg; c.font=F(600,nar?18:26); c.fillText(pct(oee,0),hx,yb-4);
+      c.fillStyle=mu; c.font=F(400,nar?9.5:11); c.fillText(nar?`turno ${pct(oS,0)}`:`neste turno: ${pct(oS,0)}`,hx,yb+13);
+    });
+  }
+  hud(){
+    const r=this.root, tod=this.t%1440, s=Math.floor(tod/480), m=(360+tod)%1440;
+    $('.ck',r).textContent=`${String(Math.floor(m/60)).padStart(2,'0')}:${String(Math.floor(m%60)).padStart(2,'0')}`;
+    $('.ckd',r).textContent=`Dia ${Math.floor(this.t/1440)+1} · ${SIM_T[s]}`;
+    $('.tline i',r).style.left=`calc(${(tod/1440*100).toFixed(2)}% - 1px)`; $$('.tline div',r).forEach((d,i)=>d.classList.toggle('on',i===s));
+    const kl=$$('.kline',r); this.lines.forEach((l,i)=>{const a=l.st.all, o=a.plan?a.good/(a.plan*l.vel):0; $('.tr i',kl[i]).style.width=(o*100).toFixed(1)+'%'; $('.kv',kl[i]).textContent=pct(o,0);});
+    const L2=this.lines[1], n=L2.st.Noite, d1=L2.st['Manhã'], d2=L2.st.Tarde, nodes=$$('.cn',r), isN=s===2, ts=tod%480;
+    const tot=L2.st.all.setups, dS=d1.setups+d2.setups, nAvg=n.setups?n.setupMin/n.setups:0, dAvg=dS?(d1.setupMin+d2.setupMin)/dS:0;
+    const pN=n.good+n.ref, pD=d1.good+d1.ref+d2.good+d2.ref;
+    $('.v',nodes[0]).textContent=tot?`${n.setups} de ${tot} trocas da L2 aconteceram à noite`:'aguardando trocas';
+    $('.v',nodes[1]).textContent=`por troca · noite: ${nAvg?num(nAvg)+' min':'—'} · dia: ${dAvg?num(dAvg)+' min':'—'}`;
+    $('.v',nodes[2]).textContent=`refugo · noite: ${pN?pct(n.ref/pN):'—'} · dia: ${pD?pct((d1.ref+d2.ref)/pD):'—'}`;
+    $('.v',nodes[3]).textContent=`OEE · noite: ${n.plan?pct(n.good/(n.plan*60),0):'—'} · dia: ${(d1.plan+d2.plan)?pct((d1.good+d2.good)/((d1.plan+d2.plan)*60),0):'—'}`;
+    nodes[0].classList.toggle('on',isN&&L2.mode==='setup'); nodes[1].classList.toggle('on',isN&&L2.mode==='setup');
+    nodes[2].classList.toggle('on',isN&&(L2.mode==='adj'||(L2.mode==='run'&&ts<L2.post))); nodes[3].classList.toggle('on',isN);
+  }
+  bind(){
+    const r=this.root;
+    $('.sm-play',r).onclick=()=>{this.playing=!this.playing; $('.sm-play',r).textContent=this.playing?'Pausar':'Continuar';};
+    $$('.sp button',r).forEach(b=>b.onclick=()=>{this.speed=+b.dataset.v; $$('.sp button',r).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));});
+    $('.sm-night',r).onclick=()=>{ let tgt=Math.floor(this.t/1440)*1440+960; if(this.t>=tgt-1) tgt+=1440; this.ff(tgt+5); this.draw(); this.hud(); };
+    $('.sm-cause',r).onclick=()=>this.setCause(!this.cause);
+  }
+  setCause(v){ this.cause=v; const r=this.root; $('.sm-cause',r).setAttribute('aria-pressed',String(v)); $('.sm-cause',r).textContent=v?'Esconder a causa':'Mostrar a causa'; $('.sym',r).hidden=v; $('.cau',r).hidden=!v; this.draw(); this.hud(); }
+  start(){ if(this.raf)return; this.resize(); let last=null; const f=t=>{ if(last===null)last=t; const dt=Math.min(.05,(t-last)/1000); last=t; if(this.playing)this.step(dt); this.draw(); if(t-this.lastHud>120){this.hud(); this.lastHud=t;} this.raf=requestAnimationFrame(f); }; this.raf=requestAnimationFrame(f); }
+  stop(){ if(this.raf)cancelAnimationFrame(this.raf); this.raf=null; }
+}
+const simA=new FactorySim($('#simA'),false,1440+80);
+const simB=new FactorySim($('#simB'),true,1440+960+20);
+enterHooks.simA=()=>simA.start(); leaveHooks.simA=()=>simA.stop();
+enterHooks.simB=()=>simB.start(); leaveHooks.simB=()=>simB.stop();
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{simA.draw(); simB.draw();});
+
+/* ============ INÍCIO ============ */
+(function(){let start=0; const m=(location.hash||'').match(/^#s(\d+)$/); if(m)start=Math.max(0,Math.min(N-1,+m[1]-1)); go(start);})();
+</script>
+
+</body>
+</html>

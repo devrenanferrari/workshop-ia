@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Guia do Caso L2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: guia de estudo em módulos. Computador: lista de módulos à esquerda e um módulo por vez à direita. Celular: seletor no topo e navegação fixa embaixo. */
+:root{
+  --bg:#FFFFFF; --surface:#F7F7F8; --surface-2:#ECECEF; --line:#E3E3E7; --fg:#0D0D0D; --muted:#5D5D6B; --faint:#8E8EA0;
+  --good:#0E8F6E; --good-soft:rgba(14,143,110,.10); --bad:#C93838; --bad-soft:rgba(201,56,56,.08);
+  --btn:#0D0D0D; --btn-fg:#FFFFFF;
+  --f-sans:"Geist",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --f-mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0B0B0C; --surface:#161618; --surface-2:#232326; --line:#2C2C30; --fg:#ECECEE; --muted:#A3A3AE; --faint:#71717C;
+  --good:#3CCB9C; --good-soft:rgba(60,203,156,.12); --bad:#F06A64; --bad-soft:rgba(240,106,100,.12);
+  --btn:#ECECEE; --btn-fg:#0B0B0C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B0B0C; --surface:#161618; --surface-2:#232326; --line:#2C2C30; --fg:#ECECEE; --muted:#A3A3AE; --faint:#71717C;
+  --good:#3CCB9C; --good-soft:rgba(60,203,156,.12); --bad:#F06A64; --bad-soft:rgba(240,106,100,.12);
+  --btn:#ECECEE; --btn-fg:#0B0B0C; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{height:100%}
+body{min-height:100%;background:var(--bg);color:var(--fg);font-family:var(--f-sans);font-size:17px;line-height:1.6;margin:0;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+h1,h2,h3,h4{margin:0;line-height:1.15;letter-spacing:-.02em;text-wrap:balance;font-weight:600}
+h1{font-size:clamp(1.9rem,4.5vw,2.7rem)}
+h2{font-size:clamp(1.6rem,3.6vw,2.1rem)}
+h3{font-size:1.12rem}
+p{margin:0}
+.muted{color:var(--muted)} .small{font-size:.9rem}
+code{font-family:var(--f-mono);font-size:.86em;background:var(--surface-2);padding:.08em .35em;border-radius:5px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;background:var(--btn);color:var(--btn-fg);border:0;border-radius:999px;padding:.6rem 1.15rem;font-size:.93rem;font-weight:500;cursor:pointer;white-space:nowrap}
+.btn:hover{opacity:.88}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.pill{display:inline-flex;align-items:center;gap:.4rem;border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:.35rem .8rem;font-size:.85rem;cursor:pointer;white-space:nowrap}
+.pill:hover{background:var(--surface)}
+.pill[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+
+/* estrutura */
+.app{display:grid;grid-template-columns:17rem minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;height:100vh;overflow:auto;border-right:1px solid var(--line);padding:1.4rem 1rem 1.2rem max(1rem,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:1rem}
+.brand{display:flex;flex-direction:column;gap:.15rem;padding:0 .4rem}
+.brand b{font-size:1rem}
+.brand span{font-size:.8rem;color:var(--muted)}
+.prog{display:flex;flex-direction:column;gap:.35rem;padding:0 .4rem}
+.prog .bar{height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.prog .bar i{display:block;height:100%;width:0;background:var(--good);border-radius:99px;transition:width .4s ease}
+.prog span{font-size:.8rem;color:var(--muted)}
+.mlist{display:flex;flex-direction:column;gap:.15rem}
+.mi{display:grid;grid-template-columns:1.8rem minmax(0,1fr);gap:.6rem;align-items:center;text-align:left;background:transparent;border:0;border-radius:12px;padding:.5rem .55rem;cursor:pointer}
+.mi:hover{background:var(--surface)}
+.mi.on{background:var(--surface-2)}
+.mi .n{width:1.8rem;height:1.8rem;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:.8rem;font-weight:600;color:var(--muted)}
+.mi.on .n{border-color:var(--fg);color:var(--fg)}
+.mi.done .n{background:var(--good);border-color:var(--good);color:#fff}
+.mi .t{display:flex;flex-direction:column;min-width:0}
+.mi .t b{font-size:.92rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mi .t span{font-size:.75rem;color:var(--muted)}
+.side .foot{margin-top:auto;display:flex;gap:.5rem;padding:0 .4rem}
+.main{min-width:0;display:flex;flex-direction:column}
+.mtop{display:none}
+.content{width:100%;max-width:46rem;margin:0 auto;padding-block:2.6rem 2rem;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:1.4rem}
+.nav{width:100%;max-width:46rem;margin:0 auto 3rem;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));display:flex;justify-content:space-between;gap:.8rem;border-top:1px solid var(--line);padding-top:1.2rem}
+@media (max-width:900px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .side{display:none}
+  .mtop{display:flex;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line);align-items:center;gap:.7rem;padding-block:.6rem;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .mtop .which{flex:1;min-width:0;text-align:left;background:var(--surface);border:0;border-radius:12px;padding:.45rem .75rem;cursor:pointer;display:flex;flex-direction:column}
+  .mtop .which span{font-size:.72rem;color:var(--muted)}
+  .mtop .which b{font-size:.92rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mtop .mini{width:3rem;height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+  .mtop .mini i{display:block;height:100%;width:0;background:var(--good)}
+  .content{padding-block:1.4rem 1rem}
+  .nav{position:sticky;bottom:0;background:var(--bg);margin-bottom:0;padding-bottom:calc(.8rem + env(safe-area-inset-bottom,0px));padding-top:.8rem;z-index:15}
+  .nav .btn{flex:1}
+}
+.sheet{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.35);display:flex;align-items:flex-end}
+.sheet .panel{background:var(--bg);width:100%;border-radius:20px 20px 0 0;max-height:85vh;overflow:auto;padding:1rem max(16px,env(safe-area-inset-left,0px)) calc(1rem + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:.6rem}
+
+/* blocos do módulo */
+.eyebrow{font-size:.85rem;color:var(--muted);font-weight:500;display:flex;gap:.5rem;flex-wrap:wrap}
+.sum{background:var(--surface);border-radius:16px;padding:1rem 1.15rem;display:flex;flex-direction:column;gap:.4rem}
+.sum .k{font-size:.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+@media (max-width:620px){.cards{grid-template-columns:minmax(0,1fr)}}
+.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:760px){.c3{grid-template-columns:minmax(0,1fr)}}
+.box{border:1px solid var(--line);border-radius:16px;padding:.9rem 1rem;display:flex;flex-direction:column;gap:.35rem;min-width:0}
+.box .k{font-size:.78rem;color:var(--muted);font-weight:500}
+.box.fill{background:var(--surface);border-color:transparent}
+.rn{font-family:var(--f-mono);font-size:.76rem;font-weight:500;padding:.15rem .5rem;border-radius:6px;align-self:flex-start;background:var(--fg);color:var(--bg)}
+.warn{background:var(--bad-soft);border-radius:12px;padding:.8rem 1rem;font-size:.95rem}
+.tip{background:var(--good-soft);border-radius:12px;padding:.8rem 1rem;font-size:.95rem}
+.tip b{color:var(--good)}
+.list{display:flex;flex-direction:column;gap:.5rem;margin:0;padding:0;list-style:none}
+.list li{display:grid;grid-template-columns:1.6rem minmax(0,1fr);gap:.6rem;align-items:baseline}
+.list li .d{width:1.6rem;height:1.6rem;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;font-size:.8rem;font-weight:600}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+@media (max-width:620px){.split{grid-template-columns:minmax(0,1fr)}}
+.split ul{margin:0;padding-left:1.1rem;display:flex;flex-direction:column;gap:.3rem;font-size:.95rem}
+.stack{display:flex;flex-direction:column;gap:.35rem;font-size:.9rem}
+.stack div{border-radius:10px;padding:.5rem .75rem;background:var(--surface);display:grid;grid-template-columns:5.8rem minmax(0,1fr);gap:.6rem}
+.stack .r{font-family:var(--f-mono);font-size:.76rem;color:var(--muted);padding-top:.12rem}
+.stack .new{box-shadow:0 0 0 1.5px var(--fg) inset}
+
+/* prompt copiável */
+.prompt{position:relative;background:var(--surface);border-radius:14px;padding:2.5rem 1rem 1rem;font-family:var(--f-mono);font-size:.86rem;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.prompt .pl{position:absolute;top:.7rem;left:1rem;font-family:var(--f-sans);font-size:.75rem;color:var(--muted);font-weight:500}
+.prompt .cp{position:absolute;top:.45rem;right:.5rem;font-family:var(--f-sans)}
+details{border:1px solid var(--line);border-radius:14px;padding:0 1rem}
+details[open]{padding-bottom:.9rem}
+summary{cursor:pointer;padding:.65rem 0;font-weight:500;font-size:.95rem;list-style:none;display:flex;justify-content:space-between;gap:1rem}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--muted)}
+details[open] summary::after{content:"−"}
+details > *:not(summary){margin-top:.5rem}
+
+/* exercício */
+.task{border:1.5px solid var(--line);border-radius:18px;padding:1.1rem 1.15rem;display:flex;flex-direction:column;gap:.8rem;transition:border-color .3s,background .3s}
+.task.done{border-color:var(--good);background:var(--good-soft)}
+.task-h{display:flex;justify-content:space-between;align-items:flex-start;gap:.8rem}
+.task-h .lab{font-size:.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.check{display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.88rem;color:var(--muted);user-select:none;white-space:nowrap}
+.check input{appearance:none;width:1.35rem;height:1.35rem;border:1.5px solid var(--faint);border-radius:7px;display:grid;place-items:center;margin:0;cursor:pointer;background:var(--bg)}
+.check input:checked{background:var(--good);border-color:var(--good)}
+.check input:checked::after{content:"✓";color:#fff;font-size:.85rem;font-weight:700}
+ol.steps{margin:0;padding-left:1.2rem;display:flex;flex-direction:column;gap:.3rem}
+
+/* teste rápido */
+.quiz{border:1px solid var(--line);border-radius:18px;padding:1.1rem 1.15rem;display:flex;flex-direction:column;gap:.7rem}
+.quiz .lab{font-size:.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.opt{text-align:left;background:var(--surface);border:1.5px solid transparent;border-radius:12px;padding:.6rem .85rem;cursor:pointer;font-size:.95rem}
+.opt:hover{border-color:var(--line)}
+.opt.ok{border-color:var(--good);background:var(--good-soft)}
+.opt.no{border-color:var(--bad);background:var(--bad-soft)}
+.fb{font-size:.92rem}
+
+/* CORPO */
+.letters{display:flex;flex-direction:column;gap:.45rem}
+.lt{display:grid;grid-template-columns:2.2rem minmax(0,1fr);gap:.8rem;align-items:start;background:var(--surface);border-radius:14px;padding:.7rem .85rem}
+.lt b.l{width:2.2rem;height:2.2rem;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;font-size:1rem}
+.lt .q{font-size:.85rem;color:var(--muted)}
+.field{display:flex;flex-direction:column;gap:.25rem}
+.field label{font-size:.85rem;font-weight:500}
+.field textarea{background:var(--surface);border:1px solid transparent;border-radius:12px;padding:.55rem .75rem;resize:vertical;min-height:2.8rem;font-size:.9rem;line-height:1.5}
+.field textarea:focus{border-color:var(--line);outline:none;background:var(--bg)}
+.seg{display:flex;gap:.35rem;flex-wrap:wrap}
+
+/* tabelas */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:.88rem;font-variant-numeric:tabular-nums}
+th{font-weight:500;color:var(--muted);text-align:left;padding:.5rem .7rem;border-bottom:1px solid var(--line);background:var(--surface);white-space:nowrap}
+td{padding:.45rem .7rem;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.n,th.n{text-align:right;white-space:nowrap}
+tr.hl td{background:var(--bad-soft)}
+.kpis{display:flex;gap:.6rem;flex-wrap:wrap}
+.kpi{background:var(--surface);border-radius:12px;padding:.55rem .85rem;display:flex;flex-direction:column;min-width:7rem}
+.kpi b{font-size:1.2rem;font-weight:600;font-variant-numeric:tabular-nums}
+.kpi span{font-size:.78rem;color:var(--muted)}
+
+/* elos */
+.steps-nav{display:flex;gap:.35rem;flex-wrap:wrap}
+.sn{width:2.3rem;height:2.3rem;border-radius:50%;border:1.5px solid var(--line);background:var(--bg);display:grid;place-items:center;font-size:.85rem;font-weight:600;cursor:pointer;color:var(--muted)}
+.sn.on{border-color:var(--fg);color:var(--fg)}
+.sn.done{background:var(--good);border-color:var(--good);color:#fff}
+.sn.pause{border-style:dashed}
+.elo{display:flex;flex-direction:column;gap:.9rem}
+.elo-h{display:flex;flex-direction:column;gap:.2rem}
+.elo-h .lab{font-size:.78rem;color:var(--muted);font-weight:500}
+.elo-nav{display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:calc(5.5rem + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(10px);opacity:0;pointer-events:none;background:var(--btn);color:var(--btn-fg);padding:.5rem 1rem;border-radius:999px;font-size:.88rem;transition:transform .3s ease,opacity .3s ease;z-index:50}
+.toast.on{transform:translateX(-50%);opacity:1}
+.mod{display:flex;flex-direction:column;gap:1.25rem;animation:fadein .35s ease both}
+.mod > h1,.mod > h2{margin-top:-.6rem}
+.tech{display:flex;flex-direction:column;gap:.8rem}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="app">
+  <aside class="side" aria-label="Módulos">
+    <div class="brand"><b>Guia de estudo</b><span>IA na produção: do prompt à decisão</span></div>
+    <div class="prog"><div class="bar"><i id="pbar"></i></div><span id="ptxt">0 de 7 módulos concluídos</span></div>
+    <nav class="mlist" id="mlist"></nav>
+    <div class="foot"><button class="pill" id="themeBtn">Tema claro ou escuro</button></div>
+  </aside>
+
+  <div class="main">
+    <header class="mtop">
+      <button class="which" id="whichBtn" aria-haspopup="dialog"><span id="whichN">Módulo</span><b id="whichT">Início</b></button>
+      <div class="mini"><i id="pbar2"></i></div>
+      <button class="pill" id="themeBtn2" aria-label="Tema claro ou escuro">Tema</button>
+    </header>
+
+    <div class="content" id="content">
+
+<!-- ================= 0 · INÍCIO ================= -->
+<section class="mod" data-t="Comece aqui" data-d="3 min">
+  <span class="eyebrow">Guia de estudo do workshop · Engenharia de Produção</span>
+  <h1>IA na produção: do prompt à decisão</h1>
+  <p class="muted">Este guia acompanha a aula e continua com você depois dela. Funciona no <b>computador</b> e no <b>celular</b>. Estude um módulo por vez; o seu progresso fica salvo neste navegador.</p>
+  <div class="sum"><span class="k">Propósito</span><p>Sair do workshop capaz de transformar uma pergunta vaga em uma decisão sustentada por dados, usando IA com método e sem perder o senso crítico de engenheiro.</p></div>
+  <h3>O que você vai aprender</h3>
+  <ul class="list">
+    <li><span class="d">1</span><span><b>Como a IA funciona</b>, por que ela acerta e por que erra.</span></li>
+    <li><span class="d">2</span><span><b>Como uma conversa é montada</b>: system, user e assistant.</span></li>
+    <li><span class="d">3</span><span><b>Como escrever um bom prompt</b> com o método CORPO.</span></li>
+    <li><span class="d">4</span><span><b>Técnicas de raciocínio</b>: exemplos, passo a passo e decomposição.</span></li>
+    <li><span class="d">5</span><span><b>Um caso real</b> resolvido em 7 etapas, do dado bruto ao memorando para a diretoria.</span></li>
+  </ul>
+  <div class="cards">
+    <div class="box fill"><span class="k">Você vai precisar</span><p>Uma IA gratuita (ChatGPT, Claude, Gemini ou Copilot) aberta e logada.</p></div>
+    <div class="box fill"><span class="k">Como organizar a tela</span><p><b>Computador:</b> guia de um lado, IA do outro. <b>Celular:</b> alterne entre o navegador e o app da IA.</p></div>
+  </div>
+  <p class="small muted">Não precisa saber programar nem pagar nenhuma ferramenta.</p>
+</section>
+
+<!-- ================= 1 · COMO A IA FUNCIONA ================= -->
+<section class="mod" data-t="Como a IA funciona" data-d="10 min" hidden>
+  <span class="eyebrow">Módulo 1 · 10 min</span>
+  <h2>Como a IA funciona</h2>
+  <div class="sum"><span class="k">Em resumo</span><p>Um modelo de linguagem é um <b>autocompletar gigante</b>: ele prevê a próxima palavra mais provável, repetidas vezes. Ele não consulta uma base de verdades. O contexto que você dá muda as probabilidades.</p></div>
+  <div class="cards">
+    <div class="box"><span class="k">Próxima palavra</span><p class="small">Escolhe uma continuação provável, acrescenta ao texto e repete até terminar.</p></div>
+    <div class="box"><span class="k">Tokens</span><p class="small">O texto é picado em pedaços. Siglas e números costumam virar vários pedaços.</p></div>
+    <div class="box"><span class="k">Janela de contexto</span><p class="small">Tudo que o modelo vê na conversa. O que não está ali não existe para ele.</p></div>
+    <div class="box"><span class="k">Temperatura</span><p class="small">Baixa: respostas previsíveis, boas para contas. Alta: mais variadas, boas para ideias.</p></div>
+  </div>
+  <div class="split">
+    <div class="box fill"><span class="k">Faz bem</span><ul><li>Organizar e resumir</li><li>Sugerir hipóteses</li><li>Escrever fórmulas, código e relatórios</li></ul></div>
+    <div class="box fill"><span class="k">Erra com frequência</span><ul><li>Inventa fatos com confiança</li><li>Contas longas "de cabeça"</li><li>Transforma correlação em causa</li><li>Esquece premissas em conversas longas</li></ul></div>
+  </div>
+  <p class="warn"><b>Regra de ouro:</b> dado sigiloso da empresa não vai para ferramenta pública. Use a versão corporativa aprovada pela TI ou dados fictícios.</p>
+  <div class="quiz" data-q="q1" data-ok="1">
+    <span class="lab">Teste rápido</span>
+    <p>Você pediu para a IA somar a produção de 90 turnos e o número parece estranho. O que fazer?</p>
+    <button class="opt">Confiar. É um computador, não erra conta.</button>
+    <button class="opt">Pedir para calcular com código ou na planilha e conferir um valor.</button>
+    <button class="opt">Perguntar de novo até o número mudar.</button>
+    <p class="fb" hidden data-ok="Isso. Modelos de linguagem erram aritmética longa; peça cálculo com código e confira." data-no="Não. Ela prevê texto, não calcula. Peça cálculo com código e confira um valor."></p>
+  </div>
+</section>
+
+<!-- ================= 2 · SYSTEM USER ASSISTANT ================= -->
+<section class="mod" data-t="System, user e assistant" data-d="12 min" hidden>
+  <span class="eyebrow">Módulo 2 · 12 min</span>
+  <h2>System, user e assistant</h2>
+  <div class="sum"><span class="k">Em resumo</span><p>Toda conversa é uma lista de mensagens com três papéis. A cada envio, o modelo <b>relê a lista inteira</b>. Ele não tem memória própria: quem guarda o histórico é a ferramenta.</p></div>
+  <div class="cards c3">
+    <div class="box"><span class="rn">system</span><b>Instrução de bastidor</b><p class="small muted">Define tom, regras e especialidade. Escrita pela ferramenta ou por você, nas configurações.</p></div>
+    <div class="box"><span class="rn">user</span><b>O que você escreve</b><p class="small muted">Sua pergunta, tarefa ou dados colados.</p></div>
+    <div class="box"><span class="rn">assistant</span><b>O que a IA responde</b><p class="small muted">Volta para a lista e vira contexto da próxima mensagem.</p></div>
+  </div>
+  <h3>O que o modelo recebe na sua 2ª mensagem</h3>
+  <div class="stack">
+    <div><span class="r">system</span><span>Você é um assistente útil. Responda em português.</span></div>
+    <div><span class="r">user</span><span>O que é OEE?</span></div>
+    <div><span class="r">assistant</span><span>OEE = Disponibilidade × Performance × Qualidade…</span></div>
+    <div class="new"><span class="r">user</span><span>Calcule para 90%, 95% e 98%.</span></div>
+  </div>
+  <details><summary>Onde escrever o system prompt em cada ferramenta</summary>
+    <div class="tbl"><table><tbody>
+      <tr><td><b>ChatGPT</b></td><td>Instruções personalizadas, Projetos ou GPTs</td></tr>
+      <tr><td><b>Claude</b></td><td>Instruções do Projeto e preferências</td></tr>
+      <tr><td><b>Gemini</b></td><td>Gems</td></tr>
+      <tr><td><b>Qualquer uma</b></td><td>Escreva as instruções na primeira mensagem</td></tr>
+    </tbody></table></div>
+    <p class="small muted">Os nomes mudam com frequência. Em uso avançado (API), também dá para escrever exemplos no papel de assistant para a IA imitar.</p>
+  </details>
+  <div class="task">
+    <div class="task-h"><div><span class="lab">Exercício 1 · 5 min</span><h3>Mesma pergunta, instrução diferente</h3></div><label class="check"><input type="checkbox" data-id="ex1">Feito</label></div>
+    <ol class="steps"><li>Numa conversa nova, envie a Instrução A como primeira mensagem.</li><li>Pergunte: <code>O que é OEE?</code></li><li>Repita em outra conversa com a Instrução B e compare.</li></ol>
+    <div class="prompt"><span class="pl">Instrução A</span><button class="pill cp" data-copy>Copiar</button>Você é um professor paciente de Engenharia de Produção. Explique com analogias do dia a dia e um exemplo numérico simples.</div>
+    <div class="prompt"><span class="pl">Instrução B</span><button class="pill cp" data-copy>Copiar</button>Você é um consultor sênior de operações. Responda em no máximo 3 frases, com números de referência e uma recomendação.</div>
+  </div>
+  <div class="quiz" data-q="q2" data-ok="1">
+    <span class="lab">Teste rápido</span>
+    <p>Por que a IA entende "calcule para 90%, 95% e 98%" sem você repetir a palavra OEE?</p>
+    <button class="opt">Ela lembra de você para sempre.</button>
+    <button class="opt">A ferramenta reenvia a conversa inteira a cada mensagem.</button>
+    <button class="opt">Ela pesquisou na internet.</button>
+    <p class="fb" hidden data-ok="Exato. O histórico vai junto a cada envio. Conversa nova começa do zero." data-no="Não. O modelo não tem memória própria: a ferramenta reenvia o histórico a cada mensagem."></p>
+  </div>
+</section>
+
+<!-- ================= 3 · CORPO ================= -->
+<section class="mod" data-t="Método CORPO" data-d="10 min" hidden>
+  <span class="eyebrow">Módulo 3 · 10 min</span>
+  <h2>Escrevendo bons prompts: o método CORPO</h2>
+  <div class="sum"><span class="k">Em resumo</span><p>Um bom prompt responde cinco perguntas que a IA não tem como adivinhar. Se faltar uma, ela preenche com o palpite mais provável.</p></div>
+  <div class="letters">
+    <div class="lt"><b class="l">C</b><div><b>Contexto</b> <span class="q">· qual é a situação?</span><p class="small muted">3 linhas de envase, 3 turnos, 10 dias de dados.</p></div></div>
+    <div class="lt"><b class="l">O</b><div><b>Objetivo</b> <span class="q">· o que exatamente eu quero?</span><p class="small muted">OEE por linha, com os 3 fatores.</p></div></div>
+    <div class="lt"><b class="l">R</b><div><b>Regras</b> <span class="q">· o que não pode acontecer?</span><p class="small muted">Remover duplicadas. Não inventar dados.</p></div></div>
+    <div class="lt"><b class="l">P</b><div><b>Papel</b> <span class="q">· com que olhar responder?</span><p class="small muted">Engenheiro de produção sênior, especialista em TPM.</p></div></div>
+    <div class="lt"><b class="l">O</b><div><b>Output</b> <span class="q">· em que formato?</span><p class="small muted">Tabela e uma frase final com a linha crítica.</p></div></div>
+  </div>
+  <details><summary>Montador de prompt: preencha e copie</summary>
+    <div class="field"><label for="f-p">P · Papel</label><textarea id="f-p" data-corpo>Você é um engenheiro de produção sênior, especialista em TPM.</textarea></div>
+    <div class="field"><label for="f-c">C · Contexto</label><textarea id="f-c" data-corpo>Vou colar uma base com 10 dias de produção de 3 linhas de envase (L1, L2, L3) em 3 turnos. A L2 roda a 60 un/min; as outras, a 50.</textarea></div>
+    <div class="field"><label for="f-o">O · Objetivo</label><textarea id="f-o" data-corpo>Calcule o OEE por linha, separando Disponibilidade, Performance e Qualidade.</textarea></div>
+    <div class="field"><label for="f-r">R · Regras</label><textarea id="f-r" data-corpo>Remova linhas duplicadas. Não invente dados. Mostre a fórmula usada.</textarea></div>
+    <div class="field"><label for="f-out">O · Output</label><textarea id="f-out" data-corpo>Responda em tabela e feche com uma frase apontando a linha mais crítica.</textarea></div>
+    <div class="prompt"><span class="pl">Seu prompt montado</span><button class="pill cp" data-copy-el="corpoTxt">Copiar</button><span id="corpoTxt"></span></div>
+  </details>
+  <div class="task">
+    <div class="task-h"><div><span class="lab">Exercício 2 · 5 min</span><h3>Conserte um prompt fraco</h3></div><label class="check"><input type="checkbox" data-id="ex2">Feito</label></div>
+    <p>Reescreva com as cinco partes do CORPO, pensando numa situação real sua:</p>
+    <div class="prompt"><span class="pl">Prompt fraco</span>Me ajuda a melhorar o estoque.</div>
+    <details><summary>Ver um exemplo de resposta</summary>
+      <div class="prompt"><span class="pl">Exemplo</span><button class="pill cp" data-copy>Copiar</button>Você é um analista de PCP experiente.
+Trabalho num almoxarifado de peças de manutenção com 1.200 itens; muitos ficam parados e alguns faltam com frequência.
+Quero uma proposta de classificação ABC/XYZ e uma política de reposição por classe.
+Use apenas critérios que eu consiga calcular com consumo mensal e lead time. Pergunte se faltar algum dado.
+Entregue uma tabela com classe, critério, política e exemplo de item, e depois 3 próximos passos.</div>
+    </details>
+  </div>
+  <div class="quiz" data-q="q3" data-ok="1">
+    <span class="lab">Teste rápido</span>
+    <p>A IA calculou o OEE usando uma linha duplicada da base. Qual letra do CORPO evitaria isso?</p>
+    <button class="opt">C · Contexto</button><button class="opt">R · Regras</button><button class="opt">O · Output</button>
+    <p class="fb" hidden data-ok="Isso. Regras fecham as portas para o erro: “remova linhas duplicadas antes de calcular”." data-no="Quase. O que evita o erro é uma regra explícita: “remova linhas duplicadas antes de calcular”."></p>
+  </div>
+</section>
+
+<!-- ================= 4 · TÉCNICAS ================= -->
+<section class="mod" data-t="Técnicas de prompt" data-d="15 min" hidden>
+  <span class="eyebrow">Módulo 4 · 15 min</span>
+  <h2>Técnicas de prompt</h2>
+  <div class="sum"><span class="k">Em resumo</span><p>Além da estrutura, você pode controlar <b>como a IA aprende</b> (com exemplos), <b>como ela pensa</b> (passo a passo, decomposição) e <b>como ela entrega</b> (papel e formato).</p></div>
+  <div class="seg" role="tablist" id="techTabs">
+    <button class="pill" role="tab" data-t="0" aria-selected="true">Exemplos</button>
+    <button class="pill" role="tab" data-t="1" aria-selected="false">Passo a passo</button>
+    <button class="pill" role="tab" data-t="2" aria-selected="false">Decomposição</button>
+    <button class="pill" role="tab" data-t="3" aria-selected="false">Papel, formato e autocrítica</button>
+  </div>
+  <div class="tech" data-t="0">
+    <div class="box fill"><span class="k">Zero-shot e few-shot</span><p><b>Zero-shot</b> é pedir direto, sem exemplos; funciona para tarefas comuns. <b>Few-shot</b> é mostrar alguns exemplos antes de pedir; a IA usa os exemplos como molde e copia o formato e a lógica, inclusive os erros.</p></div>
+    <div class="prompt"><span class="pl">Few-shot · copie e teste</span><button class="pill cp" data-copy>Copiar</button>Classifique cada parada em uma das 6 grandes perdas do TPM.
+Exemplos:
+"troca de rótulo" → Setup e ajustes
+"motor queimou" → Quebra
+"esperando garrafa" → Pequenas paradas
+
+Agora classifique:
+"ajuste de enchedora"
+"falta de tampa"</div>
+  </div>
+  <div class="tech" data-t="1" hidden>
+    <div class="box fill"><span class="k">Cadeia de pensamento</span><p>Cada palavra escrita vira contexto para a próxima. Respondendo direto, a IA tenta "acertar de cabeça". Escrevendo os passos, cada conta fica registrada e ajuda a seguinte. É fazer a conta no papel.</p></div>
+    <div class="split">
+      <div class="box"><span class="k">Resposta direta</span><p class="small">"Cerca de 27.000 unidades boas." Esqueceu a parada.</p></div>
+      <div class="box"><span class="k">Passo a passo</span><p class="small">480 − 120 = 360 min · 360 × 60 = 21.600 · 6% = 1.296 · <b>20.304 boas</b></p></div>
+    </div>
+    <div class="task">
+      <div class="task-h"><div><span class="lab">Exercício 3 · 3 min</span><h3>Teste a cadeia de pensamento</h3></div><label class="check"><input type="checkbox" data-id="ex3">Feito</label></div>
+      <p class="small">Envie em duas conversas: primeiro sem a última frase, depois com ela.</p>
+      <div class="prompt"><span class="pl">Pergunta</span><button class="pill cp" data-copy>Copiar</button>Uma linha de 60 un/min tem turno de 480 min. Ficou 120 min parada e 6% da produção virou refugo. Quantas unidades boas saíram?
+
+Antes de responder, liste as premissas e mostre cada cálculo passo a passo.</div>
+      <details><summary>Gabarito</summary><p><b>20.304 unidades boas.</b></p></details>
+    </div>
+  </div>
+  <div class="tech" data-t="2" hidden>
+    <div class="box fill"><span class="k">Decomposição</span><p>Transformar uma pergunta grande e vaga em perguntas menores, em ordem. É o raciocínio do DMAIC. Você pode decompor sozinho ou pedir para a IA propor.</p></div>
+    <div class="stack">
+      <div><span class="r">pergunta</span><span><b>Por que a L2 rende menos?</b></span></div>
+      <div><span class="r">→ 1</span><span>Os dados estão certos?</span></div>
+      <div><span class="r">→ 2</span><span>A perda é de parada, lentidão ou refugo?</span></div>
+      <div><span class="r">→ 3</span><span>Qual motivo de parada pesa mais?</span></div>
+      <div><span class="r">→ 4</span><span>A perda é igual em todos os turnos?</span></div>
+      <div><span class="r">→ 5</span><span>Quanto custa e o que fazer?</span></div>
+    </div>
+    <div class="task">
+      <div class="task-h"><div><span class="lab">Exercício 4 · 3 min</span><h3>Decomponha um problema seu</h3></div><label class="check"><input type="checkbox" data-id="ex4">Feito</label></div>
+      <div class="prompt"><span class="pl">Prompt</span><button class="pill cp" data-copy>Copiar</button>Quero descobrir por que o lead time de entrega aumentou 30% este ano. Antes de qualquer análise, quebre o problema em 4 a 6 sub-perguntas, em ordem lógica, e diga que dado responde cada uma. Não responda ainda.</div>
+    </div>
+  </div>
+  <div class="tech" data-t="3" hidden>
+    <div class="prompt"><span class="pl">Papel · define o olhar profissional</span><button class="pill cp" data-copy>Copiar</button>Atue como auditor de qualidade ISO 9001. Revise este plano de ação e aponte o que não atende à norma e onde falta evidência.</div>
+    <div class="prompt"><span class="pl">Saída estruturada · define o formato</span><button class="pill cp" data-copy>Copiar</button>Responda apenas com uma tabela. Colunas: Ação | Responsável | Prazo | Impacto (R$/ano) | Esforço (1 a 5)</div>
+    <div class="prompt"><span class="pl">Autocrítica · revisão antes de decidir</span><button class="pill cp" data-copy>Copiar</button>Revise a análise acima como um gerente cético: o que pode estar errado, que dado falta e que conclusão não se sustenta?</div>
+  </div>
+  <div class="box"><span class="k">Não confunda</span>
+    <p class="small"><b>Cadeia de pensamento</b>: raciocínio dentro de <u>uma</u> resposta. <b>Decomposição</b>: a lista de perguntas menores. <b>Prompt chaining</b>: <u>várias</u> mensagens em sequência, com você conferindo entre elas.</p></div>
+  <div class="quiz" data-q="q4" data-ok="2">
+    <span class="lab">Teste rápido</span>
+    <p>Em qual técnica você confere o resultado entre uma mensagem e outra?</p>
+    <button class="opt">Cadeia de pensamento</button><button class="opt">Decomposição</button><button class="opt">Prompt chaining</button>
+    <p class="fb" hidden data-ok="Isso. No chaining, cada etapa é uma mensagem e você valida antes de seguir." data-no="Não. A conferência entre mensagens é a marca do prompt chaining."></p>
+  </div>
+</section>
+
+<!-- ================= 5 · O CASO ================= -->
+<section class="mod" data-t="O caso" data-d="5 min" hidden>
+  <span class="eyebrow">Módulo 5 · 5 min</span>
+  <h2>O caso: a linha mais nova da fábrica</h2>
+  <div class="sum"><span class="k">Em resumo</span><p>A Envasa Bebidas (fictícia) tem três linhas de envase. A L2 custou R$ 4 milhões, é a mais rápida (60 un/min contra 50) e, mesmo assim, rende menos. O CFO quer saber: <b>investir para corrigir ou parar de usar?</b></p></div>
+  <div class="kpis">
+    <div class="kpi"><b>R$ 0,40</b><span>margem por unidade boa</span></div>
+    <div class="kpi"><b>R$ 1,50</b><span>custo por refugo</span></div>
+    <div class="kpi"><b>250</b><span>dias por ano</span></div>
+    <div class="kpi"><b>480 min</b><span>por turno</span></div>
+  </div>
+  <h3>Conceitos que vamos usar</h3>
+  <details><summary>OEE, Disponibilidade, Performance e Qualidade</summary>
+    <p><b>OEE</b> responde: de tudo que a linha poderia produzir, quanto virou produto bom? É <b>Disponibilidade × Performance × Qualidade</b>.</p>
+    <ul class="small"><li><b>Disponibilidade:</b> tempo rodando ÷ planejado. Cai com paradas.</li><li><b>Performance:</b> produzido ÷ o que daria na velocidade nominal. Cai com lentidão.</li><li><b>Qualidade:</b> boas ÷ produzidas. Cai com refugo.</li></ul>
+    <p class="tip"><b>Exemplo:</b> 90% × 95% × 98% ≈ 84%.</p>
+  </details>
+  <details><summary>Setup, SMED e refugo</summary>
+    <ul class="small"><li><b>Setup:</b> tempo de troca de um produto para outro. A linha fica parada.</li><li><b>SMED:</b> método para reduzir o setup, fazendo o máximo com a máquina ainda rodando.</li><li><b>Refugo:</b> unidade produzida que não pode ser vendida.</li></ul>
+  </details>
+  <details><summary>Pareto, Monte Carlo, payback e VPL</summary>
+    <ul class="small"><li><b>Pareto:</b> ordenar causas da maior para a menor; poucas explicam quase tudo (80/20).</li><li><b>Monte Carlo:</b> sortear milhares de combinações plausíveis das premissas e ver a faixa de resultados.</li><li><b>Payback:</b> em quanto tempo o dinheiro volta.</li><li><b>VPL:</b> quanto o projeto vale hoje, descontando o tempo.</li></ul>
+  </details>
+  <h3>A base de dados</h3>
+  <p>91 registros, um por turno, com <b>dois defeitos escondidos</b> de propósito. Copie e cole na IA junto com o prompt do Elo 1.</p>
+  <div style="display:flex;gap:.6rem;flex-wrap:wrap"><button class="btn" data-copy-csv>Copiar base de dados</button></div>
+  <details><summary>O que cada coluna significa</summary>
+    <div class="tbl"><table><tbody>
+      <tr><td><code>data · linha · turno</code></td><td>Quando e onde</td></tr>
+      <tr><td><code>operador · produto</code></td><td>Quem operou e o que foi envasado</td></tr>
+      <tr><td><code>tempo_planejado_min</code></td><td>Minutos planejados (480)</td></tr>
+      <tr><td><code>parada_*_min</code></td><td>Minutos parados por setup, quebra, falta de material e ajustes</td></tr>
+      <tr><td><code>n_setups</code></td><td>Quantas trocas houve no turno</td></tr>
+      <tr><td><code>velocidade_nominal_un_min</code></td><td>Velocidade de projeto</td></tr>
+      <tr><td><code>qtd_produzida · qtd_refugo</code></td><td>Unidades produzidas e refugadas</td></tr>
+    </tbody></table></div>
+  </details>
+</section>
+
+<!-- ================= 6 · EXPERIMENTO ================= -->
+<section class="mod" data-t="Experimento em 7 elos" data-d="35 min" hidden>
+  <span class="eyebrow">Módulo 6 · 35 min</span>
+  <h2>O experimento: 7 elos</h2>
+  <div class="sum"><span class="k">Como funciona</span><p>Uma única conversa com a IA, um elo de cada vez. Em cada elo: <b>copie o prompt, envie, compare com o que observar e confira</b>. Só então siga para o próximo. Dica: se a sua IA tiver modo de análise de dados, ative.</p></div>
+  <div class="steps-nav" id="eloNav"></div>
+  <div id="eloBox"></div>
+</section>
+
+<!-- ================= 7 · REVISÃO ================= -->
+<section class="mod" data-t="Revisão e desafio" data-d="5 min" hidden>
+  <span class="eyebrow">Módulo 7 · 5 min</span>
+  <h2>Revisão: o que levar</h2>
+  <div class="cards">
+    <div class="box fill"><span class="k">1 · Estrutura</span><p>Use o <b>CORPO</b>: Contexto, Objetivo, Regras, Papel, Output.</p></div>
+    <div class="box fill"><span class="k">2 · Método</span><p>Decomponha, encadeie e confira cada elo.</p></div>
+    <div class="box fill"><span class="k">3 · Raciocínio</span><p>Para contas e lógica, peça premissas e passos visíveis.</p></div>
+    <div class="box fill"><span class="k">4 · Responsabilidade</span><p>Termine em reais e em decisão. Quem assina é você.</p></div>
+  </div>
+  <h3>Cola dos 7 elos</h3>
+  <div class="tbl"><table><thead><tr><th>Elo</th><th>Pergunta</th></tr></thead><tbody id="cola"></tbody></table></div>
+  <details><summary>Bônus: o prompt nível consultoria</summary>
+    <div class="prompt"><span class="pl">Prompt avançado</span><button class="pill cp" data-copy>Copiar</button>Atue como consultor sênior de operações. Com base na análise anterior:
+(1) teste se a diferença de OEE entre os turnos é estatisticamente significativa;
+(2) verifique se há variáveis confundidas que impeçam afirmar causalidade e proponha um experimento;
+(3) faça uma simulação de Monte Carlo do ganho do projeto;
+(4) calcule payback e VPL de 3 anos a 12% a.a. para um investimento de R$ 190 mil;
+(5) escreva um memorando de uma página no formato pirâmide de Minto.
+Mostre suas premissas e não invente números.</div>
+  </details>
+  <div class="task">
+    <div class="task-h"><div><span class="lab">Desafio para casa</span><h3>Refaça com dados seus</h3></div><label class="check"><input type="checkbox" data-id="desafio">Feito</label></div>
+    <p class="small">Pegue uma planilha do estágio, do TCC ou de um case da faculdade, sem dados sigilosos. Mantenha os 7 elos e troque só o contexto e as premissas.</p>
+  </div>
+  <p class="small muted">Caso, empresa e pessoas são fictícios. As ferramentas mudam rápido: aprenda a categoria e o método.</p>
+</section>
+
+    </div>
+    <nav class="nav" aria-label="Navegação entre módulos"><button class="btn ghost" id="prevBtn">← Anterior</button><button class="btn" id="nextBtn">Próximo →</button></nav>
+  </div>
+</div>
+
+<div class="sheet" id="sheet" hidden><div class="panel" role="dialog" aria-label="Módulos"><div style="display:flex;justify-content:space-between;align-items:center"><b>Módulos</b><button class="pill" id="sheetClose">Fechar</button></div><div class="mlist" id="mlist2"></div></div></div>
+<div class="toast" id="toast" role="status">Copiado</div>
+
+<script>
+const RAW=`data;linha;turno;operador;produto;tempo_planejado_min;parada_setup_min;parada_quebra_min;parada_falta_material_min;parada_ajustes_min;n_setups;velocidade_nominal_un_min;qtd_produzida;qtd_refugo
+2026-10-05;L1;Manhã;Ana;Chá 1L;480;19;15;0;6;1;50;20004;215
+2026-10-05;L1;Tarde;Bruno;Suco 1L;480;0;0;0;6;0;50;20998;221
+2026-10-05;L1;Noite;Carla;Chá 1L;480;21;0;15;6;1;50;20078;302
+2026-10-05;L2;Manhã;Diego;Suco 1L;480;0;20;10;5;0;60;24525;254
+2026-10-05;L2;Tarde;Elisa;Chá 1L;480;21;0;15;6;1;60;23501;340
+2026-10-05;L2;Noite;Fábio;Suco 1L;480;82;20;15;33;2;60;16208;987
+2026-10-05;L3;Manhã;Gustavo;Suco 500ml;480;18;20;0;12;1;50;19367;259
+2026-10-05;L3;Tarde;Helena;Suco 1L;480;22;15;0;9;1;50;18985;217
+2026-10-05;L3;Noite;Igor;Suco 500ml;480;0;10;15;12;0;50;20212;320
+2026-10-06;L1;Manhã;Ana;Suco 500ml;480;18;0;15;11;1;50;18963;241
+2026-10-06;L1;Tarde;Bruno;Suco 500ml;480;18;0;15;14;1;50;19644;325
+2026-10-06;L1;Noite;Carla;Suco 500ml;480;20;15;15;12;1;50;18060;194
+2026-10-06;L2;Manhã;Diego;Suco 500ml;480;23;0;0;9;1;60;24160;433
+2026-10-06;L2;Tarde;;Chá 1L;480;23;15;0;5;1;60;24029;308
+2026-10-06;L2;Noite;Fábio;Suco 500ml;480;94;0;0;26;2;60;18077;1047
+2026-10-06;L3;Manhã;Gustavo;Suco 500ml;480;0;15;10;13;0;50;19374;214
+2026-10-06;L3;Tarde;Helena;Suco 1L;480;20;15;0;15;1;50;19630;346
+2026-10-06;L3;Noite;Igor;Chá 1L;480;0;0;0;15;0;50;20320;282
+2026-10-07;L1;Manhã;Ana;Chá 1L;480;0;10;0;7;0;50;20490;265
+2026-10-07;L1;Tarde;Bruno;Suco 500ml;480;19;0;10;15;1;50;19791;260
+2026-10-07;L1;Noite;Carla;Suco 500ml;480;18;15;10;5;1;50;18823;336
+2026-10-07;L2;Manhã;Diego;Chá 1L;480;0;10;15;5;0;60;23385;339
+2026-10-07;L2;Tarde;Elisa;Suco 1L;480;0;20;0;6;0;60;24855;370
+2026-10-07;L2;Noite;Fábio;Suco 500ml;480;135;20;0;28;3;60;14358;858
+2026-10-07;L3;Manhã;Gustavo;Suco 500ml;480;21;10;0;7;1;50;19141;243
+2026-10-07;L3;Tarde;Helena;Suco 500ml;480;24;0;15;5;1;50;19016;334
+2026-10-07;L3;Noite;Igor;Suco 1L;480;0;20;0;13;0;50;19620;297
+2026-10-08;L1;Manhã;Ana;Suco 1L;480;24;10;15;10;1;50;19250;247
+2026-10-08;L1;Tarde;Bruno;Suco 1L;480;22;10;0;14;1;50;19718;352
+2026-10-08;L1;Noite;Carla;Suco 1L;480;0;15;0;8;0;50;20360;261
+2026-10-08;L2;Manhã;Diego;Suco 500ml;480;0;10;10;9;0;60;23586;350
+2026-10-08;L2;Tarde;Elisa;Suco 1L;480;24;10;0;6;1;60;23053;272
+2026-10-08;L2;Noite;Fábio;Chá 1L;480;129;15;15;29;3;60;14436;910
+2026-10-08;L3;Manhã;Gustavo;Chá 1L;480;0;0;10;8;0;50;20528;234
+2026-10-08;L3;Tarde;Helena;Suco 1L;480;18;15;10;11;1;50;19268;205
+2026-10-08;L3;Noite;Igor;Suco 1L;480;0;0;0;14;0;50;21302;350
+2026-10-09;L1;Manhã;Ana;Suco 1L;480;24;15;0;7;1;50;19376;214
+2026-10-09;L1;Tarde;Bruno;Suco 1L;480;23;0;15;7;1;50;19271;327
+2026-10-09;L1;Noite;Carla;Suco 500ml;480;0;0;0;13;0;50;20417;299
+2026-10-09;L2;Manhã;Diego;Chá 1L;480;21;0;0;10;1;60;24619;376
+2026-10-09;L2;Tarde;Elisa;Suco 500ml;480;24;20;0;13;1;60;22058;310
+2026-10-09;L2;Tarde;Elisa;Suco 500ml;480;24;20;0;13;1;60;22058;310
+2026-10-09;L2;Noite;Fábio;Chá 1L;480;98;0;0;24;2;60;17692;1141
+2026-10-09;L3;Manhã;Gustavo;Chá 1L;480;0;20;15;13;0;50;19201;311
+2026-10-09;L3;Tarde;Helena;Chá 1L;480;0;0;0;5;0;50;21525;302
+2026-10-09;L3;Noite;Igor;Chá 1L;480;0;0;10;10;0;50;20625;289
+2026-10-12;L1;Manhã;Ana;Suco 1L;480;0;10;10;13;0;50;19936;275
+2026-10-12;L1;Tarde;Bruno;Suco 1L;480;22;10;15;8;1;50;19345;214
+2026-10-12;L1;Noite;Carla;Chá 1L;480;21;10;0;15;1;50;18975;200
+2026-10-12;L2;Manhã;Diego;Suco 1L;480;24;0;0;15;1;60;23803;265
+2026-10-12;L2;Tarde;Elisa;Suco 1L;480;19;0;10;12;1;60;22909;351
+2026-10-12;L2;Noite;Fábio;Chá 1L;480;92;20;10;31;2;60;15888;895
+2026-10-12;L3;Manhã;Gustavo;Suco 500ml;480;18;10;15;12;1;50;18836;191
+2026-10-12;L3;Tarde;Helena;Suco 1L;480;22;10;15;6;1;50;18505;321
+2026-10-12;L3;Noite;Igor;Suco 1L;480;0;10;0;5;0;50;21258;243
+2026-10-13;L1;Manhã;Ana;Suco 500ml;480;24;10;10;7;1;50;19137;270
+2026-10-13;L1;Tarde;Bruno;Suco 1L;480;20;0;0;5;1;50;20656;236
+2026-10-13;L1;Noite;Carla;Suco 500ml;480;18;0;0;6;1;50;20439;240
+2026-10-13;L2;Manhã;Diego;Chá 1L;480;0;0;0;13;0;60;24799;429
+2026-10-13;L2;Tarde;Elisa;Suco 1L;480;0;20;0;6;0;60;25010;302
+2026-10-13;L2;Noite;Fábio;Suco 500ml;480;88;10;15;27;2;60;16774;1064
+2026-10-13;L3;Manhã;Gustavo;Chá 1L;480;24;0;0;5;1;50;19413;307
+2026-10-13;L3;Tarde;Helena;Suco 500ml;480;0;15;0;12;0;50;19623;324
+2026-10-13;L3;Noite;Igor;Suco 1L;480;21;20;10;13;1;50;18272;214
+2026-10-14;L1;Manhã;Ana;Suco 1L;480;19;0;10;10;1;50;20262;338
+2026-10-14;L1;Tarde;Bruno;Suco 500ml;480;0;10;10;7;0;50;19554;299
+2026-10-14;L1;Noite;Carla;Suco 1L;480;23;10;15;8;1;50;19113;198
+2026-10-14;L2;Manhã;Diego;Chá 1L;480;0;15;0;9;0;60;24127;304
+2026-10-14;L2;Tarde;Elisa;Suco 500ml;480;19;0;0;8;1;60;23956;239
+2026-10-14;L2;Noite;Fábio;Suco 1L;480;94;10;15;33;2;60;15988;1047
+2026-10-14;L3;Manhã;Gustavo;Suco 500ml;480;24;0;0;11;1;50;19918;261
+2026-10-14;L3;Tarde;Helena;Suco 1L;480;23;0;0;14;1;50;20321;341
+2026-10-14;L3;Noite;Igor;Suco 500ml;480;23;20;10;10;1;50;18832;262
+2026-10-15;L1;Manhã;Ana;Chá 1L;480;22;0;0;13;1;50;19972;316
+2026-10-15;L1;Tarde;Bruno;Suco 1L;480;0;0;15;15;0;50;20640;312
+2026-10-15;L1;Noite;Carla;Suco 1L;480;0;0;0;6;0;50;20917;284
+2026-10-15;L2;Manhã;Diego;Suco 1L;480;18;20;0;12;1;60;22596;308
+2026-10-15;L2;Tarde;Elisa;Suco 500ml;480;22;20;0;15;1;60;22627;361
+2026-10-15;L2;Noite;Fábio;Suco 500ml;480;123;10;0;26;3;60;16120;1120
+2026-10-15;L3;Manhã;Gustavo;Suco 1L;480;18;15;0;5;1;50;19824;300
+2026-10-15;L3;Tarde;Helena;Chá 1L;480;19;10;0;15;1;50;19720;245
+2026-10-15;L3;Noite;Igor;Chá 1L;480;0;15;0;12;0;50;19844;305
+2026-10-16;L1;Manhã;Ana;Suco 1L;480;0;15;0;13;0;50;19823;272
+2026-10-16;L1;Tarde;Bruno;Chá 1L;480;19;10;0;12;1;50;18900;258
+2026-10-16;L1;Noite;Carla;Chá 1L;480;20;15;0;8;1;50;18888;202
+2026-10-16;L2;Manhã;Diego;Suco 1L;480;20;10;0;14;1;60;23785;334
+2026-10-16;L2;Tarde;Elisa;Suco 500ml;480;20;0;10;12;1;60;23222;261
+2026-10-16;L2;Noite;Fábio;Suco 500ml;480;138;10;0;31;3;60;14787;775
+2026-10-16;L3;Manhã;Gustavo;Suco 1L;480;0;10;10;6;0;50;20802;240
+2026-10-16;L3;Tarde;Helena;Chá 1L;480;20;10;0;6;1;50;19615;352
+2026-10-16;L3;Noite;Igor;Chá 1L;480;0;15;0;5;0;50;20167;209`;
+
+const ELOS=[
+ {t:'Entender a base',q:'Os dados estão certos?',tec:'Papel + regra "não calcule ainda"',
+  why:'Dado sujo gera conta errada com cara de certa. Aqui deveriam ser 90 turnos (10 dias × 3 linhas × 3 turnos).',
+  p:'Você é engenheiro de produção sênior. Vou colar uma base de produção logo abaixo. Descreva cada coluna, aponte dados faltantes, linhas duplicadas e valores suspeitos. Ainda não calcule nada.\n\n[cole a base aqui]',
+  see:'A lista das 14 colunas e os problemas de qualidade dos dados.',
+  chk:'Procure a data 09/10 na base: a linha da L2, Tarde, aparece duas vezes?',
+  ans:'<p><b>91 registros</b> em vez de 90.</p><ul><li>Linha <b>duplicada</b>: 09/10 · L2 · Tarde.</li><li><b>Operador vazio</b>: 06/10 · L2 · Tarde.</li></ul>'},
+ {t:'Medir o OEE',q:'Qual linha rende menos?',tec:'Objetivo com a fórmula explícita',
+  why:'Dar a fórmula evita que a IA invente a própria definição de OEE.',
+  p:'Remova a linha duplicada. Calcule o OEE por linha: Disponibilidade = tempo operando ÷ tempo planejado; Performance = produzido ÷ (tempo operando × velocidade nominal); Qualidade = (produzido − refugo) ÷ produzido. Tempo operando = planejado − soma das paradas. Mostre uma tabela com os três fatores e o OEE.',
+  see:'Uma tabela com Disponibilidade, Performance, Qualidade e OEE das três linhas.',
+  chk:'Refaça na calculadora: 05/10 · L1 · Manhã → (20.004 − 215) ÷ (480 × 50) = 82,5%.',
+  ans:'<div class="tbl"><table><thead><tr><th>Linha</th><th class="n">Disp.</th><th class="n">Perf.</th><th class="n">Qual.</th><th class="n">OEE</th></tr></thead><tbody><tr><td>L1</td><td class="n">92,2%</td><td class="n">89,1%</td><td class="n">98,7%</td><td class="n"><b>81,1%</b></td></tr><tr class="hl"><td>L2</td><td class="n">84,2%</td><td class="n">87,3%</td><td class="n">97,4%</td><td class="n"><b>71,6%</b></td></tr><tr><td>L3</td><td class="n">92,5%</td><td class="n">89,0%</td><td class="n">98,6%</td><td class="n"><b>81,2%</b></td></tr></tbody></table></div><p class="small">A diferença está na Disponibilidade: a L2 fica mais tempo parada.</p>'},
+ {t:'Priorizar com Pareto',q:'Qual parada pesa mais na L2?',tec:'Objetivo focado em uma pergunta',
+  why:'O Pareto mostra onde agir primeiro.',
+  p:'Some os minutos parados da L2 por motivo e faça um Pareto, do maior para o menor, com % e % acumulado. Qual motivo responde pela maior parte da perda? Compare o setup da L2 com o das outras linhas.',
+  see:'Os quatro motivos em ordem, com setup em primeiro.',
+  chk:'Some a coluna parada_setup_min só da L2 e compare com o total.',
+  ans:'<div class="tbl"><table><thead><tr><th>Motivo</th><th class="n">Min</th><th class="n">%</th><th class="n">Acum.</th></tr></thead><tbody><tr><td>Setup</td><td class="n">1.351</td><td class="n">59%</td><td class="n">59%</td></tr><tr><td>Ajustes</td><td class="n">478</td><td class="n">21%</td><td class="n">80%</td></tr><tr><td>Quebra</td><td class="n">305</td><td class="n">13%</td><td class="n">94%</td></tr><tr><td>Falta de material</td><td class="n">140</td><td class="n">6%</td><td class="n">100%</td></tr></tbody></table></div><p class="small">Setup da L2: 1.351 min, contra 434 da L1 e 335 da L3.</p>'},
+ {t:'Investigar a causa',q:'A perda é igual em todos os turnos?',tec:'Decomposição: abrir por outra dimensão',
+  why:'Média esconde padrão. Abrir por turno mostra onde a perda acontece.',
+  p:'Abra o OEE de cada linha por turno. Para a L2, compare número de setups, tempo médio por setup, minutos de ajuste e % de refugo entre os turnos. Existe um padrão que não aparecia olhando a linha inteira?',
+  see:'Uma tabela linha × turno em que uma única célula se destaca.',
+  chk:'A "noite ruim" aparece em todos os 10 dias ou só em alguns?',
+  ans:'<div class="tbl"><table><thead><tr><th>L2</th><th class="n">OEE</th><th class="n">Trocas</th><th class="n">Min/troca</th><th class="n">Refugo</th></tr></thead><tbody><tr><td>Manhã</td><td class="n">81,9%</td><td class="n">5</td><td class="n">21</td><td class="n">1,4%</td></tr><tr><td>Tarde</td><td class="n">80,6%</td><td class="n">8</td><td class="n">22</td><td class="n">1,3%</td></tr><tr class="hl"><td>Noite</td><td class="n">52,3%</td><td class="n">24</td><td class="n">45</td><td class="n">6,1%</td></tr></tbody></table></div><p class="small"><b>A L2 não é ruim; o turno da noite da L2 é.</b> E isso acontece em todos os 10 dias.</p>'},
+ {pause:true,t:'Pausa: correlação não é causa',q:'A culpa é da equipe da noite?',
+  body:'<p>Não dá para afirmar. <b>Todos</b> os turnos com 2 ou mais trocas são da noite da L2: equipe e número de trocas andam juntos. Só com esses dados, não dá para separar um do outro.</p><p class="small muted">Analogia: venda de sorvete e afogamentos sobem juntos no verão. Sorvete não afoga ninguém; o calor causa os dois.</p><p>Pista: mesmo <b>por troca</b>, a noite leva 45 min contra 21 min no resto da fábrica. Isso aponta para o <b>método</b> de setup. Para separar as causas, faça um experimento: passe metade das trocas da L2 para o dia por 2 semanas e meça cada equipe.</p>',
+  p:'Existe alguma variável confundida nesta análise que impeça afirmar que a equipe da noite é a causa? Proponha um experimento simples para separar as causas.'},
+ {t:'Quantificar em reais',q:'Quanto isso custa por ano?',tec:'Regras com premissas explícitas',
+  why:'Diretor aprova projeto por valor. Premissas explícitas evitam que a IA invente preços.',
+  p:'Se o turno da noite da L2 produzisse tanto quanto a média dos turnos de dia da L2, quantas unidades boas a mais teríamos por turno? Com margem de R$ 0,40/un, refugo a R$ 1,50/un e 250 dias/ano, quanto a empresa perde por ano? Separe perda por produção e por refugo. Mostre as contas.',
+  see:'Dois valores separados e o total por ano, com as contas.',
+  chk:'Refaça na calculadora: diferença por turno × 0,40 × 250.',
+  ans:'<ul><li>Noite: <b>8.357 boas a menos</b> e <b>659 refugos a mais</b> por turno.</li><li>Margem perdida ≈ <b>R$ 836 mil/ano</b>.</li><li>Refugo extra ≈ <b>R$ 247 mil/ano</b>.</li><li><b>Total ≈ R$ 1,08 milhão por ano.</b></li></ul>'},
+ {t:'Simular o projeto',q:'Vale a pena investir?',tec:'Cadeia de pensamento + saída estruturada',
+  why:'Um número único esconde a incerteza. Uma faixa de resultados é mais honesta.',
+  p:'Simule um projeto de SMED, kit de troca rápida e treinamento na noite da L2, com investimento de R$ 190 mil. Faça um Monte Carlo com 20.000 cenários variando a redução do setup (25% a 55%, mais provável 40%), a redução do refugo (30% a 70%, mais provável 50%) e a margem (R$ 0,35 a R$ 0,45). Liste as premissas antes. Entregue P5, P50 e P95 do ganho anual, payback e VPL de 3 anos a 12% a.a., em tabela.',
+  see:'Uma tabela com cenário pessimista, provável e otimista.',
+  chk:'Pergunte: quais premissas mais mexem no resultado?',
+  ans:'<div class="tbl"><table><thead><tr><th>Cenário</th><th class="n">Ganho/ano</th><th class="n">Payback</th><th class="n">VPL 3 anos</th></tr></thead><tbody><tr><td>Pessimista</td><td class="n">R$ 347 mil</td><td class="n">6,6 meses</td><td class="n">R$ 644 mil</td></tr><tr><td><b>Provável</b></td><td class="n"><b>R$ 432 mil</b></td><td class="n"><b>5,3 meses</b></td><td class="n"><b>R$ 847 mil</b></td></tr><tr><td>Otimista</td><td class="n">R$ 519 mil</td><td class="n">4,4 meses</td><td class="n">R$ 1,06 mi</td></tr></tbody></table></div><p class="small muted">Como é simulação, seus números podem variar um pouco.</p>'},
+ {t:'Decidir e comunicar',q:'O que dizer ao CFO?',tec:'Papel + output (pirâmide de Minto)',
+  why:'Na pirâmide de Minto a recomendação vem na primeira linha; quem lê decide sem chegar ao fim.',
+  p:'Com base em toda a análise desta conversa, escreva um memorando de uma página para o CFO no formato pirâmide de Minto: recomendação primeiro, depois 3 argumentos com números, depois o próximo passo. Não invente números.',
+  see:'Um memorando curto que começa pela recomendação.',
+  chk:'Confira cada número do memorando com os elos anteriores.',
+  ans:'<p><b>Recomendação: manter a L2 e investir R$ 190 mil em padronização de setup no turno da noite.</b></p><ol class="small"><li>De dia a L2 opera com OEE de 81%: não é a máquina.</li><li>A perda está na noite (OEE 52%) e custa cerca de R$ 1,1 milhão por ano.</li><li>O investimento se paga em cerca de 5 meses.</li><li>Próximo passo: experimento de 2 semanas antes de qualquer decisão sobre pessoas.</li></ol>'}
+];
+
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KEY='guia-l2-v2'; let st={};
+try{st=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){st={};}
+st.mods=st.mods||{}; st.done=st.done||{}; st.quiz=st.quiz||{}; st.elos=st.elos||{};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}};
+
+/* módulos */
+const mods=$$('.mod'); let cur=0;
+function mlistHTML(){return mods.map((m,i)=>`<button class="mi${i===cur?' on':''}${st.mods[i]?' done':''}" data-go="${i}"><span class="n">${st.mods[i]?'✓':i}</span><span class="t"><b>${esc(m.dataset.t)}</b><span>${i===0?'Comece aqui':'Módulo '+i} · ${m.dataset.d}</span></span></button>`).join('');}
+function refresh(){
+  $('#mlist').innerHTML=mlistHTML(); $('#mlist2').innerHTML=mlistHTML();
+  const n=[1,2,3,4,5,6,7].filter(i=>st.mods[i]).length;
+  $('#pbar').style.width=$('#pbar2').style.width=(n/7*100)+'%';
+  $('#ptxt').textContent=`${n} de 7 módulos concluídos`;
+  $('#whichN').textContent=cur===0?'Comece aqui · toque para ver os módulos':`Módulo ${cur} de 7 · toque para ver todos`; $('#whichT').textContent=mods[cur].dataset.t;
+  $('#prevBtn').style.visibility=cur===0?'hidden':'visible';
+  $('#nextBtn').textContent=cur===0?'Começar →':cur===mods.length-1?(st.mods[cur]?'✓ Guia concluído':'Concluir o guia'):'Concluir e continuar →';
+  $$('input[data-id]').forEach(b=>{const t=b.closest('.task'); if(t)t.classList.toggle('done',b.checked);});
+}
+function show(i,scroll=true){
+  cur=Math.max(0,Math.min(mods.length-1,i)); mods.forEach((m,k)=>m.hidden=k!==cur);
+  st.last=cur; save(); refresh(); $('#sheet').hidden=true;
+  try{history.replaceState(null,'','#m'+cur);}catch(e){}
+  if(scroll) window.scrollTo(0,0);
+  if(cur===6) renderElo(st.eloCur||0);
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-go]'); if(b){show(+b.dataset.go);}});
+$('#prevBtn').onclick=()=>show(cur-1);
+$('#nextBtn').onclick=()=>{ if(cur>0){st.mods[cur]=true; save();} if(cur<mods.length-1) show(cur+1); else refresh(); };
+$('#whichBtn').onclick=()=>{$('#sheet').hidden=false;}; $('#sheetClose').onclick=()=>{$('#sheet').hidden=true;};
+$('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet')$('#sheet').hidden=true;});
+
+/* abas de técnicas */
+$('#techTabs').addEventListener('click',e=>{const b=e.target.closest('[data-t]'); if(!b)return; $$('#techTabs .pill').forEach(x=>x.setAttribute('aria-selected',String(x===b))); $$('.tech').forEach(t=>t.hidden=t.dataset.t!==b.dataset.t);});
+
+/* teste rápido */
+$$('.quiz').forEach(q=>{const opts=$$('.opt',q), fb=$('.fb',q), ok=+q.dataset.ok;
+  const mark=i=>{opts.forEach((o,k)=>{o.classList.remove('ok','no'); if(k===ok)o.classList.add('ok'); else if(k===i)o.classList.add('no');}); fb.hidden=false; fb.textContent=i===ok?fb.dataset.ok:fb.dataset.no;};
+  opts.forEach((o,i)=>o.onclick=()=>{st.quiz[q.dataset.q]=i; save(); mark(i);});
+  if(st.quiz[q.dataset.q]!=null) mark(st.quiz[q.dataset.q]);});
+
+/* exercícios */
+$$('input[data-id]').forEach(b=>{b.checked=!!st.done[b.dataset.id]; b.addEventListener('change',()=>{st.done[b.dataset.id]=b.checked; save(); refresh();});});
+
+/* CORPO */
+const fields=$$('[data-corpo]'); st.corpo=st.corpo||{};
+fields.forEach(f=>{if(typeof st.corpo[f.id]==='string')f.value=st.corpo[f.id]; f.addEventListener('input',()=>{st.corpo[f.id]=f.value; save(); corpo();});});
+function corpo(){$('#corpoTxt').textContent=['f-p','f-c','f-o','f-r','f-out'].map(id=>$('#'+id).value.trim()).filter(Boolean).join('\n\n');}
+corpo();
+
+/* elos */
+function renderElo(k){
+  st.eloCur=k; save(); const E=ELOS[k]; let n=0;
+  $('#eloNav').innerHTML=ELOS.map((e,i)=>{ if(e.pause) return `<button class="sn pause${i===k?' on':''}" data-elo="${i}" aria-label="Pausa crítica" title="Pausa crítica">!</button>`; n++; return `<button class="sn${i===k?' on':''}${st.elos[i]?' done':''}" data-elo="${i}" aria-label="Elo ${n}">${st.elos[i]?'✓':n}</button>`; }).join('');
+  const num=ELOS.slice(0,k+1).filter(e=>!e.pause).length;
+  const prev=k>0?`<button class="btn ghost" data-elo="${k-1}">← Anterior</button>`:'<span></span>';
+  const next=k<ELOS.length-1?`<button class="btn" data-elo="${k+1}" data-mark="${k}">Feito, próximo →</button>`:`<button class="btn" data-mark="${k}">${st.elos[k]?'✓ Elo concluído':'Marcar como feito'}</button>`;
+  if(E.pause){
+    $('#eloBox').innerHTML=`<div class="elo"><div class="elo-h"><span class="lab">Pausa crítica · depois do Elo 4</span><h3>${E.t}</h3><span class="muted">${E.q}</span></div>${E.body}<div class="prompt"><span class="pl">Pergunte à IA</span><button class="pill cp" data-copy>Copiar</button>${esc(E.p)}</div><div class="elo-nav">${prev}${next}</div></div>`;
+  } else {
+    $('#eloBox').innerHTML=`<div class="elo">
+      <div class="elo-h"><span class="lab">Elo ${num} de 7 · técnica: ${E.tec}</span><h3>${E.t}</h3><span class="muted">${E.q}</span></div>
+      <p class="small"><b>Por quê:</b> ${E.why}</p>
+      <div class="prompt"><span class="pl">1 · Copie e envie</span><button class="pill cp" data-copy>Copiar</button>${esc(E.p)}</div>
+      ${k===0?'<button class="btn ghost" data-copy-csv style="align-self:flex-start">Copiar base de dados</button>':''}
+      <div class="split"><div class="box fill"><span class="k">2 · O que observar</span><p class="small">${E.see}</p></div><div class="box fill"><span class="k">3 · Confira</span><p class="small">${E.chk}</p></div></div>
+      <details><summary>4 · Gabarito</summary>${E.ans}</details>
+      <div class="elo-nav">${prev}${next}</div></div>`;
+  }
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-elo],[data-mark]'); if(!b||!b.closest('#eloBox,#eloNav'))return;
+  if(b.dataset.mark!=null){st.elos[+b.dataset.mark]=true; save();}
+  renderElo(b.dataset.elo!=null?+b.dataset.elo:+b.dataset.mark); $('#eloNav').scrollIntoView({block:'start',behavior:'smooth'});});
+$('#cola').innerHTML=ELOS.filter(e=>!e.pause).map((e,i)=>`<tr><td>${i+1} · ${e.t}</td><td>${e.q}</td></tr>`).join('');
+
+/* copiar */
+function toast(m){const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('on'),1600);}
+async function copyText(text){try{await navigator.clipboard.writeText(text);return true;}catch(e){try{const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.append(ta); ta.select(); const ok=document.execCommand('copy'); ta.remove(); return ok;}catch(e2){return false;}}}
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-copy],[data-copy-el],[data-copy-csv]'); if(!b)return;
+  let text; if(b.hasAttribute('data-copy-csv'))text=RAW; else if(b.dataset.copyEl)text=$('#'+b.dataset.copyEl).textContent; else {const box=b.closest('.prompt'); const cl=box.cloneNode(true); $$('.cp,.pl',cl).forEach(x=>x.remove()); text=cl.textContent.trim();}
+  toast(await copyText(text)?'Copiado':'Não consegui copiar. Selecione o texto e copie.');});
+
+/* tema */
+const theme=()=>{const r=document.documentElement; const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme=dark?'light':'dark';};
+$('#themeBtn').onclick=theme; $('#themeBtn2').onclick=theme;
+
+/* início */
+(function(){const m=(location.hash||'').match(/^#m(\d)$/); const start=m?+m[1]:(typeof st.last==='number'?st.last:0); show(start,false);})();
+</script>
+
+</body>
+</html>
