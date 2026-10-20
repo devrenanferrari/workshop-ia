@@ -345,7 +345,8 @@ tr.crit td{background:var(--bad-soft)}
 .ti.go{box-shadow:0 0 0 1.5px var(--fg) inset}
 .code{font-family:var(--f-mono);font-size:.86rem;background:var(--surface);border-radius:14px;padding:.9rem 1rem;white-space:pre-wrap;line-height:1.55}
 .verdict{display:inline-flex;align-self:flex-start;align-items:center;gap:.4rem;font-size:.85rem;font-weight:500;border-radius:999px;padding:.2rem .7rem}
-.verdict.no{background:var(--bad-soft);color:var(--bad)}.verdict.ok{background:var(--good-soft);color:var(--good)}
+.verdict.no{background:var(--bad-soft);color:var(--bad)}.verdict.ok{background:var(--good-soft);color:var(--good)}.verdict.mid{background:rgba(183,121,31,.12);color:var(--warn)}
+.vd-grid .voice{gap:.6rem}.vd-grid .voice q{font-size:1.25rem;font-weight:600;letter-spacing:-.015em}
 .cot-steps{display:flex;flex-direction:column;gap:.45rem;margin:0;padding:0;list-style:none}
 .cot-steps li{display:grid;grid-template-columns:1.7rem 1fr;gap:.6rem;align-items:baseline;animation:rise .45s ease both}
 .cot-steps li span.n{width:1.7rem;height:1.7rem;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;font-size:.8rem;font-weight:600}
@@ -505,7 +506,6 @@ tr.crit td{background:var(--bad-soft)}
 </head>
 <body>
 
-
 <div class="deck" id="deck">
 
 <!-- ================= ABERTURA ================= -->
@@ -521,13 +521,39 @@ tr.crit td{background:var(--bad-soft)}
   <aside class="notes"><p><b>Fala (30 s):</b> "Hoje vocês vão aprender a conversar com uma IA do jeito que um engenheiro conversa: com método. E vão usar isso para resolver um problema que vale R$ 1 milhão por ano."</p></aside>
 </section>
 
+<section class="slide" data-sec="Abertura" data-title="O problema" data-id="email">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">O problema que vamos resolver hoje · Envasa Bebidas</p>
+    <div class="mail rise" style="--i:1">
+      <div class="mail-head"><span>De</span><span>Ricardo Albuquerque, CFO</span><span>Para</span><span>Mariana Couto, Gerente Industrial</span><span>Assunto</span><span><b>Linha 2</b></span></div>
+      <div class="mail-body" id="mailBody"></div>
+    </div>
+    <div class="voices rise" style="--i:2">
+      <div class="voice"><div class="who">Supervisor da noite</div><q>O problema é a máquina.</q></div>
+      <div class="voice"><div class="who">Fornecedor da L2</div><q>A máquina está perfeita. É a operação.</q></div>
+      <div class="voice"><div class="who">PCP</div><q>Eu só programo conforme a demanda.</q></div>
+    </div>
+    <p class="say rise" style="--i:3">Três opiniões, nenhum dado. <b>Hoje vocês são a equipe da Mariana:</b> até o fim da aula, vão responder ao CFO com números.</p>
+  </div>
+  <aside class="notes"><p>Leia o e-mail em voz alta. Enquete rápida: "Quem acha que o problema é a máquina? Quem acha que é a operação?" Anote o placar: ele volta no slide "Quem tinha razão?", no fim do experimento.</p></aside>
+</section>
+
+<section class="slide" data-sec="Abertura" data-title="A fábrica em movimento" data-id="simA">
+  <div class="wrap" style="max-width:86rem;gap:1.1rem;padding-block:1.2rem 1rem">
+    <p class="eyebrow rise" style="--i:0">O problema, em movimento · simulação</p>
+    <h2 class="rise" style="--i:1">A L2 é a mais rápida. Por que entrega menos?</h2>
+    <div class="rise" style="--i:2" id="simA"></div>
+  </div>
+  <aside class="notes"><p>Deixe rodar em 2x ou 4x passando pelos três turnos. Pergunte: "o que vocês estão vendo de diferente na linha do meio?" Colete palpites, mas não confirme nenhum: quem confirma são os dados, no Elo 4. O botão "Mostrar a causa" fica para depois do Elo 4.</p><p>Transição: "Hoje vocês vão aprender a usar IA para responder a essa pergunta com método."</p><p>A simulação reproduz, acelerado, o padrão da base de dados: 1 segundo ≈ 40 minutos de fábrica.</p></aside>
+</section>
+
 <section class="slide" data-sec="Abertura" data-title="Propósito" data-id="proposito">
   <div class="wrap">
     <p class="eyebrow rise" style="--i:0">Por que estamos aqui</p>
     <h2 class="rise" style="--i:1">Usar IA como um engenheiro usa qualquer ferramenta: com método e senso crítico</h2>
     <div class="purpose rise" style="--i:2">
       <div class="card"><span class="k">Como a maioria usa</span><h3>Um buscador que conversa</h3><p class="muted">Pergunta vaga, resposta genérica e ninguém confere. Às vezes ajuda, às vezes engana.</p><div class="ex"><span class="u">"me ajuda a melhorar a produção"</span><span>"Aqui estão 10 dicas gerais…"</span></div></div>
-      <div class="card"><span class="k">O que muda hoje</span><h3>Um parceiro de análise</h3><p class="muted">Você entende como ela funciona, dá contexto, quebra o problema em etapas e confere cada resultado.</p><div class="ex"><span class="u">7 prompts encadeados e 7 checagens</span><span>"A perda está no turno da noite da L2."</span></div></div>
+      <div class="card"><span class="k">O que muda hoje</span><h3>Um parceiro de análise</h3><p class="muted">Você entende como ela funciona, dá contexto, quebra o problema em etapas e confere cada resultado.</p><div class="ex"><span class="u">7 prompts encadeados e 7 checagens</span><span>"A perda está aqui, custa isto por ano e o projeto se paga em tantos meses."</span></div></div>
       <div class="card" style="background:var(--fg);color:var(--bg)"><span class="k" style="color:var(--bg);opacity:.7">Onde você chega</span><h3>Uma decisão com número</h3><p style="opacity:.8">Da planilha crua ao memorando para o CFO, em menos de uma hora, entendendo cada passo.</p></div>
     </div>
     <p class="say rise" style="--i:3"><b>Propósito:</b> sair daqui capaz de transformar uma pergunta vaga em uma decisão sustentada por dados, usando IA com método e sem perder o senso crítico de engenheiro.</p>
@@ -580,37 +606,13 @@ tr.crit td{background:var(--bad-soft)}
       <div class="ag"><span class="t">20–32</span><span class="l">System, user e assistant</span><span class="d">como uma conversa é montada</span></div>
       <div class="ag"><span class="t">32–50</span><span class="l">Escrevendo bons prompts</span><span class="d">método CORPO e tipos de prompt</span></div>
       <div class="ag hl"><span class="t">50–83</span><span class="l">O experimento</span><span class="d">7 elos para resolver o caso</span></div>
-      <div class="ag"><span class="t">83–90</span><span class="l">Debate e fechamento</span><span class="d">o que levar</span></div>
+      <div class="ag"><span class="t">83–90</span><span class="l">Veredito, debate e fechamento</span><span class="d">quem tinha razão e o que levar</span></div>
     </div>
   </div>
   <aside class="notes"><p>Se o tempo apertar, encurte "Ferramentas" ou o debate. Nunca o experimento.</p></aside>
 </section>
 
-<section class="slide" data-sec="Abertura" data-title="O problema" data-id="email">
-  <div class="wrap">
-    <p class="eyebrow rise" style="--i:0">O problema que vamos resolver hoje</p>
-    <div class="mail rise" style="--i:1">
-      <div class="mail-head"><span>De</span><span>Ricardo Albuquerque, CFO</span><span>Para</span><span>Mariana Couto, Gerente Industrial</span><span>Assunto</span><span><b>Linha 2</b></span></div>
-      <div class="mail-body" id="mailBody"></div>
-    </div>
-    <div class="voices rise" style="--i:2">
-      <div class="voice"><div class="who">Supervisor da noite</div><q>O problema é a máquina.</q></div>
-      <div class="voice"><div class="who">Fornecedor da L2</div><q>A máquina está perfeita. É a operação.</q></div>
-      <div class="voice"><div class="who">PCP</div><q>Eu só programo conforme a demanda.</q></div>
-    </div>
-    <p class="say rise" style="--i:3">Três opiniões, nenhum dado. No final da aula, vocês vão responder ao CFO com números. Mas antes, precisamos entender a ferramenta.</p>
-  </div>
-  <aside class="notes"><p>Leia o e-mail em voz alta. Enquete rápida: "Quem acha que o problema é a máquina?" Guarde o resultado para o Elo 4.</p></aside>
-</section>
 
-<section class="slide" data-sec="Abertura" data-title="A fábrica em movimento" data-id="simA">
-  <div class="wrap" style="max-width:86rem;gap:1.1rem">
-    <p class="eyebrow rise" style="--i:0">O problema, em movimento · simulação</p>
-    <h2 class="rise" style="--i:1">A L2 é a mais rápida. Por que entrega menos?</h2>
-    <div class="rise" style="--i:2" id="simA"></div>
-  </div>
-  <aside class="notes"><p>Deixe rodar em 2x ou 4x passando pelos três turnos. Pergunte: "o que vocês estão vendo de diferente na linha do meio?" Não revele a causa; o botão "Mostrar a causa" fica para depois do Elo 4.</p><p>A simulação reproduz, acelerado, o padrão da base de dados: 1 segundo ≈ 40 minutos de fábrica.</p></aside>
-</section>
 
 <!-- ================= PARTE 1 ================= -->
 <section class="slide bpw" data-sec="Como a IA funciona" data-title="O que é um LLM" data-id="llm">
@@ -846,7 +848,7 @@ tr.crit td{background:var(--bad-soft)}
       </div>
     </div>
   </div>
-  <aside class="notes"><p><b>Ordem sugerida:</b> Objetivo → Contexto → Papel → Regras → Output. Comente cada mudança.</p><p><b>Ponto alto:</b> sem "Regras", a IA usa a linha duplicada e o OEE da L2 sai diferente. Ligue "Regras" e mostre a correção.</p><p>Respostas simuladas, mas com os números reais do caso.</p></aside>
+  <aside class="notes"><p><b>Ordem sugerida:</b> Objetivo → Contexto → Papel → Regras → Output. Comente cada mudança.</p><p><b>Ponto alto:</b> sem "Regras", a IA usa a linha repetida e conta um turno da L2 que não existiu (22 mil garrafas a mais). O OEE quase não muda, mas totais e médias saem errados. Ligue "Regras" e mostre a correção.</p><p>Respostas simuladas, mas com os números reais do caso.</p></aside>
 </section>
 
 <section class="slide" data-sec="Bons prompts" data-title="Tipos de prompt" data-id="tipos">
@@ -961,6 +963,53 @@ Classifique: "falta de tampa"</div>
 </section>
 
 <!-- ================= EXPERIMENTO ================= -->
+<section class="slide" data-sec="O experimento" data-title="O caso Envasa" data-id="caso">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 4 · De volta à L2 <span class="guide">Guia · <b>Módulo 5</b></span></p>
+    <h2 class="rise" style="--i:1">Envasa Bebidas: três linhas, três turnos, duas semanas</h2>
+    <p class="lead rise" style="--i:1">Lembra do e-mail? O CFO quer a resposta até sexta: <b>investir para corrigir a L2 ou parar de programar produto nela?</b> Agora vocês têm a ferramenta. Vamos aos dados.</p>
+    <div class="grid g3 rise" style="--i:2">
+      <div class="card"><span class="k">Linha 1</span><span class="bigmoney" style="font-size:2.4rem">50 <span class="small muted">un/min</span></span><p class="small muted">Antiga</p></div>
+      <div class="card" style="background:var(--fg);color:var(--bg)"><span class="k" style="color:var(--bg);opacity:.75">Linha 2</span><span class="bigmoney" style="font-size:2.4rem">60 <span class="small" style="opacity:.7">un/min</span></span><p class="small" style="opacity:.75">Nova · R$ 4 milhões há 18 meses</p></div>
+      <div class="card"><span class="k">Linha 3</span><span class="bigmoney" style="font-size:2.4rem">50 <span class="small muted">un/min</span></span><p class="small muted">Antiga</p></div>
+    </div>
+    <div class="row rise" style="--i:3">
+      <div class="stat"><span class="v">R$ 0,40</span><span class="l">margem por unidade boa</span></div>
+      <div class="stat"><span class="v">R$ 1,50</span><span class="l">custo por unidade refugada</span></div>
+      <div class="stat"><span class="v">250</span><span class="l">dias por ano</span></div>
+      <div class="stat"><span class="v">480 min</span><span class="l">por turno</span></div>
+    </div>
+    <p class="say rise" style="--i:4">A base tem uma linha por turno: paradas por motivo, número de trocas, produção e refugo. São 91 registros, com <b>dois defeitos escondidos</b> de propósito.</p>
+  </div>
+  <aside class="notes"><p>Retome a história: "Faz 45 minutos que o CFO mandou o e-mail. Agora vocês sabem conversar com a IA. Vamos resolver."</p><p>Peça para copiarem a base no guia (Módulo 5 ou Elo 1 do Módulo 6). Ela será colada junto com o prompt do Elo 1.</p></aside>
+</section>
+
+<section class="slide bpw" data-sec="O experimento" data-title="O que é OEE" data-id="oee">
+<!--bp--><div class="bp" style="--bp-w:22rem;--bp-t:1.5rem" aria-hidden="true"><svg viewBox="0 6 330 236" font-size="10" xmlns="http://www.w3.org/2000/svg"><line class="c" x1="24" y1="112" x2="160" y2="112"/><line class="c" x1="92" y1="44" x2="92" y2="180"/><line class="c" x1="133.3" y1="89.7" x2="229.3" y2="89.7"/><line class="c" x1="181.3" y1="41.7" x2="181.3" y2="137.7"/><line class="c" x1="192.5" y1="126.7" x2="264.5" y2="126.7"/><line class="c" x1="228.5" y1="90.7" x2="228.5" y2="162.7"/><g class="spin" style="--T:42s"><circle class="nb" cx="92" cy="112" r="61"/><polygon class="f" points="140.5,96.1 149.8,95.8 150.6,99.2 142.2,103.2 142.6,105.3 142.8,107.3 151.9,109.1 152,112.6 142.9,114.6 142.8,116.7 142.6,118.7 151.1,122.5 150.4,125.9 141.1,125.9 140.5,127.9 139.8,129.8 147.3,135.3 145.8,138.5 136.7,136.5 135.7,138.3 134.6,140 140.7,147.1 138.6,149.8 130.2,145.8 128.8,147.3 127.3,148.8 131.7,157 129,159.3 121.7,153.5 120,154.6 118.2,155.7 120.7,164.7 117.5,166.3 111.7,159 109.8,159.8 107.9,160.5 108.2,169.8 104.8,170.6 100.8,162.2 98.7,162.6 96.7,162.8 94.9,171.9 91.4,172 89.4,162.9 87.3,162.8 85.3,162.6 81.5,171.1 78.1,170.4 78.1,161.1 76.1,160.5 74.2,159.8 68.7,167.3 65.5,165.8 67.5,156.7 65.7,155.7 64,154.6 56.9,160.7 54.2,158.6 58.2,150.2 56.7,148.8 55.2,147.3 47,151.7 44.7,149 50.5,141.7 49.4,140 48.3,138.2 39.3,140.7 37.7,137.5 45,131.7 44.2,129.8 43.5,127.9 34.2,128.2 33.4,124.8 41.8,120.8 41.4,118.7 41.2,116.7 32.1,114.9 32,111.4 41.1,109.4 41.2,107.3 41.4,105.3 32.9,101.5 33.6,98.1 42.9,98.1 43.5,96.1 44.2,94.2 36.7,88.7 38.2,85.5 47.3,87.5 48.3,85.7 49.4,84 43.3,76.9 45.4,74.2 53.8,78.2 55.2,76.7 56.7,75.2 52.3,67 55,64.7 62.3,70.5 64,69.4 65.8,68.3 63.3,59.3 66.5,57.7 72.3,65 74.2,64.2 76.1,63.5 75.8,54.2 79.2,53.4 83.2,61.8 85.3,61.4 87.3,61.2 89.1,52.1 92.6,52 94.6,61.1 96.7,61.2 98.7,61.4 102.5,52.9 105.9,53.6 105.9,62.9 107.9,63.5 109.8,64.2 115.3,56.7 118.5,58.2 116.5,67.3 118.3,68.3 120,69.4 127.1,63.3 129.8,65.4 125.8,73.8 127.3,75.2 128.8,76.7 137,72.3 139.3,75 133.5,82.3 134.6,84 135.7,85.8 144.7,83.3 146.3,86.5 139,92.3 139.8,94.2"/><circle class="c" cx="92" cy="112" r="56"/><circle class="ln" cx="92" cy="112" r="15"/><circle class="ln" cx="92" cy="112" r="7"/><rect class="f" x="90.2" y="102.6" width="3.6" height="3.4"/><circle class="ln" cx="125" cy="112" r="8"/><circle class="ln" cx="102.2" cy="143.4" r="8"/><circle class="ln" cx="65.3" cy="131.4" r="8"/><circle class="ln" cx="65.3" cy="92.6" r="8"/><circle class="ln" cx="102.2" cy="80.6" r="8"/></g><g class="spin ccw" style="--T:27s"><circle class="nb" cx="181.3" cy="89.7" r="41"/><polygon class="f" points="150.8,95.3 141.5,94.3 141.3,90.7 150.3,88.4 150.4,86.5 150.7,84.6 142.4,80.5 143.4,77 152.6,77.9 153.4,76.2 154.3,74.4 147.9,67.7 150,64.8 158.4,68.8 159.7,67.4 161.2,66.1 157.4,57.6 160.4,55.6 166.9,62.3 168.7,61.4 170.5,60.7 169.8,51.4 173.4,50.5 177.2,59 179.1,58.8 181.1,58.7 183.6,49.8 187.2,50.2 187.9,59.5 189.8,59.9 191.7,60.5 197.2,53 200.4,54.6 197.9,63.6 199.5,64.7 201,65.9 208.8,60.7 211.3,63.3 205.8,70.8 207,72.4 208,74.1 217,71.8 218.5,75.1 210.8,80.4 211.3,82.2 211.8,84.1 221,85.1 221.3,88.8 212.2,91 212.1,93 211.8,94.9 220.2,99 219.2,102.5 209.9,101.6 209.1,103.3 208.2,105.1 214.7,111.8 212.5,114.7 204.2,110.6 202.8,112 201.4,113.4 205.1,121.9 202.1,123.9 195.6,117.2 193.9,118.1 192.1,118.8 192.7,128.1 189.2,129 185.4,120.5 183.4,120.7 181.5,120.7 178.9,129.7 175.3,129.3 174.6,120 172.7,119.5 170.9,118.9 165.4,126.5 162.1,124.9 164.7,115.9 163,114.8 161.5,113.6 153.8,118.8 151.3,116.2 156.7,108.7 155.6,107.1 154.5,105.4 145.5,107.7 144,104.3 151.7,99.1 151.2,97.2"/><circle class="c" cx="181.3" cy="89.7" r="36"/><circle class="ln" cx="181.3" cy="89.7" r="11"/><circle class="ln" cx="181.3" cy="89.7" r="5"/><rect class="f" x="179.5" y="82.3" width="3.6" height="3.4"/><circle class="ln" cx="202.3" cy="89.7" r="4.5"/><circle class="ln" cx="181.3" cy="110.7" r="4.5"/><circle class="ln" cx="160.3" cy="89.7" r="4.5"/><circle class="ln" cx="181.3" cy="68.7" r="4.5"/></g><g class="spin" style="--T:18s"><circle class="nb" cx="228.5" cy="126.7" r="29"/><polygon class="f" points="210.3,121.3 202.6,116.1 204.3,112.7 213.1,115.6 214.2,114.2 215.4,112.9 211.3,104.6 214.5,102.5 220.7,109.4 222.4,108.7 224.1,108.2 224.7,98.9 228.5,98.7 230.4,107.8 232.2,108 233.9,108.5 239.1,100.7 242.5,102.4 239.6,111.2 241,112.3 242.3,113.6 250.6,109.5 252.8,112.6 245.9,118.8 246.5,120.5 247,122.2 256.3,122.8 256.5,126.6 247.5,128.5 247.2,130.3 246.8,132 254.5,137.2 252.8,140.6 244,137.7 242.9,139.1 241.7,140.4 245.7,148.8 242.6,150.9 236.4,144 234.7,144.6 233,145.2 232.4,154.4 228.6,154.7 226.7,145.6 224.9,145.3 223.2,144.9 218,152.6 214.6,151 217.5,142.1 216.1,141 214.8,139.8 206.5,143.9 204.3,140.7 211.2,134.5 210.6,132.9 210.1,131.2 200.8,130.5 200.5,126.7 209.6,124.8 209.9,123.1"/><circle class="c" cx="228.5" cy="126.7" r="24"/><circle class="ln" cx="228.5" cy="126.7" r="8"/><circle class="ln" cx="228.5" cy="126.7" r="4"/><rect class="f" x="226.7" y="120.3" width="3.6" height="3.4"/></g><g class="an" style="--dl:0.5s"><circle class="dot" cx="51.7" cy="71.7" r="1.7"/><line class="ln ld" x1="51.7" y1="71.7" x2="7" y2="30"/><circle class="f" cx="16" cy="30" r="9"/><text x="16" y="33.5" text-anchor="middle" font-weight="600">D</text><text x="32" y="29" font-weight="600">DISPONIBILIDADE</text><circle class="dot" cx="181.3" cy="51.7" r="1.7"/><line class="ln ld" x1="181.3" y1="51.7" x2="178.3" y2="22"/><circle class="f" cx="187.3" cy="22" r="9"/><text x="187.3" y="25.5" text-anchor="middle" font-weight="600">P</text><text x="203.3" y="21" font-weight="600">PERFORMANCE</text><circle class="dot" cx="233.3" cy="153.7" r="1.7"/><line class="ln ld" x1="233.3" y1="153.7" x2="199.5" y2="184.7"/><circle class="f" cx="208.5" cy="184.7" r="9"/><text x="208.5" y="188.2" text-anchor="middle" font-weight="600">Q</text><text x="224.5" y="183.7" font-weight="600">QUALIDADE</text><text x="16" y="232" class="sub">OEE = D × P × Q · TREM DE ENGRENAGENS · DES. 07</text></g></svg></div><!--/bp-->
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 4 · Conceito antes de calcular</p>
+    <h2 class="rise" style="--i:1">OEE: de tudo que dava para produzir, quanto virou produto bom?</h2>
+    <div class="row rise" style="--i:2" id="oeeSel" role="tablist">
+      <button class="pill" data-g="L1" aria-selected="true">L1 · antiga</button>
+      <button class="pill" data-g="L2" aria-selected="false">L2 · nova</button>
+      <button class="pill" data-g="L3" aria-selected="false">L3 · antiga</button>
+    </div>
+    <div class="rise" style="--i:3;display:flex;flex-direction:column;gap:.5rem">
+      <p class="small muted">Um turno médio de 480 minutos, dividido em onde o tempo foi parar</p>
+      <div class="oee-bar" id="oeeBar"></div>
+      <div class="oee-scale"><span>0 min</span><span>120</span><span>240</span><span>360</span><span>480 min</span></div>
+      <div class="legend"><span><i style="background:var(--fg)"></i>Produto bom</span><span><i style="background:var(--c1)"></i>Parada</span><span><i style="background:var(--c2)"></i>Lentidão</span><span><i style="background:var(--bad)"></i>Refugo</span></div>
+    </div>
+    <div class="formula rise" style="--i:4" id="oeeFormula"></div>
+    <div class="grid g3 rise" style="--i:5">
+      <div class="card"><span class="k">Disponibilidade</span><p class="small">A máquina ficou ligada? Tempo rodando ÷ tempo planejado. <b>Cai com paradas.</b></p></div>
+      <div class="card"><span class="k">Performance</span><p class="small">Rodou na velocidade certa? O que produziu ÷ o que daria na velocidade nominal. <b>Cai com lentidão.</b></p></div>
+      <div class="card"><span class="k">Qualidade</span><p class="small">O que saiu prestava? Unidades boas ÷ produzidas. <b>Cai com refugo.</b></p></div>
+    </div>
+  </div>
+  <aside class="notes"><p>Clique em L1, depois em L2. Pergunte: "que pedaço da barra cresceu?" A parada. É isso que o Elo 2 vai medir.</p><p>Não fale de turnos ainda: a descoberta da noite fica para o Elo 4.</p></aside>
+</section>
+
 <section class="slide bpw" data-sec="O experimento" data-title="Como vamos trabalhar" data-id="chain">
 <!--bp--><div class="bp" style="--bp-w:30rem;--bp-t:2rem" aria-hidden="true"><svg viewBox="0 10 470 150" font-size="10" xmlns="http://www.w3.org/2000/svg"><line class="c" x1="10" y1="70" x2="462" y2="70"/><g class="fi" style="--dl:0.2s"><path class="f" d="M96 55Q124 60 152 55A15 15 0 0 1 152 85Q124 80 96 85A15 15 0 0 1 96 55Z"/></g><g class="fi" style="--dl:0.4s"><path class="f" d="M208 55Q236 60 264 55A15 15 0 0 1 264 85Q236 80 208 85A15 15 0 0 1 208 55Z"/></g><g class="fi" style="--dl:0.6s"><path class="f" d="M320 55Q348 60 376 55A15 15 0 0 1 376 85Q348 80 320 85A15 15 0 0 1 320 55Z"/></g><g class="fi" style="--dl:0.1s"><circle class="f" cx="40" cy="70" r="12.5"/><circle class="ln tl" cx="40" cy="70" r="7"/></g><g class="fi" style="--dl:0.1s"><circle class="f" cx="96" cy="70" r="12.5"/><circle class="ln tl" cx="96" cy="70" r="7"/></g><g class="fi" style="--dl:0.2s"><circle class="f" cx="152" cy="70" r="12.5"/><circle class="ln tl" cx="152" cy="70" r="7"/></g><g class="fi" style="--dl:0.30000000000000004s"><circle class="f" cx="208" cy="70" r="12.5"/><circle class="ln tl" cx="208" cy="70" r="7"/></g><g class="fi" style="--dl:0.4s"><circle class="f" cx="264" cy="70" r="12.5"/><circle class="ln tl" cx="264" cy="70" r="7"/></g><g class="fi" style="--dl:0.5s"><circle class="f" cx="320" cy="70" r="12.5"/><circle class="ln tl" cx="320" cy="70" r="7"/></g><g class="fi" style="--dl:0.6s"><circle class="f" cx="376" cy="70" r="12.5"/><circle class="ln tl" cx="376" cy="70" r="7"/></g><g class="fi" style="--dl:0.7000000000000001s"><circle class="f" cx="432" cy="70" r="12.5"/><circle class="ln tl" cx="432" cy="70" r="7"/></g><g class="fi" style="--dl:0.1s"><path class="f" d="M40 52Q68 57.5 96 52A18 18 0 0 1 96 88Q68 82.5 40 88A18 18 0 0 1 40 52Z"/><circle class="ln" cx="40" cy="70" r="5"/><circle class="ln" cx="96" cy="70" r="5"/><circle class="dot" cx="40" cy="70" r="1.6"/><circle class="dot" cx="96" cy="70" r="1.6"/></g><g class="fi" style="--dl:0.30000000000000004s"><path class="f" d="M152 52Q180 57.5 208 52A18 18 0 0 1 208 88Q180 82.5 152 88A18 18 0 0 1 152 52Z"/><circle class="ln" cx="152" cy="70" r="5"/><circle class="ln" cx="208" cy="70" r="5"/><circle class="dot" cx="152" cy="70" r="1.6"/><circle class="dot" cx="208" cy="70" r="1.6"/></g><g class="fi" style="--dl:0.5s"><path class="f" d="M264 52Q292 57.5 320 52A18 18 0 0 1 320 88Q292 82.5 264 88A18 18 0 0 1 264 52Z"/><circle class="ln" cx="264" cy="70" r="5"/><circle class="ln" cx="320" cy="70" r="5"/><circle class="dot" cx="264" cy="70" r="1.6"/><circle class="dot" cx="320" cy="70" r="1.6"/></g><g class="fi" style="--dl:0.7000000000000001s"><path class="f" d="M376 52Q404 57.5 432 52A18 18 0 0 1 432 88Q404 82.5 376 88A18 18 0 0 1 376 52Z"/><circle class="ln" cx="376" cy="70" r="5"/><circle class="ln" cx="432" cy="70" r="5"/><circle class="dot" cx="376" cy="70" r="1.6"/><circle class="dot" cx="432" cy="70" r="1.6"/></g><g class="fi" style="--dl:0.1s"><circle class="h" cx="40" cy="70" r="12.5"/></g><g class="fi" style="--dl:0.1s"><circle class="h" cx="96" cy="70" r="12.5"/></g><g class="fi" style="--dl:0.2s"><circle class="h" cx="152" cy="70" r="12.5"/></g><g class="fi" style="--dl:0.30000000000000004s"><circle class="h" cx="208" cy="70" r="12.5"/></g><g class="fi" style="--dl:0.4s"><circle class="h" cx="264" cy="70" r="12.5"/></g><g class="fi" style="--dl:0.5s"><circle class="h" cx="320" cy="70" r="12.5"/></g><g class="fi" style="--dl:0.6s"><circle class="h" cx="376" cy="70" r="12.5"/></g><g class="fi" style="--dl:0.7000000000000001s"><circle class="h" cx="432" cy="70" r="12.5"/></g><g class="an" style="--dl:0.9s"><line class="dim" x1="40" y1="48" x2="40" y2="22"/><line class="dim" x1="96" y1="48" x2="96" y2="22"/><line class="dim" x1="40" y1="28" x2="96" y2="28"/><polygon class="dot" points="40,28 46,25.9 46,30.1"/><polygon class="dot" points="96,28 90,30.1 90,25.9"/><text x="68" y="23" text-anchor="middle">p = 12,7</text><line class="ln ld" x1="68" y1="82.5" x2="68" y2="103"/><circle class="f" cx="68" cy="112" r="9"/><text x="68" y="115.5" text-anchor="middle" font-weight="600">1</text><line class="ln ld" x1="124" y1="80" x2="124" y2="103"/><circle class="f" cx="124" cy="112" r="9"/><text x="124" y="115.5" text-anchor="middle" font-weight="600">2</text><line class="ln ld" x1="180" y1="82.5" x2="180" y2="103"/><circle class="f" cx="180" cy="112" r="9"/><text x="180" y="115.5" text-anchor="middle" font-weight="600">3</text><line class="ln ld" x1="236" y1="80" x2="236" y2="103"/><circle class="f" cx="236" cy="112" r="9"/><text x="236" y="115.5" text-anchor="middle" font-weight="600">4</text><line class="ln ld" x1="292" y1="82.5" x2="292" y2="103"/><circle class="f" cx="292" cy="112" r="9"/><text x="292" y="115.5" text-anchor="middle" font-weight="600">5</text><line class="ln ld" x1="348" y1="80" x2="348" y2="103"/><circle class="f" cx="348" cy="112" r="9"/><text x="348" y="115.5" text-anchor="middle" font-weight="600">6</text><line class="ln ld" x1="404" y1="82.5" x2="404" y2="103"/><circle class="f" cx="404" cy="112" r="9"/><text x="404" y="115.5" text-anchor="middle" font-weight="600">7</text><text x="462" y="150" text-anchor="end" class="sub">CORRENTE DE ROLOS · 7 ELOS · DES. 06</text></g></svg></div><!--/bp-->
   <div class="wrap">
@@ -984,58 +1033,15 @@ Classifique: "falta de tampa"</div>
       </div>
     </div>
     <p class="say rise" style="--i:4">O ✓ entre os elos é o engenheiro. Erro no Elo 2 que passa sem checagem contamina o Elo 7.</p>
+    <p class="small muted rise" style="--i:5">Sua IA deu um número diferente do gabarito? Não pule o elo: peça para ela mostrar a conta e refaça uma linha na calculadora. Diferença só na casa decimal é arredondamento.</p>
   </div>
-  <aside class="notes"><p>Antes do Elo 1, os alunos precisam colar a base na conversa. O botão "Copiar base" fica no Módulo 5 do guia (e no Elo 1 do Módulo 6).</p></aside>
+  <aside class="notes"><p>Mostre que os 7 elos são as perguntas do slide de decomposição, agora viradas em prompts.</p><p>Antes do Elo 1, os alunos precisam colar a base na conversa. O botão "Copiar base" fica no Módulo 5 do guia (e no Elo 1 do Módulo 6).</p></aside>
 </section>
 
-<section class="slide" data-sec="O experimento" data-title="O caso Envasa" data-id="caso">
-  <div class="wrap">
-    <p class="eyebrow rise" style="--i:0">Parte 4 · Briefing <span class="guide">Guia · <b>Módulo 5</b></span></p>
-    <h2 class="rise" style="--i:1">Envasa Bebidas: três linhas, três turnos, duas semanas</h2>
-    <div class="grid g3 rise" style="--i:2">
-      <div class="card"><span class="k">Linha 1</span><span class="bigmoney" style="font-size:2.4rem">50 <span class="small muted">un/min</span></span><p class="small muted">Antiga</p></div>
-      <div class="card" style="background:var(--fg);color:var(--bg)"><span class="k" style="color:var(--bg);opacity:.75">Linha 2</span><span class="bigmoney" style="font-size:2.4rem">60 <span class="small" style="opacity:.7">un/min</span></span><p class="small" style="opacity:.75">Nova · R$ 4 milhões há 18 meses</p></div>
-      <div class="card"><span class="k">Linha 3</span><span class="bigmoney" style="font-size:2.4rem">50 <span class="small muted">un/min</span></span><p class="small muted">Antiga</p></div>
-    </div>
-    <div class="row rise" style="--i:3">
-      <div class="stat"><span class="v">R$ 0,40</span><span class="l">margem por unidade boa</span></div>
-      <div class="stat"><span class="v">R$ 1,50</span><span class="l">custo por unidade refugada</span></div>
-      <div class="stat"><span class="v">250</span><span class="l">dias por ano</span></div>
-      <div class="stat"><span class="v">480 min</span><span class="l">por turno</span></div>
-    </div>
-    <p class="say rise" style="--i:4">A base tem uma linha por turno: paradas por motivo, número de trocas, produção e refugo. São 91 registros, com <b>dois defeitos escondidos</b> de propósito.</p>
-  </div>
-  <aside class="notes"><p>Peça para copiarem a base no guia (Módulo 5 ou Elo 1 do Módulo 6) e colarem junto com o prompt do Elo 1.</p></aside>
-</section>
 
-<section class="slide bpw" data-sec="O experimento" data-title="O que é OEE" data-id="oee">
-<!--bp--><div class="bp" style="--bp-w:22rem;--bp-t:1.5rem" aria-hidden="true"><svg viewBox="0 6 330 236" font-size="10" xmlns="http://www.w3.org/2000/svg"><line class="c" x1="24" y1="112" x2="160" y2="112"/><line class="c" x1="92" y1="44" x2="92" y2="180"/><line class="c" x1="133.3" y1="89.7" x2="229.3" y2="89.7"/><line class="c" x1="181.3" y1="41.7" x2="181.3" y2="137.7"/><line class="c" x1="192.5" y1="126.7" x2="264.5" y2="126.7"/><line class="c" x1="228.5" y1="90.7" x2="228.5" y2="162.7"/><g class="spin" style="--T:42s"><circle class="nb" cx="92" cy="112" r="61"/><polygon class="f" points="140.5,96.1 149.8,95.8 150.6,99.2 142.2,103.2 142.6,105.3 142.8,107.3 151.9,109.1 152,112.6 142.9,114.6 142.8,116.7 142.6,118.7 151.1,122.5 150.4,125.9 141.1,125.9 140.5,127.9 139.8,129.8 147.3,135.3 145.8,138.5 136.7,136.5 135.7,138.3 134.6,140 140.7,147.1 138.6,149.8 130.2,145.8 128.8,147.3 127.3,148.8 131.7,157 129,159.3 121.7,153.5 120,154.6 118.2,155.7 120.7,164.7 117.5,166.3 111.7,159 109.8,159.8 107.9,160.5 108.2,169.8 104.8,170.6 100.8,162.2 98.7,162.6 96.7,162.8 94.9,171.9 91.4,172 89.4,162.9 87.3,162.8 85.3,162.6 81.5,171.1 78.1,170.4 78.1,161.1 76.1,160.5 74.2,159.8 68.7,167.3 65.5,165.8 67.5,156.7 65.7,155.7 64,154.6 56.9,160.7 54.2,158.6 58.2,150.2 56.7,148.8 55.2,147.3 47,151.7 44.7,149 50.5,141.7 49.4,140 48.3,138.2 39.3,140.7 37.7,137.5 45,131.7 44.2,129.8 43.5,127.9 34.2,128.2 33.4,124.8 41.8,120.8 41.4,118.7 41.2,116.7 32.1,114.9 32,111.4 41.1,109.4 41.2,107.3 41.4,105.3 32.9,101.5 33.6,98.1 42.9,98.1 43.5,96.1 44.2,94.2 36.7,88.7 38.2,85.5 47.3,87.5 48.3,85.7 49.4,84 43.3,76.9 45.4,74.2 53.8,78.2 55.2,76.7 56.7,75.2 52.3,67 55,64.7 62.3,70.5 64,69.4 65.8,68.3 63.3,59.3 66.5,57.7 72.3,65 74.2,64.2 76.1,63.5 75.8,54.2 79.2,53.4 83.2,61.8 85.3,61.4 87.3,61.2 89.1,52.1 92.6,52 94.6,61.1 96.7,61.2 98.7,61.4 102.5,52.9 105.9,53.6 105.9,62.9 107.9,63.5 109.8,64.2 115.3,56.7 118.5,58.2 116.5,67.3 118.3,68.3 120,69.4 127.1,63.3 129.8,65.4 125.8,73.8 127.3,75.2 128.8,76.7 137,72.3 139.3,75 133.5,82.3 134.6,84 135.7,85.8 144.7,83.3 146.3,86.5 139,92.3 139.8,94.2"/><circle class="c" cx="92" cy="112" r="56"/><circle class="ln" cx="92" cy="112" r="15"/><circle class="ln" cx="92" cy="112" r="7"/><rect class="f" x="90.2" y="102.6" width="3.6" height="3.4"/><circle class="ln" cx="125" cy="112" r="8"/><circle class="ln" cx="102.2" cy="143.4" r="8"/><circle class="ln" cx="65.3" cy="131.4" r="8"/><circle class="ln" cx="65.3" cy="92.6" r="8"/><circle class="ln" cx="102.2" cy="80.6" r="8"/></g><g class="spin ccw" style="--T:27s"><circle class="nb" cx="181.3" cy="89.7" r="41"/><polygon class="f" points="150.8,95.3 141.5,94.3 141.3,90.7 150.3,88.4 150.4,86.5 150.7,84.6 142.4,80.5 143.4,77 152.6,77.9 153.4,76.2 154.3,74.4 147.9,67.7 150,64.8 158.4,68.8 159.7,67.4 161.2,66.1 157.4,57.6 160.4,55.6 166.9,62.3 168.7,61.4 170.5,60.7 169.8,51.4 173.4,50.5 177.2,59 179.1,58.8 181.1,58.7 183.6,49.8 187.2,50.2 187.9,59.5 189.8,59.9 191.7,60.5 197.2,53 200.4,54.6 197.9,63.6 199.5,64.7 201,65.9 208.8,60.7 211.3,63.3 205.8,70.8 207,72.4 208,74.1 217,71.8 218.5,75.1 210.8,80.4 211.3,82.2 211.8,84.1 221,85.1 221.3,88.8 212.2,91 212.1,93 211.8,94.9 220.2,99 219.2,102.5 209.9,101.6 209.1,103.3 208.2,105.1 214.7,111.8 212.5,114.7 204.2,110.6 202.8,112 201.4,113.4 205.1,121.9 202.1,123.9 195.6,117.2 193.9,118.1 192.1,118.8 192.7,128.1 189.2,129 185.4,120.5 183.4,120.7 181.5,120.7 178.9,129.7 175.3,129.3 174.6,120 172.7,119.5 170.9,118.9 165.4,126.5 162.1,124.9 164.7,115.9 163,114.8 161.5,113.6 153.8,118.8 151.3,116.2 156.7,108.7 155.6,107.1 154.5,105.4 145.5,107.7 144,104.3 151.7,99.1 151.2,97.2"/><circle class="c" cx="181.3" cy="89.7" r="36"/><circle class="ln" cx="181.3" cy="89.7" r="11"/><circle class="ln" cx="181.3" cy="89.7" r="5"/><rect class="f" x="179.5" y="82.3" width="3.6" height="3.4"/><circle class="ln" cx="202.3" cy="89.7" r="4.5"/><circle class="ln" cx="181.3" cy="110.7" r="4.5"/><circle class="ln" cx="160.3" cy="89.7" r="4.5"/><circle class="ln" cx="181.3" cy="68.7" r="4.5"/></g><g class="spin" style="--T:18s"><circle class="nb" cx="228.5" cy="126.7" r="29"/><polygon class="f" points="210.3,121.3 202.6,116.1 204.3,112.7 213.1,115.6 214.2,114.2 215.4,112.9 211.3,104.6 214.5,102.5 220.7,109.4 222.4,108.7 224.1,108.2 224.7,98.9 228.5,98.7 230.4,107.8 232.2,108 233.9,108.5 239.1,100.7 242.5,102.4 239.6,111.2 241,112.3 242.3,113.6 250.6,109.5 252.8,112.6 245.9,118.8 246.5,120.5 247,122.2 256.3,122.8 256.5,126.6 247.5,128.5 247.2,130.3 246.8,132 254.5,137.2 252.8,140.6 244,137.7 242.9,139.1 241.7,140.4 245.7,148.8 242.6,150.9 236.4,144 234.7,144.6 233,145.2 232.4,154.4 228.6,154.7 226.7,145.6 224.9,145.3 223.2,144.9 218,152.6 214.6,151 217.5,142.1 216.1,141 214.8,139.8 206.5,143.9 204.3,140.7 211.2,134.5 210.6,132.9 210.1,131.2 200.8,130.5 200.5,126.7 209.6,124.8 209.9,123.1"/><circle class="c" cx="228.5" cy="126.7" r="24"/><circle class="ln" cx="228.5" cy="126.7" r="8"/><circle class="ln" cx="228.5" cy="126.7" r="4"/><rect class="f" x="226.7" y="120.3" width="3.6" height="3.4"/></g><g class="an" style="--dl:0.5s"><circle class="dot" cx="51.7" cy="71.7" r="1.7"/><line class="ln ld" x1="51.7" y1="71.7" x2="7" y2="30"/><circle class="f" cx="16" cy="30" r="9"/><text x="16" y="33.5" text-anchor="middle" font-weight="600">D</text><text x="32" y="29" font-weight="600">DISPONIBILIDADE</text><circle class="dot" cx="181.3" cy="51.7" r="1.7"/><line class="ln ld" x1="181.3" y1="51.7" x2="178.3" y2="22"/><circle class="f" cx="187.3" cy="22" r="9"/><text x="187.3" y="25.5" text-anchor="middle" font-weight="600">P</text><text x="203.3" y="21" font-weight="600">PERFORMANCE</text><circle class="dot" cx="233.3" cy="153.7" r="1.7"/><line class="ln ld" x1="233.3" y1="153.7" x2="199.5" y2="184.7"/><circle class="f" cx="208.5" cy="184.7" r="9"/><text x="208.5" y="188.2" text-anchor="middle" font-weight="600">Q</text><text x="224.5" y="183.7" font-weight="600">QUALIDADE</text><text x="16" y="232" class="sub">OEE = D × P × Q · TREM DE ENGRENAGENS · DES. 07</text></g></svg></div><!--/bp-->
-  <div class="wrap">
-    <p class="eyebrow rise" style="--i:0">Parte 4 · Conceito antes de calcular</p>
-    <h2 class="rise" style="--i:1">OEE: de tudo que dava para produzir, quanto virou produto bom?</h2>
-    <div class="row rise" style="--i:2" id="oeeSel" role="tablist">
-      <button class="pill" data-g="L1" aria-selected="true">L1 · média</button>
-      <button class="pill" data-g="dia" aria-selected="false">L2 · turnos de dia</button>
-      <button class="pill" data-g="noite" aria-selected="false">L2 · turno da noite</button>
-    </div>
-    <div class="rise" style="--i:3;display:flex;flex-direction:column;gap:.5rem">
-      <p class="small muted">Um turno de 480 minutos, dividido em onde o tempo foi parar</p>
-      <div class="oee-bar" id="oeeBar"></div>
-      <div class="oee-scale"><span>0 min</span><span>120</span><span>240</span><span>360</span><span>480 min</span></div>
-      <div class="legend"><span><i style="background:var(--fg)"></i>Produto bom</span><span><i style="background:var(--c1)"></i>Parada</span><span><i style="background:var(--c2)"></i>Lentidão</span><span><i style="background:var(--bad)"></i>Refugo</span></div>
-    </div>
-    <div class="formula rise" style="--i:4" id="oeeFormula"></div>
-    <div class="grid g3 rise" style="--i:5">
-      <div class="card"><span class="k">Disponibilidade</span><p class="small">A máquina ficou ligada? Tempo rodando ÷ tempo planejado. <b>Cai com paradas.</b></p></div>
-      <div class="card"><span class="k">Performance</span><p class="small">Rodou na velocidade certa? O que produziu ÷ o que daria na velocidade nominal. <b>Cai com lentidão.</b></p></div>
-      <div class="card"><span class="k">Qualidade</span><p class="small">O que saiu prestava? Unidades boas ÷ produzidas. <b>Cai com refugo.</b></p></div>
-    </div>
-  </div>
-  <aside class="notes"><p>Clique em L1, depois L2 dia, depois L2 noite. Não explique a noite ainda; deixe a turma estranhar. A descoberta formal vem no Elo 4.</p><p>Se quiser segurar a surpresa, mostre só L1 e L2 dia.</p></aside>
-</section>
 
 <section class="slide" data-sec="O experimento" data-title="Elo 1 · Entender a base" data-id="e0"><div class="wrap elo" data-step="0"></div>
-  <aside class="notes"><p><b>Ação:</b> Enter para enviar. Pergunte antes: "o que vocês esperam que ela encontre?"</p><p>A duplicata infla a produção da L2 Tarde. Sem tirar, o OEE sai errado no próximo elo.</p></aside></section>
+  <aside class="notes"><p><b>Ação:</b> Enter para enviar. Pergunte antes: "o que vocês esperam que ela encontre?"</p><p>A linha repetida soma à L2 um turno que não existiu (22 mil garrafas). Sem tirar, totais e médias por turno saem errados nos próximos elos.</p></aside></section>
 <section class="slide" data-sec="O experimento" data-title="Elo 2 · Medir o OEE" data-id="e1"><div class="wrap elo" data-step="1"></div>
   <aside class="notes"><p>Peça que alguém confira a conta da primeira linha na calculadora do celular. É o hábito mais importante do dia.</p></aside></section>
 <section class="slide" data-sec="O experimento" data-title="Elo 3 · Pareto" data-id="e2"><div class="wrap elo" data-step="2"></div>
@@ -1044,7 +1050,7 @@ Classifique: "falta de tampa"</div>
   <aside class="notes"><p><b>Momento-chave.</b> Antes de enviar, pergunte qual célula vai acender. Depois, retome a enquete do início: quem achava que era a máquina?</p></aside></section>
 
 <section class="slide" data-sec="O experimento" data-title="A causa, desenhada" data-id="simB">
-  <div class="wrap" style="max-width:86rem;gap:1.1rem">
+  <div class="wrap" style="max-width:86rem;gap:1.1rem;padding-block:1.2rem 1rem">
     <p class="eyebrow rise" style="--i:0">Parte 4 · O que o Elo 4 descobriu</p>
     <h2 class="rise" style="--i:1">A causa, desenhada</h2>
     <div class="rise" style="--i:2" id="simB"></div>
@@ -1072,11 +1078,25 @@ Classifique: "falta de tampa"</div>
 <section class="slide" data-sec="O experimento" data-title="Elo 5 · Quanto custa" data-id="e4"><div class="wrap elo" data-step="4"></div>
   <aside class="notes"><p>"Diretor não aprova projeto por OEE. Aprova por real." Deixe o número crescer antes de falar.</p></aside></section>
 <section class="slide" data-sec="O experimento" data-title="Elo 6 · Simular" data-id="e5"><div class="wrap elo" data-step="5"></div>
-  <aside class="notes"><p>Depois de enviar, mexa nos controles com a turma. Pergunte: "a partir de que investimento o projeto deixa de se pagar em 12 meses?"</p></aside></section>
+  <aside class="notes"><p>Depois de enviar, mexa nos controles com a turma. Pergunte: "a partir de que investimento o projeto deixa de se pagar em 12 meses?"</p><p>Pergunta que sempre aparece: "por que o ganho é menor que a perda do Elo 5?" Porque o projeto ataca só parte do problema (setup e refugo). O resto depende do experimento de redistribuir trocas.</p></aside></section>
 <section class="slide" data-sec="O experimento" data-title="Elo 7 · Decidir" data-id="e6"><div class="wrap elo" data-step="6"></div>
-  <aside class="notes"><p>Pirâmide de Minto (método criado na McKinsey): conclusão primeiro. O debate com dilema real é o "método do caso" usado em escolas como Harvard. Pergunte: "vocês assinariam isso?"</p></aside></section>
+  <aside class="notes"><p>Pirâmide de Minto (método criado na McKinsey): conclusão primeiro. O debate com dilema real é o "método do caso" usado em escolas como Harvard. Pergunte: "vocês assinariam isso?"</p><p>Próximo slide: voltar às três opiniões do começo.</p></aside></section>
 
 <!-- ================= ENCERRAMENTO ================= -->
+<section class="slide" data-sec="Encerramento" data-title="Quem tinha razão?" data-id="veredito">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Encerramento · Voltando ao começo</p>
+    <h2 class="rise" style="--i:1">Lembra das três opiniões? Agora os dados respondem.</h2>
+    <div class="voices vd-grid rise" style="--i:2">
+      <div class="card voice"><div class="who">Supervisor da noite</div><q>O problema é a máquina.</q><span class="verdict no">✗ Não é a máquina</span><p class="small muted">De dia, a L2 roda com OEE de <b id="vdDay">81%</b>, igual às antigas, e entrega <b id="vdMore">20%</b> mais garrafas boas por turno.</p></div>
+      <div class="card voice"><div class="who">Fornecedor da L2</div><q>A máquina está perfeita. É a operação.</q><span class="verdict mid">≈ Em parte</span><p class="small muted">À noite, cada troca leva <b id="vdSpn1">45 min</b>, contra <b id="vdSpn0">21 min</b> de dia: falta padrão de setup. Mas culpar a equipe exige o experimento.</p></div>
+      <div class="card voice"><div class="who">PCP</div><q>Eu só programo conforme a demanda.</q><span class="verdict mid">≈ Também é parte da causa</span><p class="small muted"><b id="vdN">24 das 37</b> trocas da L2 caem à noite. A programação concentra as trocas justamente no turno sem padrão.</p></div>
+    </div>
+    <p class="say rise" style="--i:3">Cada um via um pedaço. A análise em cadeia mostrou o problema inteiro: <b>não é a máquina; é quando e como ela é trocada.</b></p>
+  </div>
+  <aside class="notes"><p>Retome o placar da enquete do começo: quem votou na máquina? Leia cada veredito devagar.</p><p>Frase de fechamento: "Ninguém mentiu. Cada um via um pedaço. Os dados juntaram os pedaços."</p></aside>
+</section>
+
 <section class="slide" data-sec="Encerramento" data-title="Debate" data-id="debate">
   <div class="wrap">
     <p class="eyebrow rise" style="--i:0">Encerramento · Debate</p>
@@ -1084,7 +1104,7 @@ Classifique: "falta de tampa"</div>
     <div class="qs rise" style="--i:2" id="qs">
       <button class="qq" aria-expanded="false"><span class="n">Pergunta 1</span><span class="qt">O supervisor da noite deveria ser responsabilizado?</span><span class="hint">Os dados mostram onde está a perda, não quem a causa. Equipe e número de trocas estão misturados. Responsabilizar antes do experimento é decidir sem evidência.</span><span class="more">clique para ver o que os dados dizem</span></button>
       <button class="qq" aria-expanded="false"><span class="n">Pergunta 2</span><span class="qt">Se o PCP concentra trocas à noite para proteger o dia, ele está errado?</span><span class="hint">Talvez não, se o setup noturno fosse rápido. O problema é a combinação: muitas trocas num turno sem padrão de setup.</span><span class="more">clique para ver o que os dados dizem</span></button>
-      <button class="qq" aria-expanded="false"><span class="n">Pergunta 3</span><span class="qt">E se a margem caísse para R$ 0,20?</span><span class="hint">O refugo evitado passa a pesar mais, porque o custo de R$ 1,50 não muda. Volte ao Elo 6 e teste.</span><span class="more">clique para ver o que os dados dizem</span></button>
+      <button class="qq" aria-expanded="false"><span class="n">Pergunta 3</span><span class="qt">E se a margem caísse para R$ 0,20?</span><span class="hint">O ganho provável cai de cerca de R$ 432 mil para R$ 308 mil por ano e o payback sobe de 5 para 7 meses. O projeto ainda se paga, porque o refugo evitado (R$ 1,50 cada) não depende da margem. Teste no Elo 6: o controle "Margem por unidade" está lá.</span><span class="more">clique para ver o que os dados dizem</span></button>
       <button class="qq" aria-expanded="false"><span class="n">Pergunta 4</span><span class="qt">Onde a IA ajudou, e onde poderia ter levado ao erro?</span><span class="hint">Ajudou: velocidade, cruzamentos, contas, texto. Riscos: a duplicata, a aritmética e transformar correlação em culpa.</span><span class="more">clique para ver o que os dados dizem</span></button>
     </div>
   </div>
@@ -1100,6 +1120,7 @@ Classifique: "falta de tampa"</div>
       <div class="msgx"><span class="n">2</span><h3>Análise boa é uma cadeia</h3><p class="muted">Decomponha, encadeie e confira cada elo.</p></div>
       <div class="msgx"><span class="n">3</span><h3>Termine em reais e decisão</h3><p class="muted">Com incerteza explícita e sem confundir correlação com culpa.</p></div>
     </div>
+    <p class="small muted rise" style="--i:2">"Por que a linha mais nova rende menos?" Não era a máquina: era quando e como ela é trocada.</p>
     <p class="quote rise" style="--i:2">A IA achou o padrão em minutos. Quem transformou isso em uma decisão de R$ 1 milhão foi o engenheiro.</p>
     <div class="card rise" style="--i:3"><span class="k">Desafio para casa</span><p>Refaça os 7 elos com dados do seu estágio ou TCC, sem dados sigilosos. Troque só o contexto e as premissas. O guia continua disponível.</p></div>
   </div>
@@ -1278,7 +1299,7 @@ function analyze(){
   const lossMargin=diffGood*PREM.margem*PREM.dias, lossRef=diffRef*PREM.custoRef*PREM.dias;
   const W=welch(night.map(r=>r.oee),day.map(r=>r.oee));
   const nightBase={setup:mean(night,r=>r.parada_setup_min),ref:refNight,rate:mean(night,r=>r.qtd_produzida/r.oper),Q:shift['Noite'].Q};
-  const mins={L1:minutes(by(clean,'L1')),dia:minutes(day),noite:minutes(night)};
+  const mins={L1:minutes(by(clean,'L1')),L2:minutes(L2),L3:minutes(by(clean,'L3')),dia:minutes(day),noite:minutes(night)};
   return {raw,clean,dups,missing,line,lineRaw,cell,pareto,totPar,setupBy,shift,dayK,spnOthers,diffGood,diffRef,lossMargin,lossRef,W,night,nightBase,mins};
 }
 function oeeAfter(night,red,rr){
@@ -1291,7 +1312,7 @@ function monteCarlo(nb,o){
   for(let i=0;i<N;i++){
     const red=tri(rnd(),clamp(o.red-0.15,0.01,0.95),o.red,clamp(o.red+0.15,0.02,0.98));
     const rr=tri(rnd(),clamp(o.rr-0.2,0.01,0.95),o.rr,clamp(o.rr+0.2,0.02,0.99));
-    const mg=0.35+rnd()*0.10;
+    const mg=Math.max(0.05,(o.mg??0.40)-0.05)+rnd()*0.10;
     g[i]=(nb.setup*red*nb.rate*nb.Q*mg + nb.ref*rr*(PREM.custoRef+mg))*PREM.dias;
   }
   const s=Array.from(g).sort((a,b)=>a-b); const q=p=>s[Math.min(N-1,Math.floor(p*N))];
@@ -1313,7 +1334,7 @@ const RM=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const sleep=ms=>new Promise(r=>setTimeout(r,RM?0:ms));
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let runGen=0;
-let mcState={red:.40,rr:.50,inv:190000,rate:.12}; let MC=null;
+let mcState={red:.40,rr:.50,inv:190000,rate:.12,mg:.40}; let MC=null;
 
 /* ============ DECK ============ */
 const slides=$$('.slide'); const N=slides.length; let cur=-1;
@@ -1482,7 +1503,7 @@ function builderResponse(){
   if(s.out){ out+=`<div class="tbl"><table><thead><tr><th>Linha</th><th>Disp.</th><th>Perf.</th><th>Qual.</th><th>OEE</th></tr></thead><tbody>${LINES.map(l=>`<tr${l===crit?' class="crit"':''}><td>${l}</td><td>${pct(src[l].D)}</td><td>${pct(src[l].P)}</td><td>${pct(src[l].Q)}</td><td><b>${pct(src[l].OEE)}</b></td></tr>`).join('')}</tbody></table></div><p><b>Linha mais crítica: ${crit}</b> (${pct(src[crit].OEE)}).${s.p?' A perda dominante é de Disponibilidade; próximo passo: Pareto de paradas.':''}</p>`; }
   else out+=`<p>O OEE ficou em ${LINES.map(l=>`${l} ${pct(src[l].OEE)}`).join(', ')}. A ${crit} tem a disponibilidade mais baixa (${pct(src[crit].D)}).${s.p?' Do ponto de vista de TPM, a perda dominante é de Disponibilidade.':''}</p>`;
   if(s.c) out+=`<p class="small">Resultado contraintuitivo: a linha mais nova e mais rápida é a menos eficiente.</p>`;
-  out+= s.r?`<p class="small" style="color:var(--good)">Removi 1 linha duplicada (09/10 · L2 · Tarde) antes de calcular.</p>`:`<p class="small" style="color:var(--bad)">Usei os ${R.raw.length} registros, incluindo uma linha duplicada. O OEE da L2 saiu ${pct(R.lineRaw.L2.OEE,2)} em vez de ${pct(R.line.L2.OEE,2)}.</p>`;
+  out+= s.r?`<p class="small" style="color:var(--good)">Removi 1 linha duplicada (09/10 · L2 · Tarde) antes de calcular.</p>`:`<p class="small" style="color:var(--bad)">Usei os ${R.raw.length} registros, incluindo uma linha repetida: a L2 ganhou um turno que não existiu, com ${num(R.raw[R.dups[0].second].qtd_produzida)} garrafas a mais. O OEE quase não mudou desta vez, mas qualquer total ou média por turno sai errado.</p>`;
   return out;
 }
 renderBuilder();
@@ -1511,6 +1532,12 @@ oeeRender();
   LINES.forEach(l=>TURNOS.forEach(t=>{const hl=l==='L2'&&t==='Noite'; h+=`<span class="rl${hl?' hl':''}">${l} · ${t}</span>`; days.forEach(d=>{const r=R.clean.find(x=>x.linha===l&&x.turno===t&&x.data===d); const on=r&&r.n_setups>=2; h+=`<span class="dt${on?' on':''}" style="--i:${on?i++:0}" data-tip="${d.slice(8)}/${d.slice(5,7)} · ${l} · ${t}: ${r?r.n_setups:0} troca(s)"></span>`;});}));
   $('#dots9').innerHTML=h; $('#spn1').textContent=num(R.shift.Noite.spn)+' min'; $('#spn0').textContent=num(R.spnOthers)+' min';})();
 
+/* ============ VEREDITO ============ */
+(function(){  const dayGood=R.dayK.boas/R.dayK.n, oldGood=(R.line.L1.boas/R.line.L1.n+R.line.L3.boas/R.line.L3.n)/2;
+  $('#vdDay').textContent=pct(R.dayK.OEE,0); $('#vdMore').textContent=pct(dayGood/oldGood-1,0);
+  $('#vdSpn1').textContent=num(R.shift.Noite.spn)+' min'; $('#vdSpn0').textContent=num(R.dayK.spn)+' min';
+  $('#vdN').textContent=`${R.shift.Noite.nset} das ${R.line.L2.nset}`;})();
+
 /* ============ DEBATE ============ */
 $('#qs').addEventListener('click',e=>{const b=e.target.closest('.qq'); if(!b)return; const on=b.getAttribute('aria-expanded')!=='true'; b.setAttribute('aria-expanded',on); $('.more',b).textContent=on?'clique para esconder':'clique para ver o que os dados dizem';});
 
@@ -1522,7 +1549,7 @@ const ELOS=[
   check:'Procure a data 09/10 na base: a linha da L2, Tarde, aparece duas vezes?',render:renderE1},
  {t:'Medir o OEE',q:'Qual linha rende menos?',tec:'Objetivo com a fórmula explícita',
   concept:'OEE = Disponibilidade × Performance × Qualidade. Dar a fórmula no prompt evita que a IA invente a própria definição.',
-  prompt:'Remova a linha duplicada. Calcule o OEE por linha: Disponibilidade = tempo operando ÷ tempo planejado; Performance = produzido ÷ (tempo operando × velocidade nominal); Qualidade = (produzido − refugo) ÷ produzido. Mostre uma tabela com os três fatores e o OEE.',
+  prompt:'Remova a linha duplicada. Calcule o OEE por linha: Disponibilidade = tempo operando ÷ tempo planejado; Performance = produzido ÷ (tempo operando × velocidade nominal); Qualidade = (produzido − refugo) ÷ produzido. Tempo operando = planejado − soma das paradas. Se puder, calcule com código. Mostre uma tabela com os três fatores e o OEE.',
   check:'',render:renderE2},
  {t:'Priorizar com Pareto',q:'Qual parada pesa mais na L2?',tec:'Objetivo focado em uma pergunta',
   concept:'Pareto: ordenar as causas da maior para a menor. Normalmente poucas causas explicam quase toda a perda (regra 80/20). É onde agir primeiro.',
@@ -1537,8 +1564,8 @@ const ELOS=[
   prompt:'Se o turno da noite da L2 produzisse tanto quanto a média dos turnos de dia da L2, quantas unidades boas a mais teríamos por turno? Com margem de R$ 0,40/un, refugo a R$ 1,50/un e 250 dias/ano, quanto a empresa perde por ano? Separe perda por produção e por refugo. Mostre as contas.',
   check:'Refaça na calculadora: diferença por turno × 0,40 × 250.',render:renderE5},
  {t:'Simular o projeto',q:'Vale a pena investir?',tec:'Cadeia de pensamento + saída estruturada',
-  concept:'Monte Carlo: em vez de apostar em um número, sorteamos 20.000 combinações plausíveis das premissas e olhamos a faixa. Payback: em quantos meses o dinheiro volta. VPL: quanto o projeto vale hoje.',
-  prompt:'Simule um projeto de SMED, kit de troca rápida e treinamento na noite da L2, com investimento de R$ 190 mil. Use Monte Carlo com 20.000 cenários variando redução do setup, redução do refugo e margem. Liste as premissas antes. Entregue P5, P50 e P95 do ganho anual, payback e VPL de 3 anos a 12% a.a., em tabela.',
+  concept:'SMED: encurtar trocas preparando tudo com a máquina ainda rodando. Monte Carlo: sortear 20.000 combinações plausíveis das premissas e olhar a faixa. Payback: em quantos meses o dinheiro volta. VPL: quanto o projeto vale hoje.',
+  prompt:'Simule um projeto de SMED, kit de troca rápida e treinamento na noite da L2, com investimento de R$ 190 mil. Faça um Monte Carlo com 20.000 cenários variando a redução do setup (25% a 55%, mais provável 40%), a redução do refugo (30% a 70%, mais provável 50%) e a margem (R$ 0,35 a R$ 0,45). Liste as premissas antes. Entregue P5, P50 e P95 do ganho anual, payback e VPL de 3 anos a 12% a.a., em tabela.',
   check:'Pergunte: quais premissas mais mexem no resultado? Teste o pior caso nos controles.',render:renderE6},
  {t:'Decidir e comunicar',q:'O que dizer ao CFO?',tec:'Papel + output (pirâmide de Minto)',
   concept:'Memorando no formato pirâmide de Minto: a recomendação vem na primeira linha, depois os argumentos com números, depois o próximo passo. Quem lê decide sem precisar chegar ao fim.',
@@ -1639,23 +1666,25 @@ function renderE5(){
     after:v=>{countUp($('#bm',v),tot,brlm,1800); countUp($('#m1',v),R.lossMargin,brlk); countUp($('#m2',v),R.lossRef,brlk); $$('.splitbar div',v).forEach(d=>requestAnimationFrame(()=>d.style.width=d.dataset.w+'%'));},wait:1800,
     summary:`Cerca de <b>${brlm(tot)} por ano</b> em risco, concentrado em um único turno de uma única linha. ${pct(f1,0)} vem de produção que deixa de acontecer.`};
 }
-function mcSummary(){return `Em <b>${pct(MC.pay12,0)}</b> dos cenários o projeto se paga em até 12 meses. Ganho provável de <b>${brlk(MC.p50)} por ano</b> (entre ${brlk(MC.p5)} e ${brlk(MC.p95)}). O OEE da noite iria de ${pct(R.shift.Noite.OEE,0)} para ${pct(oeeAfter(R.night,mcState.red,mcState.rr),0)}.`;}
+function mcRisk(){return R.diffGood*mcState.mg*PREM.dias+R.lossRef;}
+function mcSummary(){return `Em <b>${pct(MC.pay12,0)}</b> dos cenários o projeto se paga em até 12 meses. Ganho provável de <b>${brlk(MC.p50)} por ano</b> (entre ${brlk(MC.p5)} e ${brlk(MC.p95)}): recupera cerca de ${pct(MC.p50/mcRisk(),0)} dos ${brlm(mcRisk())} em risco, porque o SMED ataca só parte do setup e do refugo. O OEE da noite iria de ${pct(R.shift.Noite.OEE,0)} para ${pct(oeeAfter(R.night,mcState.red,mcState.rr),0)}.`;}
 function renderE6(){
-  return {lead:`Premissas: o setup cai entre ${pct(mcState.red-.15,0)} e ${pct(mcState.red+.15,0)} (mais provável ${pct(mcState.red,0)}); o refugo cai entre ${pct(mcState.rr-.2,0)} e ${pct(mcState.rr+.2,0)}; margem entre R$ 0,35 e R$ 0,45. Sorteei <b>20.000 combinações</b> e calculei o ganho de cada uma.`,
+  return {lead:`Premissas: o setup cai entre ${pct(mcState.red-.15,0)} e ${pct(mcState.red+.15,0)} (mais provável ${pct(mcState.red,0)}); o refugo cai entre ${pct(mcState.rr-.2,0)} e ${pct(mcState.rr+.2,0)}; margem entre R$ ${dec(Math.max(.05,mcState.mg-.05),2)} e R$ ${dec(mcState.mg+.05,2)}. Sorteei <b>20.000 combinações</b> e calculei o ganho de cada uma.`,
     viz:`<div class="mc"><div class="ctrls">
       <label for="mcRed">Redução do setup <b id="mcRedV"></b></label><input type="range" id="mcRed" min="0.2" max="0.6" step="0.05" value="${mcState.red}">
       <label for="mcRr">Redução do refugo <b id="mcRrV"></b></label><input type="range" id="mcRr" min="0.2" max="0.8" step="0.05" value="${mcState.rr}">
       <label for="mcInv">Investimento <b id="mcInvV"></b></label><input type="range" id="mcInv" min="100000" max="600000" step="10000" value="${mcState.inv}">
       <label for="mcRate">Taxa de desconto <b id="mcRateV"></b></label><input type="range" id="mcRate" min="0.08" max="0.2" step="0.01" value="${mcState.rate}">
+      <label for="mcMg">Margem por unidade <b id="mcMgV"></b></label><input type="range" id="mcMg" min="0.15" max="0.6" step="0.05" value="${mcState.mg}">
     </div><div style="display:flex;flex-direction:column;gap:.7rem;min-width:0"><div class="row" id="mcStats"></div>
       <div class="legend"><span><i style="background:var(--other)"></i>Nº de cenários por faixa de ganho anual</span><span><i class="ln" style="background:var(--fg)"></i>Pessimista · provável · otimista</span></div>
       <div class="svgbox" id="mcHist"></div></div></div>`,
-    after:v=>{$$('input',v).forEach(inp=>inp.addEventListener('input',()=>{mcState={red:+$('#mcRed').value,rr:+$('#mcRr').value,inv:+$('#mcInv').value,rate:+$('#mcRate').value}; drawMC(false); const sm=v.parentElement.querySelector('.sum'); if(sm)sm.innerHTML=mcSummary();})); drawMC(true);},wait:1300,
+    after:v=>{$$('input',v).forEach(inp=>inp.addEventListener('input',()=>{mcState={red:+$('#mcRed').value,rr:+$('#mcRr').value,inv:+$('#mcInv').value,rate:+$('#mcRate').value,mg:+$('#mcMg').value}; drawMC(false); const sm=v.parentElement.querySelector('.sum'); if(sm)sm.innerHTML=mcSummary();})); drawMC(true);},wait:1300,
     summary:()=>mcSummary()};
 }
 function drawMC(anim){
   const o={...mcState}; MC=monteCarlo(R.nightBase,o);
-  $('#mcRedV').textContent=pct(o.red,0); $('#mcRrV').textContent=pct(o.rr,0); $('#mcInvV').textContent=brlk(o.inv); $('#mcRateV').textContent=pct(o.rate,0)+' a.a.';
+  $('#mcRedV').textContent=pct(o.red,0); $('#mcRrV').textContent=pct(o.rr,0); $('#mcInvV').textContent=brlk(o.inv); $('#mcRateV').textContent=pct(o.rate,0)+' a.a.'; $('#mcMgV').textContent='R$ '+dec(o.mg,2);
   $('#mcStats').innerHTML=`<div class="stat dark"><span class="v">${brlk(MC.p50)}</span><span class="l">ganho anual provável</span></div><div class="stat"><span class="v">${dec(MC.pb50)} meses</span><span class="l">payback</span></div><div class="stat"><span class="v">${brlk(MC.npv50)}</span><span class="l">VPL em 3 anos</span></div><div class="stat ${MC.pay12>=.9?'good':MC.pay12>=.5?'':'bad'}"><span class="v">${pct(MC.pay12,0)}</span><span class="l">${MC.pay12>=.9?'✓':'⚠'} chance de pagar em 12 meses</span></div>`;
   const B=32, lo=MC.min, hi=MC.max, bw0=(hi-lo)/B; const bins=new Array(B).fill(0); MC.s.forEach(x=>bins[Math.min(B-1,Math.floor((x-lo)/bw0))]++);
   const W=640,H=220,ml=20,mr=20,mt=26,mb=32, iw=W-ml-mr, ih=H-mt-mb, mx=Math.max(...bins); const X=v=>ml+(v-lo)/(hi-lo)*iw; const bw=iw/B;
@@ -1673,7 +1702,7 @@ function renderE7(){
       <h4>Recomendação: manter a L2 e investir ${brlk(mcState.inv)} em padronização de setup no turno da noite.</h4>
       <ol><li style="--i:0"><b>A L2 não tem problema de máquina.</b> De dia, opera com OEE de ${pct(R.dayK.OEE,0)}, no nível das linhas antigas, e produz mais por ser mais rápida.</li>
       <li style="--i:1"><b>A perda está na noite</b> (OEE de ${pct(R.shift.Noite.OEE,0)}) e custa cerca de ${brlm(tot)} por ano, por trocas que levam o dobro do tempo e refugo após as trocas.</li>
-      <li style="--i:2"><b>O investimento se paga em ${dec(MC.pb50)} meses</b> no cenário provável; em ${pct(MC.pay12,0)} dos 20.000 cenários simulados, em menos de 12 meses.</li>
+      <li style="--i:2"><b>O investimento se paga em ${dec(MC.pb50)} meses</b> no cenário provável e recupera cerca de ${brlk(MC.p50)} por ano; em ${pct(MC.pay12,0)} dos 20.000 cenários simulados, paga-se em menos de 12 meses.</li>
       <li style="--i:3"><b>Próximo passo:</b> experimento de 2 semanas redistribuindo trocas entre turnos, para confirmar a causa antes de qualquer decisão sobre pessoas.</li></ol></div>`,
     after:v=>$('.memo',v).classList.add('show'),wait:1700,
     summary:`Pronto para sexta-feira. Sete prompts, sete checagens e uma decisão com número.`};
@@ -1702,7 +1731,7 @@ class FactorySim{
           ${['L1','L2','L3'].map((l,i)=>`<div class="kline${i===1?' l2':''}"><b>${l}</b><div class="tr"><i></i></div><b class="kv">—</b></div>`).join('')}
         </div>
         <div class="card"><span class="k">Como ler a fábrica</span><p class="small">Cada faixa é uma linha de envase. A garrafa entra vazia, é <b>enchida</b>, <b>tampada</b>, <b>rotulada</b> e passa pela <b>câmera de inspeção</b>. Defeito cai na caixa de refugo; produto bom vai para o palete.</p><p class="small muted">A torre de luz mostra o estado: verde rodando, amarelo em ajuste, vermelho parada ou em troca de formato.</p></div>
-        <div class="card"><span class="k">A pergunta</span><p>A L2 é a mais rápida da fábrica. Por que entrega o pior OEE?</p><p class="small muted">Acompanhe a linha do meio passando pelos três turnos. O que muda à noite?</p></div>
+        <div class="card"><span class="k">A pergunta</span><p>A L2 é a mais rápida da fábrica. Por que entrega o pior OEE?</p><p class="small muted">Acompanhe a linha do meio e dê um palpite. Os dados vão testá-lo no Elo 4.</p></div>
       </div>
       <div class="side cau">
         <span class="small muted">A cadeia da causa</span>

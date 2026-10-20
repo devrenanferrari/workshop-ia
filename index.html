@@ -185,10 +185,23 @@ tr.hl td{background:var(--bad-soft)}
 .tech{display:flex;flex-direction:column;gap:.8rem}
 @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.hook-q{font-size:1.25rem;font-weight:600;letter-spacing:-.015em;line-height:1.3;margin:0}
+.mail{border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.mail .mh{display:grid;grid-template-columns:auto 1fr;gap:.15rem .9rem;padding:.75rem 1rem;background:var(--surface);font-size:.85rem;border-bottom:1px solid var(--line)}
+.mail .mh span:nth-child(odd){color:var(--muted)}
+.mail p{margin:0;padding:.9rem 1rem 1rem}
+.qv{margin:0;font-weight:600;line-height:1.35}
+.vd{display:inline-flex;align-self:flex-start;font-size:.78rem;font-weight:600;border-radius:999px;padding:.15rem .6rem}
+.vd.no{background:var(--bad-soft);color:var(--bad)}
+.vd.mid{background:rgba(183,121,31,.13);color:#B7791F}
+:root[data-theme="dark"] .vd.mid{color:#E0A63A}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .vd.mid{color:#E0A63A}}
+.checklist{counter-reset:ck;list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.45rem}
+.checklist li{counter-increment:ck;display:grid;grid-template-columns:1.6rem minmax(0,1fr);gap:.6rem;align-items:baseline;font-size:.95rem}
+.checklist li::before{content:counter(ck);width:1.6rem;height:1.6rem;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;font-size:.8rem;font-weight:600}
 </style>
 </head>
 <body>
-
 
 <div class="app">
   <aside class="side" aria-label="Módulos">
@@ -212,6 +225,7 @@ tr.hl td{background:var(--bad-soft)}
   <span class="eyebrow">Guia de estudo do workshop · Engenharia de Produção</span>
   <h1>IA na produção: do prompt à decisão</h1>
   <p class="muted">Este guia acompanha a aula e continua com você depois dela. Funciona no <b>computador</b> e no <b>celular</b>. Estude um módulo por vez; o seu progresso fica salvo neste navegador.</p>
+  <div class="box"><span class="k">A pergunta do dia</span><p class="hook-q">Por que a linha mais nova da fábrica rende menos que as antigas?</p><p class="small muted">O CFO da Envasa Bebidas quer uma resposta até sexta. Hoje você faz parte da equipe que vai responder, com dados e com a ajuda de uma IA. O caso completo está no Módulo 5.</p></div>
   <div class="sum"><span class="k">Propósito</span><p>Sair do workshop capaz de transformar uma pergunta vaga em uma decisão sustentada por dados, usando IA com método e sem perder o senso crítico de engenheiro.</p></div>
   <h3>O que você vai aprender</h3>
   <ul class="list">
@@ -367,7 +381,7 @@ Agora classifique:
     </div>
     <div class="task">
       <div class="task-h"><div><span class="lab">Exercício 3 · 3 min</span><h3>Teste a cadeia de pensamento</h3></div><label class="check"><input type="checkbox" data-id="ex3">Feito</label></div>
-      <p class="small">Envie em duas conversas: primeiro sem a última frase, depois com ela.</p>
+      <p class="small">Envie em duas conversas: primeiro sem a última frase, depois com ela. Compare as duas respostas.</p>
       <div class="prompt"><span class="pl">Pergunta</span><button class="pill cp" data-copy>Copiar</button>Uma linha de 60 un/min tem turno de 480 min. Ficou 120 min parada e 6% da produção virou refugo. Quantas unidades boas saíram?
 
 Antes de responder, liste as premissas e mostre cada cálculo passo a passo.</div>
@@ -382,7 +396,8 @@ Antes de responder, liste as premissas e mostre cada cálculo passo a passo.</di
       <div><span class="r">→ 2</span><span>A perda é de parada, lentidão ou refugo?</span></div>
       <div><span class="r">→ 3</span><span>Qual motivo de parada pesa mais?</span></div>
       <div><span class="r">→ 4</span><span>A perda é igual em todos os turnos?</span></div>
-      <div><span class="r">→ 5</span><span>Quanto custa e o que fazer?</span></div>
+      <div><span class="r">→ 5</span><span>Quanto isso custa por ano?</span></div>
+      <div><span class="r">→ 6</span><span>O que fazer e quanto rende?</span></div>
     </div>
     <div class="task">
       <div class="task-h"><div><span class="lab">Exercício 4 · 3 min</span><h3>Decomponha um problema seu</h3></div><label class="check"><input type="checkbox" data-id="ex4">Feito</label></div>
@@ -408,7 +423,15 @@ Antes de responder, liste as premissas e mostre cada cálculo passo a passo.</di
 <section class="mod" data-t="O caso" data-d="5 min" hidden>
   <span class="eyebrow">Módulo 5 · 5 min</span>
   <h2>O caso: a linha mais nova da fábrica</h2>
-  <div class="sum"><span class="k">Em resumo</span><p>A Envasa Bebidas (fictícia) tem três linhas de envase. A L2 custou R$ 4 milhões, é a mais rápida (60 un/min contra 50) e, mesmo assim, rende menos. O CFO quer saber: <b>investir para corrigir ou parar de usar?</b></p></div>
+  <div class="sum"><span class="k">Em resumo</span><p>A Envasa Bebidas (fictícia) tem três linhas de envase. A L2 custou R$ 4 milhões, é a mais rápida (60 un/min contra 50) e, mesmo assim, rende menos. O CFO quer saber: <b>investir para corrigir a L2 ou parar de programar produto nela?</b></p></div>
+  <div class="mail"><div class="mh"><span>De</span><span>Ricardo Albuquerque, CFO</span><span>Para</span><span>Mariana Couto, Gerente Industrial</span><span>Assunto</span><span><b>Linha 2</b></span></div><p>Mariana,<br><br>A L2 custou R$ 4 milhões há 18 meses e rende menos que as linhas antigas. Quero uma recomendação na sexta: investimos para corrigir ou paramos de programar produto nela?<br><br>Ricardo</p></div>
+  <h3>Três opiniões, nenhum dado</h3>
+  <div class="cards c3">
+    <div class="box"><span class="k">Supervisor da noite</span><p class="qv">“O problema é a máquina.”</p></div>
+    <div class="box"><span class="k">Fornecedor da L2</span><p class="qv">“A máquina está perfeita. É a operação.”</p></div>
+    <div class="box"><span class="k">PCP</span><p class="qv">“Eu só programo conforme a demanda.”</p></div>
+  </div>
+  <p class="small muted">Você faz parte da equipe da Mariana. Anote o seu palpite: no fim do experimento, os dados dizem quem tinha razão (Módulo 7).</p>
   <div class="kpis">
     <div class="kpi"><b>R$ 0,40</b><span>margem por unidade boa</span></div>
     <div class="kpi"><b>R$ 1,50</b><span>custo por refugo</span></div>
@@ -448,19 +471,41 @@ Antes de responder, liste as premissas e mostre cada cálculo passo a passo.</di
   <span class="eyebrow">Módulo 6 · 35 min</span>
   <h2>O experimento: 7 elos</h2>
   <div class="sum"><span class="k">Como funciona</span><p>Uma única conversa com a IA, um elo de cada vez. Em cada elo: <b>copie o prompt, envie, compare com o que observar e confira</b>. Só então siga para o próximo. Dica: se a sua IA tiver modo de análise de dados, ative.</p></div>
+  <details><summary>A sua IA deu um número diferente do gabarito?</summary>
+    <ul class="small"><li>Diferença só na casa decimal é arredondamento. Pode seguir.</li><li>Diferença grande: peça <code>Mostre a conta passo a passo para a L1</code> e compare com a checagem do elo.</li><li>Confira se ela removeu a linha repetida e usou <b>tempo operando = planejado − paradas</b>.</li><li>Ainda diferente? Abra uma conversa nova, cole a base de novo e reenvie o prompt do elo.</li></ul>
+    <p class="small muted">Esse é o ponto do exercício: a IA acelera, mas quem confere é você.</p>
+  </details>
   <div class="steps-nav" id="eloNav"></div>
   <div id="eloBox"></div>
 </section>
 
 <!-- ================= 7 · REVISÃO ================= -->
-<section class="mod" data-t="Revisão e desafio" data-d="5 min" hidden>
-  <span class="eyebrow">Módulo 7 · 5 min</span>
+<section class="mod" data-t="Revisão e desafio" data-d="8 min" hidden>
+  <span class="eyebrow">Módulo 7 · 8 min</span>
   <h2>Revisão: o que levar</h2>
+  <div class="sum"><span class="k">Fechando a história</span><p>Por que a linha mais nova rende menos? <b>Não era a máquina: era quando e como ela é trocada.</b> De dia, a L2 roda com OEE de 81%, igual às antigas. À noite, concentra as trocas, cada troca leva o dobro do tempo e o refugo sobe.</p></div>
+  <h3>Quem tinha razão?</h3>
+  <div class="cards c3">
+    <div class="box"><span class="k">Supervisor da noite</span><p class="qv">“O problema é a máquina.”</p><span class="vd no">✗ Não é a máquina</span><p class="small muted">De dia, a L2 tem OEE de 81% e entrega 20% mais garrafas boas por turno que as antigas.</p></div>
+    <div class="box"><span class="k">Fornecedor da L2</span><p class="qv">“É a operação.”</p><span class="vd mid">≈ Em parte</span><p class="small muted">À noite, cada troca leva 45 min contra 21 de dia. Mas culpar a equipe exige o experimento.</p></div>
+    <div class="box"><span class="k">PCP</span><p class="qv">“Só programo conforme a demanda.”</p><span class="vd mid">≈ Também é parte da causa</span><p class="small muted">24 das 37 trocas da L2 caem à noite, justamente no turno sem padrão de setup.</p></div>
+  </div>
   <div class="cards">
     <div class="box fill"><span class="k">1 · Estrutura</span><p>Use o <b>CORPO</b>: Contexto, Objetivo, Regras, Papel, Output.</p></div>
     <div class="box fill"><span class="k">2 · Método</span><p>Decomponha, encadeie e confira cada elo.</p></div>
     <div class="box fill"><span class="k">3 · Raciocínio</span><p>Para contas e lógica, peça premissas e passos visíveis.</p></div>
     <div class="box fill"><span class="k">4 · Responsabilidade</span><p>Termine em reais e em decisão. Quem assina é você.</p></div>
+  </div>
+  <div class="box"><span class="k">Antes de confiar numa resposta da IA</span>
+    <ol class="checklist"><li>A base bate? Conte as linhas e procure repetidas e campos vazios.</li><li>Refaça pelo menos uma conta na calculadora.</li><li>As premissas estão escritas (margem, custos, dias por ano)?</li><li>É correlação ou causa? O que os dados <b>não</b> permitem dizer?</li><li>Termina em número e em decisão? Quem assina é você.</li></ol>
+  </div>
+  <div class="quiz" data-q="q5" data-ok="1">
+    <span class="lab">Teste rápido</span>
+    <p>A noite da L2 tem mais trocas e o pior OEE. O que os dados permitem concluir?</p>
+    <button class="opt">A equipe da noite trabalha pior.</button>
+    <button class="opt">A perda está concentrada na noite; para saber se a causa é a equipe ou as trocas, é preciso um experimento.</button>
+    <button class="opt">A máquina tem um defeito que aparece à noite.</button>
+    <p class="fb" hidden data-ok="Isso. Equipe e número de trocas andam juntos nos dados. Antes de culpar alguém, desenhe um experimento." data-no="Não. Equipe e número de trocas estão misturados nos dados; só um experimento separa as causas."></p>
   </div>
   <h3>Cola dos 7 elos</h3>
   <div class="tbl"><table><thead><tr><th>Elo</th><th>Pergunta</th></tr></thead><tbody id="cola"></tbody></table></div>
@@ -588,10 +633,10 @@ const ELOS=[
   p:'Você é engenheiro de produção sênior. Vou colar uma base de produção logo abaixo. Descreva cada coluna, aponte dados faltantes, linhas duplicadas e valores suspeitos. Ainda não calcule nada.\n\n[cole a base aqui]',
   see:'A lista das 14 colunas e os problemas de qualidade dos dados.',
   chk:'Procure a data 09/10 na base: a linha da L2, Tarde, aparece duas vezes?',
-  ans:'<p><b>91 registros</b> em vez de 90.</p><ul><li>Linha <b>duplicada</b>: 09/10 · L2 · Tarde.</li><li><b>Operador vazio</b>: 06/10 · L2 · Tarde.</li></ul>'},
+  ans:'<p><b>91 registros</b> em vez de 90.</p><ul><li>Linha <b>duplicada</b>: 09/10 · L2 · Tarde.</li><li><b>Operador vazio</b>: 06/10 · L2 · Tarde.</li></ul><p class="small">Por que importa: a linha repetida soma à L2 um turno que não existiu (22.058 garrafas). O OEE quase não muda, mas qualquer total ou média por turno sai errado.</p>'},
  {t:'Medir o OEE',q:'Qual linha rende menos?',tec:'Objetivo com a fórmula explícita',
   why:'Dar a fórmula evita que a IA invente a própria definição de OEE.',
-  p:'Remova a linha duplicada. Calcule o OEE por linha: Disponibilidade = tempo operando ÷ tempo planejado; Performance = produzido ÷ (tempo operando × velocidade nominal); Qualidade = (produzido − refugo) ÷ produzido. Tempo operando = planejado − soma das paradas. Mostre uma tabela com os três fatores e o OEE.',
+  p:'Remova a linha duplicada. Calcule o OEE por linha: Disponibilidade = tempo operando ÷ tempo planejado; Performance = produzido ÷ (tempo operando × velocidade nominal); Qualidade = (produzido − refugo) ÷ produzido. Tempo operando = planejado − soma das paradas. Se puder, calcule com código. Mostre uma tabela com os três fatores e o OEE.',
   see:'Uma tabela com Disponibilidade, Performance, Qualidade e OEE das três linhas.',
   chk:'Refaça na calculadora: 05/10 · L1 · Manhã → (20.004 − 215) ÷ (480 × 50) = 82,5%.',
   ans:'<div class="tbl"><table><thead><tr><th>Linha</th><th class="n">Disp.</th><th class="n">Perf.</th><th class="n">Qual.</th><th class="n">OEE</th></tr></thead><tbody><tr><td>L1</td><td class="n">92,2%</td><td class="n">89,1%</td><td class="n">98,7%</td><td class="n"><b>81,1%</b></td></tr><tr class="hl"><td>L2</td><td class="n">84,2%</td><td class="n">87,3%</td><td class="n">97,4%</td><td class="n"><b>71,6%</b></td></tr><tr><td>L3</td><td class="n">92,5%</td><td class="n">89,0%</td><td class="n">98,6%</td><td class="n"><b>81,2%</b></td></tr></tbody></table></div><p class="small">A diferença está na Disponibilidade: a L2 fica mais tempo parada.</p>'},
@@ -617,17 +662,17 @@ const ELOS=[
   chk:'Refaça na calculadora: diferença por turno × 0,40 × 250.',
   ans:'<ul><li>Noite: <b>8.357 boas a menos</b> e <b>659 refugos a mais</b> por turno.</li><li>Margem perdida ≈ <b>R$ 836 mil/ano</b>.</li><li>Refugo extra ≈ <b>R$ 247 mil/ano</b>.</li><li><b>Total ≈ R$ 1,08 milhão por ano.</b></li></ul>'},
  {t:'Simular o projeto',q:'Vale a pena investir?',tec:'Cadeia de pensamento + saída estruturada',
-  why:'Um número único esconde a incerteza. Uma faixa de resultados é mais honesta.',
+  why:'SMED é o método para encurtar trocas, preparando tudo com a máquina ainda rodando. E um número único esconde a incerteza: uma faixa de resultados é mais honesta.',
   p:'Simule um projeto de SMED, kit de troca rápida e treinamento na noite da L2, com investimento de R$ 190 mil. Faça um Monte Carlo com 20.000 cenários variando a redução do setup (25% a 55%, mais provável 40%), a redução do refugo (30% a 70%, mais provável 50%) e a margem (R$ 0,35 a R$ 0,45). Liste as premissas antes. Entregue P5, P50 e P95 do ganho anual, payback e VPL de 3 anos a 12% a.a., em tabela.',
   see:'Uma tabela com cenário pessimista, provável e otimista.',
   chk:'Pergunte: quais premissas mais mexem no resultado?',
-  ans:'<div class="tbl"><table><thead><tr><th>Cenário</th><th class="n">Ganho/ano</th><th class="n">Payback</th><th class="n">VPL 3 anos</th></tr></thead><tbody><tr><td>Pessimista</td><td class="n">R$ 347 mil</td><td class="n">6,6 meses</td><td class="n">R$ 644 mil</td></tr><tr><td><b>Provável</b></td><td class="n"><b>R$ 432 mil</b></td><td class="n"><b>5,3 meses</b></td><td class="n"><b>R$ 847 mil</b></td></tr><tr><td>Otimista</td><td class="n">R$ 519 mil</td><td class="n">4,4 meses</td><td class="n">R$ 1,06 mi</td></tr></tbody></table></div><p class="small muted">Como é simulação, seus números podem variar um pouco.</p>'},
+  ans:'<div class="tbl"><table><thead><tr><th>Cenário</th><th class="n">Ganho/ano</th><th class="n">Payback</th><th class="n">VPL 3 anos</th></tr></thead><tbody><tr><td>Pessimista</td><td class="n">R$ 347 mil</td><td class="n">6,6 meses</td><td class="n">R$ 644 mil</td></tr><tr><td><b>Provável</b></td><td class="n"><b>R$ 432 mil</b></td><td class="n"><b>5,3 meses</b></td><td class="n"><b>R$ 847 mil</b></td></tr><tr><td>Otimista</td><td class="n">R$ 519 mil</td><td class="n">4,4 meses</td><td class="n">R$ 1,06 mi</td></tr></tbody></table></div><p class="small">Repare: o ganho provável (R$ 432 mil) é cerca de 40% dos R$ 1,08 mi em risco do Elo 5. O projeto ataca só parte do setup e do refugo; o resto depende do experimento de redistribuir as trocas.</p><p class="small muted">Como é simulação, seus números podem variar um pouco.</p>'},
  {t:'Decidir e comunicar',q:'O que dizer ao CFO?',tec:'Papel + output (pirâmide de Minto)',
   why:'Na pirâmide de Minto a recomendação vem na primeira linha; quem lê decide sem chegar ao fim.',
   p:'Com base em toda a análise desta conversa, escreva um memorando de uma página para o CFO no formato pirâmide de Minto: recomendação primeiro, depois 3 argumentos com números, depois o próximo passo. Não invente números.',
   see:'Um memorando curto que começa pela recomendação.',
   chk:'Confira cada número do memorando com os elos anteriores.',
-  ans:'<p><b>Recomendação: manter a L2 e investir R$ 190 mil em padronização de setup no turno da noite.</b></p><ol class="small"><li>De dia a L2 opera com OEE de 81%: não é a máquina.</li><li>A perda está na noite (OEE 52%) e custa cerca de R$ 1,1 milhão por ano.</li><li>O investimento se paga em cerca de 5 meses.</li><li>Próximo passo: experimento de 2 semanas antes de qualquer decisão sobre pessoas.</li></ol>'}
+  ans:'<p><b>Recomendação: manter a L2 e investir R$ 190 mil em padronização de setup no turno da noite.</b></p><ol class="small"><li>De dia a L2 opera com OEE de 81%: não é a máquina.</li><li>A perda está na noite (OEE 52%) e custa cerca de R$ 1,1 milhão por ano.</li><li>O investimento se paga em cerca de 5 meses e recupera cerca de R$ 432 mil por ano.</li><li>Próximo passo: experimento de 2 semanas antes de qualquer decisão sobre pessoas.</li></ol>'}
 ];
 
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
