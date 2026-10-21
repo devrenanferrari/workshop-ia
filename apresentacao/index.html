@@ -466,6 +466,39 @@ tr.crit td{background:var(--bad-soft)}
   *,*::before,*::after{animation-duration:.001ms!important;animation-delay:0s!important;transition-duration:.001ms!important}
   .heat .cell,.memo li,.lnk .ok{opacity:1;transform:none}
 }
+/*TOOLS-START*/
+.tq{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;align-items:center;font-size:.92rem;color:var(--muted)}
+.tq .k{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--faint)}
+.tq b{display:inline-grid;place-items:center;width:1.4rem;height:1.4rem;border-radius:50%;background:var(--fg);color:var(--bg);font-size:.72rem;margin-right:.35rem}
+.tmap{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr);gap:1.2rem;align-items:start}
+@media (max-width:860px){.tmap{grid-template-columns:minmax(0,1fr)}}
+.tks{display:flex;flex-direction:column;gap:.35rem}
+@media (max-width:860px){.tks{flex-direction:row;flex-wrap:wrap}}
+.tk{display:flex;align-items:center;gap:.55rem;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:.42rem .9rem .42rem .45rem;font:inherit;font-size:.88rem;color:var(--fg);cursor:pointer;transition:background .2s,border-color .2s}
+.tk .tn{display:grid;place-items:center;width:1.5rem;height:1.5rem;border-radius:50%;background:var(--surface-2);font-size:.72rem;font-weight:600;flex:none}
+.tk:hover{border-color:var(--fg)}
+.tk[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.tk[aria-pressed="true"] .tn{background:var(--bg);color:var(--fg)}
+.tgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem}
+@media (max-width:1100px){.tgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tcard{display:flex;gap:.7rem;align-items:flex-start;background:var(--surface);border:1.5px solid transparent;border-radius:16px;padding:.8rem .85rem;transition:opacity .35s,border-color .35s,background .35s,transform .35s;min-width:0}
+.tcard .ti{width:1.9rem;height:1.9rem;flex:none;fill:none;stroke:var(--fg);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;background:var(--bg);border-radius:10px;padding:.3rem;box-sizing:content-box}
+.tcard .tx{display:flex;flex-direction:column;gap:.15rem;min-width:0}
+.tcard b{font-size:.9rem;line-height:1.25}
+.tcard .nm{font-size:.76rem;color:var(--muted);font-weight:500}
+.tcard .ds{font-size:.76rem;color:var(--faint);line-height:1.35}
+.tgrid.pick .tcard{opacity:.32}
+.tgrid.pick .tcard.on{opacity:1;border-color:var(--fg);background:var(--bg);transform:translateY(-2px)}
+.tgrid.pick .tcard.on .ti{background:var(--fg);stroke:var(--bg)}
+.tdet{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.3fr) minmax(0,1fr);gap:1rem;border-top:1px solid var(--line);padding-top:.9rem;min-height:5.2rem}
+@media (max-width:860px){.tdet{grid-template-columns:minmax(0,1fr)}}
+.tdet .k{display:block;font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);margin-bottom:.25rem}
+.tdet p{margin:0;font-size:.92rem}
+.tdet .pr{font-family:var(--f-mono);font-size:.8rem;background:var(--surface);border-radius:10px;padding:.5rem .65rem;line-height:1.45}
+.tdet .empty{grid-column:1/-1;color:var(--muted);font-size:.95rem;align-self:center}
+.tdet>div{animation:rise .45s cubic-bezier(.2,.7,.2,1) both}
+.tdet>div:nth-child(2){animation-delay:.08s}.tdet>div:nth-child(3){animation-delay:.16s}
+/*TOOLS-END*/
 /*PR-START*/
 .anat2{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:1.3rem;align-items:start}
 @media (max-width:860px){.anat2{grid-template-columns:minmax(0,1fr)}}
@@ -671,8 +704,8 @@ tr.crit td{background:var(--bad-soft)}
     <p class="eyebrow rise" style="--i:0">Roteiro</p>
     <h2 class="rise" style="--i:1">Primeiro entender a ferramenta. Depois usar de verdade.</h2>
     <div class="agenda rise" style="--i:2">
-      <div class="ag"><span class="t">0–5</span><span class="l">Abertura e o problema</span><span class="d">o e-mail do CFO</span></div>
-      <div class="ag"><span class="t">5–20</span><span class="l">Como a IA funciona</span><span class="d">por dentro do modelo, tokens, erros, ferramentas</span></div>
+      <div class="ag"><span class="t">0–6</span><span class="l">Abertura e o problema</span><span class="d">o e-mail do CFO</span></div>
+      <div class="ag"><span class="t">6–20</span><span class="l">Como a IA funciona</span><span class="d">por dentro do modelo, tokens, erros, ferramentas</span></div>
       <div class="ag"><span class="t">20–30</span><span class="l">System, user e assistant</span><span class="d">como uma conversa é montada</span></div>
       <div class="ag"><span class="t">30–50</span><span class="l">Escrevendo bons prompts</span><span class="d">CORPO, anatomia, iteração e técnicas</span></div>
       <div class="ag hl"><span class="t">50–83</span><span class="l">O experimento</span><span class="d">7 elos para resolver o caso</span></div>
@@ -772,31 +805,18 @@ tr.crit td{background:var(--bad-soft)}
 </section>
 
 <section class="slide" data-sec="Como a IA funciona" data-title="Ferramentas" data-id="tools">
-  <div class="wrap">
+  <div class="wrap" style="gap:1rem">
     <p class="eyebrow rise" style="--i:0">Parte 1 · Ferramentas</p>
     <h2 class="rise" style="--i:1">Qual ferramenta para qual tarefa?</h2>
-    <div class="tasks rise" style="--i:2" id="taskBtns" role="group" aria-label="Escolha uma tarefa">
-      <button class="pill" data-m="chat,code,sheet">Analisar uma planilha</button>
-      <button class="pill" data-m="sheet">Montar uma fórmula no Excel</button>
-      <button class="pill" data-m="bi">Perguntar à base da empresa</button>
-      <button class="pill" data-m="auto">Alerta quando o OEE cair</button>
-      <button class="pill" data-m="res">Estudar uma norma</button>
-      <button class="pill" data-m="vis">Defeito por imagem</button>
-      <button class="pill" data-m="chat">Relatório para a diretoria</button>
+    <div class="tq rise" style="--i:2"><span class="k">Três perguntas para escolher</span><span><b>1</b> Onde estão os dados?</span><span><b>2</b> A conta precisa ser exata?</span><span><b>3</b> Vai rodar sozinha depois?</span></div>
+    <div class="tmap rise" style="--i:3">
+      <div class="tks" id="tkList" role="group" aria-label="Escolha uma tarefa"><button class="tk" data-t="0" aria-pressed="false"><span class="tn">1</span>Analisar uma planilha</button><button class="tk" data-t="1" aria-pressed="false"><span class="tn">2</span>Montar uma fórmula no Excel</button><button class="tk" data-t="2" aria-pressed="false"><span class="tn">3</span>Perguntar à base da empresa</button><button class="tk" data-t="3" aria-pressed="false"><span class="tn">4</span>Alerta quando o OEE cair</button><button class="tk" data-t="4" aria-pressed="false"><span class="tn">5</span>Estudar uma norma</button><button class="tk" data-t="5" aria-pressed="false"><span class="tn">6</span>Defeito por imagem</button><button class="tk" data-t="6" aria-pressed="false"><span class="tn">7</span>Relatório para a diretoria</button></div>
+      <div class="tgrid" id="tgrid"><div class="tcard" data-c="chat"><svg viewBox="0 0 24 24" class="ti" aria-hidden="true"><path d="M4 5h16v10H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg><div class="tx"><b>Assistentes de conversa</b><span class="nm">ChatGPT · Claude · Gemini · Copilot</span><span class="ds">Pensar, escrever, analisar arquivos.</span></div></div><div class="tcard" data-c="sheet"><svg viewBox="0 0 24 24" class="ti" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 4.5v15M15 4.5v15"/></svg><div class="tx"><b>IA na planilha</b><span class="nm">Copilot no Excel · Gemini no Sheets</span><span class="ds">Fórmulas e tabelas sem sair da planilha.</span></div></div><div class="tcard" data-c="code"><svg viewBox="0 0 24 24" class="ti" aria-hidden="true"><path d="M8.5 7 3.5 12l5 5M15.5 7l5 5-5 5M13 5l-2 14"/></svg><div class="tx"><b>Análise com código</b><span class="nm">Modos de análise de dados · Colab</span><span class="ds">A IA escreve e roda Python: contas confiáveis.</span></div></div><div class="tcard" data-c="bi"><svg viewBox="0 0 24 24" class="ti" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7"/><circle cx="18.5" cy="7.5" r="2.5"/><path d="m20.3 9.3 1.7 1.7"/></svg><div class="tx"><b>BI conversacional</b><span class="nm">Copilot no Power BI · Databricks Genie</span><span class="ds">Perguntas em português nos dados oficiais.</span></div></div><div class="tcard" data-c="auto"><svg viewBox="0 0 24 24" class="ti" aria-hidden="true"><circle cx="5.5" cy="6" r="2.5"/><circle cx="18.5" cy="18" r="2.5"/><rect x="14" y="3.5" width="7" height="5" rx="1.5"/><path d="M8 6h6M17.5 8.5v7M5.5 8.5V18h10.5"/></svg><div class="tx"><b>Automação e agentes</b><span class="nm">Power Automate · n8n · Make</span><span class="ds">Rotinas: alertas, relatórios, abertura de OS.</span></div></div><div class="tcard" data-c="res"><svg viewBox="0 0 24 24" class="ti" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H18v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H18v3H6.5"/><circle cx="11" cy="9.5" r="2.6"/><path d="m13 11.5 2 2"/></svg><div class="tx"><b>Pesquisa e estudo</b><span class="nm">Perplexity · NotebookLM</span><span class="ds">Respostas com fontes; estudar seus PDFs.</span></div></div><div class="tcard" data-c="vis"><svg viewBox="0 0 24 24" class="ti" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l3 3M21 3l-3 3"/></svg><div class="tx"><b>Visão computacional</b><span class="nm">Roboflow · Landing AI</span><span class="ds">Inspeção visual e contagem na linha.</span></div></div><div class="tcard" data-c="dev"><svg viewBox="0 0 24 24" class="ti" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="m7 10 3 2.5L7 15M12.5 15H17"/></svg><div class="tx"><b>Código assistido</b><span class="nm">GitHub Copilot · Cursor · Claude Code</span><span class="ds">Automatizar análises em Python ou SQL.</span></div></div></div>
     </div>
-    <div class="grid g4 tools rise" style="--i:3" id="toolGrid">
-      <div class="card tool" data-c="chat"><span class="k">Assistentes de conversa</span><span class="names">ChatGPT · Claude · Gemini · Copilot</span><p class="small muted">Pensar, escrever, analisar arquivos.</p></div>
-      <div class="card tool" data-c="sheet"><span class="k">IA na planilha</span><span class="names">Copilot no Excel · Gemini no Sheets</span><p class="small muted">Fórmulas e tabelas sem sair da planilha.</p></div>
-      <div class="card tool" data-c="code"><span class="k">Análise com código</span><span class="names">Modos de análise de dados · Colab</span><p class="small muted">A IA escreve e roda Python: contas confiáveis.</p></div>
-      <div class="card tool" data-c="bi"><span class="k">BI conversacional</span><span class="names">Copilot no Power BI · Databricks Genie</span><p class="small muted">Perguntas em português nos dados oficiais.</p></div>
-      <div class="card tool" data-c="auto"><span class="k">Automação e agentes</span><span class="names">Power Automate · n8n · Make</span><p class="small muted">Rotinas: alertas, relatórios, abertura de OS.</p></div>
-      <div class="card tool" data-c="res"><span class="k">Pesquisa e estudo</span><span class="names">Perplexity · NotebookLM</span><p class="small muted">Respostas com fontes; estudar seus PDFs.</p></div>
-      <div class="card tool" data-c="vis"><span class="k">Visão computacional</span><span class="names">Roboflow · Landing AI</span><p class="small muted">Inspeção visual e contagem na linha.</p></div>
-      <div class="card tool" data-c="dev"><span class="k">Código assistido</span><span class="names">GitHub Copilot · Cursor · Claude Code</span><p class="small muted">Automatizar análises em Python ou SQL.</p></div>
-    </div>
-    <p class="small muted rise" style="--i:4">As marcas mudam rápido. Aprenda a categoria e o método.</p>
+    <div class="tdet rise" style="--i:4" id="tdet" aria-live="polite"></div>
+    <p class="small muted rise" style="--i:5">As marcas mudam rápido. Aprenda a categoria e o método; para hoje, qualquer assistente gratuito resolve.</p>
   </div>
-  <aside class="notes"><p>Clique nas tarefas e deixe a turma adivinhar antes. Para hoje, qualquer assistente de conversa gratuito resolve.</p></aside>
+  <aside class="notes"><p>Ao entrar, o slide percorre as tarefas sozinho. Depois, clique numa tarefa e deixe a turma adivinhar a ferramenta antes de ler o painel.</p><p>As três perguntas resolvem quase tudo: dados da empresa pedem a ferramenta corporativa ou o BI; conta exata pede código; rotina pede automação.</p><p>Cortável se atrasar.</p></aside>
 </section>
 
 <section class="slide" data-sec="Como a IA funciona" data-title="Do copiloto ao agente" data-id="ladder">
@@ -1591,11 +1611,20 @@ function tokRender(){const v=$('#tokIn').value; const t=toyTokens(v); $('#tokChi
 $('#tokIn').addEventListener('input',tokRender); tokRender();
 
 /* ============ FERRAMENTAS ============ */
-$$('#taskBtns .pill').forEach(b=>b.setAttribute('aria-pressed','false'));
-$('#taskBtns').addEventListener('click',e=>{const b=e.target.closest('.pill'); if(!b)return; const on=b.getAttribute('aria-pressed')!=='true';
-  $$('#taskBtns .pill').forEach(x=>x.setAttribute('aria-pressed','false')); const g=$('#toolGrid');
-  if(on){b.setAttribute('aria-pressed','true'); const m=b.dataset.m.split(','); g.classList.add('filtered'); $$('.tool',g).forEach(t=>t.classList.toggle('on',m.includes(t.dataset.c)));}
-  else{g.classList.remove('filtered'); $$('.tool',g).forEach(t=>t.classList.remove('on'));}});
+const TOOLS_T=[["Analisar uma planilha", ["chat", "code"], "Assistente de conversa com modo de análise de dados: ele lê o arquivo e calcula com código.", "Analise a planilha anexa. Calcule o OEE por linha usando código e mostre a conta de uma linha.", "Confira uma conta. Dado sigiloso só na versão corporativa."], ["Montar uma fórmula no Excel", ["sheet"], "A IA dentro da planilha enxerga as suas colunas e escreve a fórmula no lugar certo.", "Crie uma fórmula na coluna H que calcule a disponibilidade a partir das colunas F e G.", "Teste a fórmula em três linhas cujo resultado você já sabe."], ["Perguntar à base da empresa", ["bi"], "BI conversacional responde em português sobre os dados oficiais, com as métricas já definidas.", "Qual foi o OEE da L2 por turno na última semana?", "Só é confiável se as métricas estiverem bem definidas no modelo de dados."], ["Alerta quando o OEE cair", ["auto"], "Uma automação roda sozinha e age dentro de regras que você define.", "Se o OEE do turno ficar abaixo de 65%, avise o supervisor e registre uma ocorrência.", "Comece só avisando. Ações automáticas precisam de regra e de quem aprova."], ["Estudar uma norma", ["res"], "Ferramentas de estudo respondem com base nos seus PDFs e mostram de onde tiraram cada trecho.", "Com base apenas no PDF anexo, liste os requisitos de calibração e cite a seção de cada um.", "Abra a seção citada e confira no original."], ["Defeito por imagem", ["vis"], "Visão computacional aprende com fotos rotuladas e inspeciona cada unidade na linha.", "Treinar com fotos de tampas boas e com defeito, separadas por tipo de defeito.", "Precisa de fotos suficientes e iluminação estável. Valide com uma amostra."], ["Relatório para a diretoria", ["chat"], "O assistente de conversa transforma a análise num texto curto, no formato de quem decide.", "Transforme esta análise num memorando de uma página, em pirâmide de Minto, sem inventar números.", "Confira cada número com a análise original."]];
+(function(){const list=$('#tkList'), grid=$('#tgrid'), det=$('#tdet');
+  const names={};$$('.tcard',grid).forEach(c=>names[c.dataset.c]=$('b',c).textContent);
+  const empty=()=>{det.innerHTML='<p class="empty">Escolha uma tarefa à esquerda: a ferramenta certa acende e aqui aparece por que usar, um exemplo de pedido e o cuidado.</p>';};
+  const pick=i=>{ $$('.tk',list).forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.t===i)));
+    if(i==null){grid.classList.remove('pick'); $$('.tcard',grid).forEach(c=>c.classList.remove('on')); empty(); return;}
+    const [t,cs,why,ex,care]=TOOLS_T[i]; grid.classList.add('pick'); $$('.tcard',grid).forEach(c=>c.classList.toggle('on',cs.includes(c.dataset.c)));
+    det.innerHTML=`<div><span class="k">Por que ${esc(cs.map(c=>names[c]).join(' + '))}</span><p>${esc(why)}</p></div><div><span class="k">Exemplo de pedido</span><p class="pr">${esc(ex)}</p></div><div><span class="k">Cuidado</span><p>${esc(care)}</p></div>`; };
+  list.addEventListener('click',e=>{const b=e.target.closest('.tk'); if(!b)return; list.dataset.user=1; const i=+b.dataset.t; pick(b.getAttribute('aria-pressed')==='true'?null:i);});
+  empty();
+  enterHooks.tools=async()=>{ if(RM)return; const gen=runGen; delete list.dataset.user; pick(null); await sleep(1200);
+    for(let i=0;i<TOOLS_T.length;i++){ if(gen!==runGen||list.dataset.user)return; pick(i); await sleep(2600); }
+    if(gen===runGen&&!list.dataset.user)pick(null); };
+  leaveHooks.tools=()=>{};})();
 
 /* ============ BASTIDORES ============ */
 const BS=[
