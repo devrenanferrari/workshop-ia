@@ -206,6 +206,8 @@ tr.hl td{background:var(--bad-soft)}
 .me-box b{font-size:1.05rem}
 .me-box .btn{align-self:flex-start;text-decoration:none;margin-top:.2rem}
 /*ME-END*/
+.dl{display:flex;gap:.6rem;flex-wrap:wrap}
+.dl a.btn{text-decoration:none}
 </style>
 </head>
 <body>
@@ -243,7 +245,7 @@ tr.hl td{background:var(--bad-soft)}
     <li><span class="d">5</span><span><b>Um caso real</b> resolvido em 7 etapas, do dado bruto ao memorando para a diretoria.</span></li>
   </ul>
   <div class="cards">
-    <div class="box fill"><span class="k">Você vai precisar</span><p>Uma IA gratuita (ChatGPT, Claude, Gemini ou Copilot) aberta e logada.</p></div>
+    <div class="box fill"><span class="k">Você vai precisar</span><p>Uma IA gratuita (ChatGPT, Claude, Gemini ou Copilot) aberta e logada. A base de dados do caso está no Módulo 5, para copiar ou baixar.</p></div>
     <div class="box fill"><span class="k">Como organizar a tela</span><p><b>Computador:</b> guia de um lado, IA do outro. <b>Celular:</b> alterne entre o navegador e o app da IA.</p></div>
   </div>
   <p class="small muted">Não precisa saber programar nem pagar nenhuma ferramenta.</p>
@@ -484,8 +486,13 @@ Antes de responder, liste as premissas e mostre cada cálculo passo a passo.</di
     <ul class="small"><li><b>Pareto:</b> ordenar causas da maior para a menor; poucas explicam quase tudo (80/20).</li><li><b>Monte Carlo:</b> sortear milhares de combinações plausíveis das premissas e ver a faixa de resultados.</li><li><b>Payback:</b> em quanto tempo o dinheiro volta.</li><li><b>VPL:</b> quanto o projeto vale hoje, descontando o tempo.</li></ul>
   </details>
   <h3>A base de dados</h3>
-  <p>91 registros, um por turno, com <b>dois defeitos escondidos</b> de propósito. Copie e cole na IA junto com o prompt do Elo 1.</p>
-  <div style="display:flex;gap:.6rem;flex-wrap:wrap"><button class="btn" data-copy-csv>Copiar base de dados</button></div>
+  <p>91 registros, um por turno, com <b>dois defeitos escondidos</b> de propósito. Baixe para explorar no Excel ou no Google Sheets, ou leve para a IA junto com o prompt do Elo 1.</p>
+  <div class="dl">
+    <a class="btn" href="dados/producao-envasa.xlsx" download>Baixar planilha (.xlsx)</a>
+    <a class="btn ghost" href="dados/producao-envasa.csv" download>Baixar CSV</a>
+    <button class="btn ghost" data-copy-csv>Copiar como texto</button>
+  </div>
+  <p class="small muted">Na IA, você pode <b>anexar o arquivo</b> na conversa ou <b>colar o texto</b> logo abaixo do prompt. A planilha tem uma aba "Leia-me" com o significado de cada coluna e as premissas do caso.</p>
   <details><summary>O que cada coluna significa</summary>
     <div class="tbl"><table><tbody>
       <tr><td><code>data · linha · turno</code></td><td>Quando e onde</td></tr>
@@ -770,7 +777,7 @@ function renderElo(k){
       <div class="elo-h"><span class="lab">Elo ${num} de 7 · técnica: ${E.tec}</span><h3>${E.t}</h3><span class="muted">${E.q}</span></div>
       <p class="small"><b>Por quê:</b> ${E.why}</p>
       <div class="prompt"><span class="pl">1 · Copie e envie</span><button class="pill cp" data-copy>Copiar</button>${esc(E.p)}</div>
-      ${k===0?'<button class="btn ghost" data-copy-csv style="align-self:flex-start">Copiar base de dados</button>':''}
+      ${k===0?'<div class="dl"><button class="btn ghost" data-copy-csv>Copiar base de dados</button><a class="btn ghost" href="dados/producao-envasa.xlsx" download>Baixar planilha</a><a class="btn ghost" href="dados/producao-envasa.csv" download>Baixar CSV</a></div><p class="small muted">Copie e cole a base logo abaixo do prompt, ou anexe o arquivo na conversa.</p>':''}
       <div class="split"><div class="box fill"><span class="k">2 · O que observar</span><p class="small">${E.see}</p></div><div class="box fill"><span class="k">3 · Confira</span><p class="small">${E.chk}</p></div></div>
       <details><summary>4 · Gabarito</summary>${E.ans}</details>
       <div class="elo-nav">${prev}${next}</div></div>`;
