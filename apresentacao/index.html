@@ -466,6 +466,64 @@ tr.crit td{background:var(--bad-soft)}
   *,*::before,*::after{animation-duration:.001ms!important;animation-delay:0s!important;transition-duration:.001ms!important}
   .heat .cell,.memo li,.lnk .ok{opacity:1;transform:none}
 }
+/*PR-START*/
+.anat2{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:1.3rem;align-items:start}
+@media (max-width:860px){.anat2{grid-template-columns:minmax(0,1fr)}}
+.pdoc{border:1px solid var(--line);border-radius:18px;background:var(--surface);padding:.9rem 1rem;display:flex;flex-direction:column;gap:.7rem;font-family:var(--f-mono);font-size:.8rem;line-height:1.45;min-width:0}
+.pgrp{border-left:2px solid var(--line);padding-left:.75rem;display:flex;flex-direction:column;gap:.15rem;min-width:0}
+.pgrp.dat{border-left-style:dashed}
+.glab{font-family:var(--f-sans);font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:.15rem}
+.pl{display:grid;grid-template-columns:1.9rem minmax(0,1fr);gap:.55rem;align-items:center;padding:.22rem .4rem;border-radius:10px;transition:background .25s,opacity .25s,box-shadow .25s}
+.pl .tagm{color:var(--muted)}
+.lt{display:inline-grid;place-items:center;min-width:1.6rem;height:1.6rem;padding:0 .2rem;border-radius:8px;background:var(--bg);border:1px solid var(--line);font-family:var(--f-sans);font-size:.76rem;font-weight:600;color:var(--fg)}
+.pdoc.focus .pl{opacity:.32}
+.pdoc.focus .pl.on{opacity:1;background:var(--bg);box-shadow:0 0 0 1.5px var(--fg) inset}
+.plegend{display:flex;flex-direction:column;gap:.3rem;min-width:0}
+.lg{display:grid;grid-template-columns:1.9rem minmax(0,1fr);gap:.55rem;align-items:center;text-align:left;background:none;border:1.5px solid transparent;border-radius:12px;padding:.35rem .5rem;cursor:pointer;font:inherit;font-size:.88rem;color:var(--muted);line-height:1.35}
+.lg b{color:var(--fg);font-weight:600}
+.lg.on{border-color:var(--fg);background:var(--surface)}
+.lg.on .lt{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.iter{display:grid;grid-template-columns:minmax(0,19rem) minmax(0,1fr);gap:2rem;align-items:center}
+@media (max-width:860px){.iter{grid-template-columns:minmax(0,1fr)}.cyc{max-width:18rem;margin:0 auto}}
+.cyc svg{display:block;width:100%;height:auto;overflow:visible}
+.cy-ring{fill:none;stroke:var(--line);stroke-width:1.5;stroke-dasharray:5 6}
+.cy-arr{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.cy-dot{fill:var(--fg)}
+.cy-n rect{fill:var(--surface);stroke:var(--line)}
+.cyc text{text-anchor:middle;font-family:var(--f-sans)}
+.cyc .t1{font-size:13px;font-weight:600;fill:var(--fg)}
+.cyc .t2{font-size:10.5px;fill:var(--muted)}
+.cyc .t3{font-size:12px;fill:var(--muted);font-weight:500}
+.ivers{display:flex;flex-direction:column;gap:.9rem;min-width:0}
+.iv{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:.3rem .8rem;align-items:start}
+.iv>*:not(.vt){grid-column:2}
+.iv .vt{grid-row:1 / span 3;width:2.4rem;height:2.4rem;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;font-weight:600;font-size:.85rem}
+.iv p{margin:0}
+.tips2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+@media (max-width:760px){.tips2{grid-template-columns:minmax(0,1fr)}}
+.ck5{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.8rem;counter-reset:ck}
+.ck5 li{counter-increment:ck;display:flex;gap:.5rem;align-items:baseline;font-size:.95rem}
+.ck5 li::before{content:counter(ck);flex:none;width:1.5rem;height:1.5rem;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;font-size:.75rem;font-weight:600}
+@media (max-width:860px){.ck5{grid-template-columns:minmax(0,1fr)}}
+/*PR-END*/
+/*FILM-START*/
+.film{display:flex;flex-direction:column;gap:.6rem}
+.film-stage{position:relative;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--bg)}
+.film-stage canvas{display:block;width:100%;aspect-ratio:1000/460}
+.film-tag{position:absolute;left:1rem;top:.75rem;font-size:.75rem;color:var(--muted);display:inline-flex;gap:.45rem;align-items:center}
+.film-tag::before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:var(--bad);animation:blink 1.2s steps(1) infinite}
+.film-cap{margin:0;font-size:1.08rem;line-height:1.45;min-height:2.9em;max-width:64rem}
+.film-bar{display:flex;align-items:center;gap:1rem;min-width:0}
+.film-play{min-width:7.5rem}
+.film-chaps{flex:1;display:flex;gap:4px;min-width:0}
+.film-chaps button{flex:var(--d) 1 0;min-width:0;background:none;border:0;padding:.2rem 0;cursor:pointer;display:flex;flex-direction:column;gap:.35rem;text-align:left;color:var(--faint);font:inherit;font-size:.72rem}
+.film-chaps button i{display:block;height:4px;border-radius:2px;background:var(--surface-2);overflow:hidden;position:relative}
+.film-chaps button i b{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--fg)}
+.film-chaps button.on{color:var(--fg)}
+.film-chaps button span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.film-time{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+@media (max-width:760px){.film-chaps button span{display:none}.film-cap{font-size:.98rem}.film-time{display:none}.film-play{min-width:0}}
+/*FILM-END*/
 /*ME-START*/
 .me{display:grid;grid-template-columns:minmax(0,21rem) minmax(0,1fr);gap:3rem;align-items:center}
 .me-photo{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:50% 50%;border-radius:24px;display:block;background:var(--surface)}
@@ -580,7 +638,7 @@ tr.crit td{background:var(--bad-soft)}
     <div class="objs">
       <div class="obj" style="--i:0"><span class="n">1</span><div><h3>Por que a IA acerta e por que erra</h3><p>Como um modelo de linguagem gera texto, o que são tokens e contexto, e os erros mais comuns.</p></div><span class="pt">Parte 1</span></div>
       <div class="obj" style="--i:1"><span class="n">2</span><div><h3>Como uma conversa é montada</h3><p>Os papéis system, user e assistant, e como configurar a instrução de bastidor.</p></div><span class="pt">Parte 2</span></div>
-      <div class="obj" style="--i:2"><span class="n">3</span><div><h3>Como escrever um bom prompt</h3><p>O método CORPO: Contexto, Objetivo, Regras, Papel e Output.</p></div><span class="pt">Parte 3</span></div>
+      <div class="obj" style="--i:2"><span class="n">3</span><div><h3>Como escrever um bom prompt</h3><p>O método CORPO, a anatomia de um prompt completo e como melhorá-lo em rodadas.</p></div><span class="pt">Parte 3</span></div>
       <div class="obj" style="--i:3"><span class="n">4</span><div><h3>Como fazer a IA raciocinar melhor</h3><p>Few-shot, cadeia de pensamento e decomposição, com exemplos de produção.</p></div><span class="pt">Parte 3</span></div>
       <div class="obj" style="--i:4"><span class="n">5</span><div><h3>Como resolver um problema real em etapas</h3><p>Prompt chaining: 7 elos do dado bruto até o memorando para o CFO, com uma checagem em cada elo.</p></div><span class="pt">Parte 4</span></div>
     </div>
@@ -614,9 +672,9 @@ tr.crit td{background:var(--bad-soft)}
     <h2 class="rise" style="--i:1">Primeiro entender a ferramenta. Depois usar de verdade.</h2>
     <div class="agenda rise" style="--i:2">
       <div class="ag"><span class="t">0–5</span><span class="l">Abertura e o problema</span><span class="d">o e-mail do CFO</span></div>
-      <div class="ag"><span class="t">5–20</span><span class="l">Como a IA funciona</span><span class="d">próxima palavra, tokens, erros, ferramentas</span></div>
-      <div class="ag"><span class="t">20–32</span><span class="l">System, user e assistant</span><span class="d">como uma conversa é montada</span></div>
-      <div class="ag"><span class="t">32–50</span><span class="l">Escrevendo bons prompts</span><span class="d">método CORPO e tipos de prompt</span></div>
+      <div class="ag"><span class="t">5–20</span><span class="l">Como a IA funciona</span><span class="d">por dentro do modelo, tokens, erros, ferramentas</span></div>
+      <div class="ag"><span class="t">20–30</span><span class="l">System, user e assistant</span><span class="d">como uma conversa é montada</span></div>
+      <div class="ag"><span class="t">30–50</span><span class="l">Escrevendo bons prompts</span><span class="d">CORPO, anatomia, iteração e técnicas</span></div>
       <div class="ag hl"><span class="t">50–83</span><span class="l">O experimento</span><span class="d">7 elos para resolver o caso</span></div>
       <div class="ag"><span class="t">83–90</span><span class="l">Veredito, debate e fechamento</span><span class="d">quem tinha razão e o que levar</span></div>
     </div>
@@ -642,7 +700,16 @@ tr.crit td{background:var(--bad-soft)}
     <p class="loop rise" style="--i:4">E repete: a palavra escolhida volta como entrada, até a resposta terminar.</p>
     <p class="say rise" style="--i:5">Consequência: ele não consulta uma base de verdades. Ele gera a continuação <b>mais provável</b>. O seu prompt muda essas probabilidades.</p>
   </div>
-  <aside class="notes"><p><b>Fala:</b> "Toda vez que vocês veem a resposta aparecendo palavra por palavra, é isso acontecendo ao vivo."</p><p>Os números do passo 3 são ilustrativos.</p></aside>
+  <aside class="notes"><p><b>Fala:</b> "Toda vez que vocês veem a resposta aparecendo palavra por palavra, é isso acontecendo ao vivo."</p><p>Os números do passo 3 são ilustrativos. O próximo slide mostra esse caminho em movimento, por dentro do modelo.</p></aside>
+</section>
+
+<section class="slide" data-sec="Como a IA funciona" data-title="Por dentro do modelo" data-id="film">
+  <div class="wrap" style="gap:.75rem;padding-block:1.1rem .9rem">
+    <p class="eyebrow rise" style="--i:0">Parte 1 · Por dentro do modelo · vídeo de 1 minuto</p>
+    <h2 class="rise" style="--i:1;font-size:clamp(1.5rem,2.6vw,2.2rem)">O caminho de uma pergunta dentro do modelo</h2>
+    <div class="rise" style="--i:2" id="film"></div>
+  </div>
+  <aside class="notes"><p>Deixe rodar inteiro (1 minuto) lendo as legendas junto. Clique num capítulo para voltar a ele; com o vídeo pausado, o clique mostra o capítulo já montado.</p><p>Se perguntarem "ele pesquisa a resposta?": não. Ele calcula o próximo token com os pesos aprendidos no treino. Busca na web, quando existe, é uma ferramenta à parte que coloca texto na conversa antes do cálculo.</p><p>Tudo é ilustrativo: num modelo real cada vetor tem milhares de valores e há dezenas de camadas; na árvore usamos palavras inteiras no lugar de tokens para facilitar a leitura.</p></aside>
 </section>
 
 <section class="slide" data-sec="Como a IA funciona" data-title="Próxima palavra e temperatura" data-id="nexttok">
@@ -861,6 +928,50 @@ tr.crit td{background:var(--bad-soft)}
     </div>
   </div>
   <aside class="notes"><p><b>Ordem sugerida:</b> Objetivo → Contexto → Papel → Regras → Output. Comente cada mudança.</p><p><b>Ponto alto:</b> sem "Regras", a IA usa a linha repetida e conta um turno da L2 que não existiu (22 mil garrafas a mais). O OEE quase não muda, mas totais e médias saem errados. Ligue "Regras" e mostre a correção.</p><p>Respostas simuladas, mas com os números reais do caso.</p></aside>
+</section>
+
+<section class="slide" data-sec="Bons prompts" data-title="Anatomia de um prompt" data-id="anatomia">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 3 · Desmontando um prompt</p>
+    <h2 class="rise" style="--i:1">Anatomia de um prompt que funciona</h2>
+    <div class="anat2 rise" style="--i:2">
+      <div class="pdoc" id="pdoc">
+        <div class="pgrp"><span class="glab">Instrução · o que fazer</span><div class="pl" data-k="p"><b class="lt">P</b><span>Você é engenheiro de produção sênior, especialista em TPM.</span></div><div class="pl" data-k="c"><b class="lt">C</b><span>Abaixo está a produção de 10 dias de 3 linhas de envase, um registro por turno.</span></div><div class="pl" data-k="o"><b class="lt">O</b><span>Calcule o OEE por linha, separando Disponibilidade, Performance e Qualidade.</span></div><div class="pl" data-k="r"><b class="lt">R</b><span>Remova linhas duplicadas e não invente dados. Se faltar algo, pergunte.</span></div><div class="pl" data-k="v"><b class="lt">✓</b><span>Mostre a conta da L1 passo a passo.</span></div><div class="pl" data-k="out"><b class="lt">O</b><span>Responda com uma tabela e uma frase final.</span></div></div>
+        <div class="pgrp dat"><span class="glab">Dados · sobre o que fazer</span><div class="pl" data-k="d"><b class="lt">{ }</b><span><span class="tagm">&lt;dados&gt;</span><br>data;linha;turno;operador;produto;…<br>2026-10-05;L1;Manhã;Ana;Chá 1L;…<br><span class="muted">… 91 linhas …</span><br><span class="tagm">&lt;/dados&gt;</span></span></div></div>
+      </div>
+      <div class="plegend" id="plegend"><button class="lg" data-k="p"><b class="lt">P</b><span><b>Papel</b> · puxa o vocabulário e o rigor de um especialista.</span></button><button class="lg" data-k="c"><b class="lt">C</b><span><b>Contexto</b> · a situação que ela não tem como adivinhar.</span></button><button class="lg" data-k="o"><b class="lt">O</b><span><b>Objetivo</b> · uma tarefa clara, que dá para conferir.</span></button><button class="lg" data-k="r"><b class="lt">R</b><span><b>Regras</b> · fecham as portas para o erro.</span></button><button class="lg" data-k="v"><b class="lt">✓</b><span><b>Verificação</b> · deixa a conta visível para você conferir.</span></button><button class="lg" data-k="out"><b class="lt">O</b><span><b>Output</b> · o formato pronto para usar.</span></button><button class="lg" data-k="d"><b class="lt">{ }</b><span><b>Marcadores</b> · separam o que é instrução do que é dado.</span></button></div>
+    </div>
+    <p class="say rise" style="--i:3">Cada linha responde a uma pergunta que a IA não tem como adivinhar. E os marcadores garantem que uma linha da planilha nunca seja lida como uma ordem.</p>
+  </div>
+  <aside class="notes"><p>Ao entrar, o slide destaca cada parte sozinho. Depois, passe o mouse ou clique nas etiquetas da direita para destacar a linha correspondente.</p><p>Ponto novo em relação ao CORPO: a linha de verificação ("mostre a conta") e os marcadores entre instrução e dado. Qualquer marcador serve: &lt;dados&gt;, ###, aspas triplas.</p></aside>
+</section>
+
+<section class="slide" data-sec="Bons prompts" data-title="Itere o prompt" data-id="iterar">
+  <div class="wrap">
+    <p class="eyebrow rise" style="--i:0">Parte 3 · Ninguém acerta de primeira</p>
+    <h2 class="rise" style="--i:1">O primeiro prompt é um rascunho</h2>
+    <div class="iter rise" style="--i:2">
+      <div class="cyc" aria-hidden="true"><svg viewBox="0 0 320 300">
+        <circle class="cy-ring" cx="160" cy="150" r="104"/>
+        <path class="cy-arr" d="M232 74 l9 -2 -2 9"/><path class="cy-arr" d="M236 226 l2 9 -9 -2"/><path class="cy-arr" d="M88 226 l-9 2 2 -9"/><path class="cy-arr" d="M84 74 l-2 -9 9 2"/>
+        <g><circle class="cy-dot" cx="160" cy="46" r="5"/><animateTransform attributeName="transform" type="rotate" from="0 160 150" to="360 160 150" dur="8s" repeatCount="indefinite"/></g>
+        <g class="cy-n"><rect x="104" y="24" width="112" height="44" rx="14"/><text x="160" y="43" class="t1">1 · Escreva</text><text x="160" y="59" class="t2">o prompt</text></g>
+        <g class="cy-n"><rect x="208" y="128" width="112" height="44" rx="14"/><text x="264" y="147" class="t1">2 · Leia</text><text x="264" y="163" class="t2">a resposta inteira</text></g>
+        <g class="cy-n"><rect x="104" y="232" width="112" height="44" rx="14"/><text x="160" y="251" class="t1">3 · Diagnostique</text><text x="160" y="267" class="t2">o que faltou?</text></g>
+        <g class="cy-n"><rect x="0" y="128" width="112" height="44" rx="14"/><text x="56" y="147" class="t1">4 · Ajuste</text><text x="56" y="163" class="t2">e envie de novo</text></g>
+        <text x="160" y="146" class="t3">até passar</text><text x="160" y="164" class="t3">na checagem</text>
+      </svg></div>
+      <div class="ivers">
+        <div class="iv"><span class="vt">v1</span><div class="code">Calcule o OEE das linhas.</div><p class="small muted">Resposta: usou 91 turnos e não avisou nada.</p><span class="verdict no">Diagnóstico: faltou R · Regras</span></div>
+        <div class="iv"><span class="vt">v2</span><div class="code">Calcule o OEE das linhas. Antes, remova linhas duplicadas e diga quantas removeu.</div><p class="small muted">Resposta: removeu 1 linha e calculou com 90 turnos.</p><span class="verdict ok">✓ Passa na checagem</span></div>
+      </div>
+    </div>
+    <div class="tips2 rise" style="--i:3">
+      <div class="card"><span class="k">Corrija editando, não empilhando</span><p class="small">Em vez de responder "não, não era isso", edite a mensagem original e envie de novo. A resposta errada sai do histórico e não contamina o resto da conversa.</p></div>
+      <div class="card"><span class="k">Use a própria IA para melhorar o pedido</span><p class="small"><code>Antes de responder, me diga o que falta neste prompt para você fazer um bom trabalho.</code></p></div>
+    </div>
+  </div>
+  <aside class="notes"><p>Ligação com a Parte 2: tudo o que fica na conversa vira contexto. Por isso editar a mensagem é melhor do que empilhar correções.</p><p>Critério de parada: a resposta passa na checagem do engenheiro, e não quando "parece boa".</p></aside>
 </section>
 
 <section class="slide" data-sec="Bons prompts" data-title="Tipos de prompt" data-id="tipos">
@@ -1134,7 +1245,7 @@ Classifique: "falta de tampa"</div>
     </div>
     <p class="small muted rise" style="--i:2">"Por que a linha mais nova rende menos?" Não era a máquina: era quando e como ela é trocada.</p>
     <p class="quote rise" style="--i:2">A IA achou o padrão em minutos. Quem transformou isso em uma decisão de R$ 1 milhão foi o engenheiro.</p>
-    <div class="card rise" style="--i:3"><span class="k">Desafio para casa</span><p>Refaça os 7 elos com dados do seu estágio ou TCC, sem dados sigilosos. Troque só o contexto e as premissas. O guia continua disponível.</p></div>
+    <div class="card rise" style="--i:3"><span class="k">Antes de confiar numa resposta da IA</span><ol class="ck5"><li>A base bate? Conte as linhas e procure repetidas.</li><li>Refaça uma conta na calculadora.</li><li>As premissas estão escritas?</li><li>É correlação ou é causa?</li><li>Termina em número e decisão?</li></ol></div>
   </div>
   <aside class="notes"><p>Leia a frase em voz alta e pare. Lembre que o guia fica com eles.</p></aside>
 </section>
@@ -1146,7 +1257,7 @@ Classifique: "falta de tampa"</div>
       <div class="me-info">
         <p class="eyebrow rise" style="--i:0">Obrigado · Quem apresentou</p>
         <h2 class="rise" style="--i:1">Renan Ferrari</h2>
-        <p class="lead rise" style="--i:2">Engenharia de dados e IA na MRS Logística. Fundador do CFIA, Centro de Formação em Inteligência Artificial.</p>
+        <p class="lead rise" style="--i:2">Engenharia de dados e IA na MRS Logística.</p>
         <p class="say rise" style="--i:3">Ficou com alguma dúvida, quer trocar ideia sobre IA na indústria ou refazer o caso com dados seus? Me chama no LinkedIn.</p>
         <div class="li-card rise" style="--i:4">
           <div class="qr" id="liQr" aria-label="QR code do LinkedIn"></div>
@@ -1157,6 +1268,7 @@ Classifique: "falta de tampa"</div>
   </div>
   <aside class="notes"><p>Deixe este slide no ar enquanto a turma tira dúvidas e escaneia o código.</p></aside>
 </section>
+
 
 
 
@@ -1445,6 +1557,7 @@ try{ if(window.QRCode){ new QRCode($('#qr'),{text:GUIDE_URL,width:240,height:240
 
 
 
+
 /* ============ CONTATO ============ */
 try{ if(window.QRCode){ new QRCode($('#liQr'),{text:'https://www.linkedin.com/in/renan-ferrari-b52268267/',width:150,height:150,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M}); } else { $('#liQr').hidden=true; } }catch(e){ $('#liQr').hidden=true; }
 /* ============ fim contato ============ */
@@ -1576,6 +1689,17 @@ oeeRender();
   $('#vdDay').textContent=pct(R.dayK.OEE,0); $('#vdMore').textContent=pct(dayGood/oldGood-1,0);
   $('#vdSpn1').textContent=num(R.shift.Noite.spn)+' min'; $('#vdSpn0').textContent=num(R.dayK.spn)+' min';
   $('#vdN').textContent=`${R.shift.Noite.nset} das ${R.line.L2.nset}`;})();
+
+/* ============ ANATOMIA ============ */
+(function(){const doc=$('#pdoc'), legs=$$('#plegend .lg');
+  const mark=k=>{doc.classList.toggle('focus',!!k); $$('.pl',doc).forEach(r=>r.classList.toggle('on',r.dataset.k===k)); legs.forEach(b=>b.classList.toggle('on',b.dataset.k===k));};
+  legs.forEach(b=>{b.addEventListener('mouseenter',()=>{doc.dataset.user=1; mark(b.dataset.k);}); b.addEventListener('focus',()=>{doc.dataset.user=1; mark(b.dataset.k);}); b.addEventListener('click',()=>{doc.dataset.user=1; mark(b.classList.contains('on')?null:b.dataset.k);});});
+  $('#plegend').addEventListener('mouseleave',()=>mark(null));
+  enterHooks.anatomia=async()=>{ if(RM)return; const gen=runGen; delete doc.dataset.user; await sleep(900);
+    for(const k of ['p','c','o','r','v','out','d']){ if(gen!==runGen||doc.dataset.user)return; mark(k); await sleep(1500); }
+    if(gen===runGen&&!doc.dataset.user)mark(null); };
+  leaveHooks.anatomia=()=>mark(null);})();
+/* ============ fim anatomia ============ */
 
 /* ============ DEBATE ============ */
 $('#qs').addEventListener('click',e=>{const b=e.target.closest('.qq'); if(!b)return; const on=b.getAttribute('aria-expanded')!=='true'; b.setAttribute('aria-expanded',on); $('.more',b).textContent=on?'clique para esconder':'clique para ver o que os dados dizem';});
@@ -1969,6 +2093,189 @@ const simB=new FactorySim($('#simB'),true,1440+960+20);
 enterHooks.simA=()=>simA.start(); leaveHooks.simA=()=>simA.stop();
 enterHooks.simB=()=>simB.start(); leaveHooks.simB=()=>simB.stop();
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{simA.draw(); simB.draw();});
+
+
+/* ============ FILME: POR DENTRO DO MODELO ============ */
+const FILM_CH=[
+ {s:0,e:5,k:'Pergunta',cap:'Você envia a pergunta. Para o modelo, por enquanto, isso é só texto.'},
+ {s:5,e:11,k:'Tokens',cap:'O texto é picado em tokens, pedaços de palavra. Cada token vira um número: a posição dele num vocabulário de dezenas de milhares de pedaços.'},
+ {s:11,e:17,k:'Vetores',cap:'Cada número vira um vetor, uma lista de milhares de valores que guarda o significado do token e a posição dele na frase.'},
+ {s:17,e:25,k:'Atenção',cap:'Atenção: cada token olha para os anteriores e pesa quais importam. Aqui, "EE" se liga ao "O" logo antes, e o modelo entende "OEE".'},
+ {s:25,e:32,k:'Camadas',cap:'Atenção e uma rede neural se repetem em dezenas de camadas. O que o modelo aprendeu no treino está nos pesos dessas camadas: ele não consulta um banco de dados.'},
+ {s:32,e:39,k:'Probabilidades',cap:'No fim, o modelo dá uma chance para cada token do vocabulário ser o próximo. Aqui aparecem só os mais prováveis.'},
+ {s:39,e:54,k:'Árvore',cap:'Gerar texto é escolher um caminho numa árvore de possibilidades, um token por vez. O escolhido volta para a entrada e todo o cálculo roda de novo.'},
+ {s:54,e:61,k:'Resposta',cap:'Por isso a resposta aparece palavra por palavra. Quando a ferramenta busca na web ou num arquivo, o texto encontrado entra na conversa antes desse cálculo.'}
+];
+const FILM_Q='O que é OEE?';
+const FILM_TOK=[['O',' O',512],['que',' que',1062],['é',' é',1153],['O',' O',507],['EE','EE',4290],['?','?',30]];
+const FILM_ATT={4:[.06,.04,.08,.7],5:[.08,.4,.22,.1,.12]};
+const FILM_BARS=[['É',.38],['OEE',.27],['A',.12],['Significa',.06],['Overall',.04]];
+const FILM_TREE=[[['É',.38],['OEE',.27],['A',.12]],[['a',.71],['um',.16],['o',.05]],[['eficiência',.62],['medida',.18],['sigla',.09]],[['global',.57],['geral',.21],['total',.1]],[['do',.66],['de',.19],['dos',.06]]];
+const FILM_NEWID=[868,264,59412,11734,655];
+const FILM_ANS='É a eficiência global do equipamento: Disponibilidade × Performance × Qualidade.';
+class ModelFilm{
+  constructor(root){
+    this.root=root; this.T=FILM_CH[FILM_CH.length-1].e; this.t=0; this.playing=false; this.raf=null; this.last=null; this.capI=-1;
+    const tot=this.T;
+    root.innerHTML=`<div class="film">
+      <div class="film-stage"><canvas aria-label="Animação: o caminho de uma pergunta dentro de um modelo de linguagem"></canvas><span class="film-tag">Por dentro do modelo · ilustrativo</span></div>
+      <p class="film-cap" aria-live="polite"></p>
+      <div class="film-bar">
+        <button class="btn film-play">Assistir</button>
+        <div class="film-chaps">${FILM_CH.map((c,i)=>`<button style="--d:${c.e-c.s}" data-i="${i}"><i><b></b></i><span>${i+1} · ${c.k}</span></button>`).join('')}</div>
+        <span class="film-time">0:00 / ${this.fmt(tot)}</span>
+      </div></div>`;
+    this.cv=$('canvas',root); this.ctx=this.cv.getContext('2d');
+    this.capEl=$('.film-cap',root); this.timeEl=$('.film-time',root); this.playBtn=$('.film-play',root); this.chBtns=$$('.film-chaps button',root);
+    this.playBtn.onclick=()=>{ if(this.playing){this.playing=false;} else { if(this.t>=this.T-0.05)this.t=0; this.playing=true; this.loop(); } this.sync(); };
+    this.chBtns.forEach((b,i)=>b.onclick=()=>{ const c=FILM_CH[i]; this.t=this.playing?c.s:Math.max(c.s,c.e-0.35); this.last=null; this.draw(); this.sync(); });
+    addEventListener('resize',()=>{this.resize(); this.draw();});
+    this.resize(); this.draw(); this.sync();
+  }
+  fmt(s){s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+  resize(){ const r=this.cv.getBoundingClientRect(); this.dpr=devicePixelRatio||1; this.cv.width=Math.max(1,Math.round(r.width*this.dpr)); this.cv.height=Math.max(1,Math.round(r.height*this.dpr)); this.s=r.width/1000; }
+  start(){ this.resize(); if(this.t>=this.T-0.05)this.t=0; if(!RM){this.playing=true; this.loop();} else if(this.t===0){this.t=FILM_CH[0].e-0.35;} this.draw(); this.sync(); }
+  stop(){ this.playing=false; if(this.raf)cancelAnimationFrame(this.raf); this.raf=null; this.last=null; this.sync(); }
+  loop(){ if(this.raf)return; const f=ts=>{ this.raf=null; if(!this.playing){this.last=null; return;} if(this.last!=null)this.t=Math.min(this.T,this.t+Math.min(.1,(ts-this.last)/1000)); this.last=ts; if(this.t>=this.T)this.playing=false; this.draw(); this.sync(); if(this.playing)this.raf=requestAnimationFrame(f); else this.last=null; }; this.raf=requestAnimationFrame(f); }
+  sync(){
+    const t=this.t; let ci=FILM_CH.findIndex(c=>t>=c.s&&t<c.e); if(ci<0)ci=FILM_CH.length-1;
+    if(ci!==this.capI){this.capI=ci; this.capEl.textContent=FILM_CH[ci].cap;}
+    this.chBtns.forEach((b,i)=>{const c=FILM_CH[i]; const f=clamp((t-c.s)/(c.e-c.s),0,1); $('b',b).style.width=(f*100)+'%'; b.classList.toggle('on',i===ci);});
+    this.timeEl.textContent=`${this.fmt(t)} / ${this.fmt(this.T)}`;
+    this.playBtn.textContent=this.playing?'Pausar':(t>=this.T-0.05?'Assistir de novo':(t>0.05?'Continuar':'Assistir'));
+  }
+  draw(){
+    const c=this.ctx; if(!this.cv.width||!this.s)return;
+    const cs=getComputedStyle(document.documentElement), V=k=>cs.getPropertyValue(k).trim();
+    const fg=V('--fg'),bg=V('--bg'),mu=V('--muted'),fa=V('--faint'),ln=V('--line'),sf=V('--surface'),sf2=V('--surface-2'),ot=V('--other');
+    const clear=col=>{const m=/^#([0-9a-f]{6})$/i.exec(col); if(!m)return 'transparent'; const n=parseInt(m[1],16); return `rgba(${n>>16&255},${n>>8&255},${n&255},0)`;};
+    const t=this.t, k=this.s*this.dpr;
+    c.setTransform(k,0,0,k,0,0); c.clearRect(0,0,1000,460); c.globalAlpha=1; c.textBaseline='alphabetic';
+    const F=(w,sz,mono)=>`${w} ${sz}px ${mono?'"Geist Mono", ui-monospace, monospace':'Geist, system-ui, -apple-system, "Segoe UI", sans-serif'}`;
+    const E=x=>1-Math.pow(1-clamp(x,0,1),3), P=(a,b)=>clamp((t-a)/(b-a),0,1), L=(a,b,u)=>a+(b-a)*u;
+    const rr=(x,y,w,h,r)=>{c.beginPath(); if(c.roundRect)c.roundRect(x,y,w,h,r); else c.rect(x,y,w,h);};
+    /* linha do tempo da árvore */
+    const S0=39.4, SL=2.9, steps=FILM_TREE.map((_,i)=>{const b=S0+SL*i, pd=i===0?0:.7; return {b,pulse:[b,b+pd],grow:[b+pd,b+pd+.6],pick:[b+pd+.6,b+pd+1],fly:[b+pd+1,b+pd+1.8],land:[b+pd+1.8,b+pd+2.2]};});
+    const landed=steps.filter(s=>t>=s.fly[1]).length;
+    const flying=steps.findIndex(s=>t>=s.fly[0]&&t<s.fly[1]);
+    /* fileira de tokens (com rolagem) */
+    const X0=126, CW=60, GAP=8, WIN=430, ROWY=392, CH=44;
+    const offFor=m=>Math.max(0,(6+m)*(CW+GAP)-GAP-WIN);
+    let off=offFor(landed); if(flying>=0){off=L(offFor(flying),offFor(flying+1),E(P(...steps[flying].fly)));}
+    const slotX=i=>X0+i*(CW+GAP)-off;
+    const nTok=6+landed;
+    const colCx=i=>slotX(i)+CW/2;
+    const tokText=i=>i<6?FILM_TOK[i][0]:FILM_TREE[i-6][0][0];
+    const tokId=i=>i<6?FILM_TOK[i][2]:FILM_NEWID[i-6];
+    /* camadas */
+    const layers=[{y:238,h:52,lab:'Camada 1',a:P(16.6,17.4)},{y:182,h:44,lab:'Camada 2',a:P(25,25.5)},{y:150,h:24,lab:'⋮',a:P(25.3,25.8),dots:true},{y:104,h:40,lab:'Camada N',a:P(25.6,26.1)}];
+    /* pulsos: chap 5 (todas as colunas) e ao gerar (só a coluna nova) */
+    const pulses=[];
+    if(t>=25.6&&t<32){for(let i=0;i<6;i++){const ph=((t-25.6-i*.06)%1.6+1.6)%1.6/1.2; if(ph<=1)pulses.push({i,ph});}}
+    if(t>=32&&t<32.8)pulses.push({i:5,ph:P(32,32.8)});
+    steps.forEach((s,si)=>{if(si>0&&t>=s.pulse[0]&&t<s.pulse[1])pulses.push({i:5+si,ph:P(s.pulse[0],s.pulse[1])});});
+    const yTop=104, yBot=298, pY=ph=>L(yBot,yTop,E(ph));
+    /* ---------- desenho ---------- */
+    /* rótulos de zona */
+    c.font=F(600,10); c.fillStyle=fa; c.textAlign='left';
+    if(t>=16.6){c.globalAlpha=P(16.6,17.4); c.fillText('TRANSFORMER',32,92); c.globalAlpha=1;}
+    if(t>=32.6){c.globalAlpha=P(32.6,33.2); c.fillText('PRÓXIMO TOKEN',606,92); c.globalAlpha=1;}
+    /* camadas */
+    layers.forEach(Ly=>{ if(Ly.a<=0)return; c.globalAlpha=Ly.a;
+      if(Ly.dots){c.fillStyle=fa; for(let j=0;j<3;j++){c.beginPath(); c.arc(300,Ly.y+4+j*8,1.6,0,7); c.fill();} c.font=F(500,10.5); c.fillStyle=mu; c.fillText('dezenas de camadas',318,Ly.y+16); c.globalAlpha=1; return;}
+      let glow=0; pulses.forEach(p=>{const y=pY(p.ph); if(y>=Ly.y-6&&y<=Ly.y+Ly.h+6)glow=1;});
+      c.fillStyle=sf; rr(20,Ly.y,542,Ly.h,12); c.fill(); if(glow){c.globalAlpha=Ly.a*.08; c.fillStyle=fg; rr(20,Ly.y,542,Ly.h,12); c.fill(); c.globalAlpha=Ly.a;}
+      c.strokeStyle=glow?fg:ln; c.lineWidth=1; rr(20,Ly.y,542,Ly.h,12); c.stroke();
+      c.fillStyle=fg; c.font=F(600,11); c.fillText(Ly.lab,32,Ly.y+(Ly.h>40?20:Ly.h/2+4));
+      if(Ly.h>40){c.fillStyle=mu; c.font=F(400,9.5); c.fillText('atenção + rede',32,Ly.y+34);}
+      c.globalAlpha=1; });
+    /* seta de saída (coluna mais nova → raiz da árvore) */
+    if(t>=32.2){ const a=E(P(32.2,33.2)), xs=colCx(nTok-1); const pts=[[xs,yTop],[xs,80],[584,80],[584,120],[600,120]];
+      let tot=0; const seg=[]; for(let i=1;i<pts.length;i++){const d=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]); seg.push(d); tot+=d;}
+      let rem=tot*a; c.strokeStyle=mu; c.lineWidth=1.2; c.beginPath(); c.moveTo(...pts[0]);
+      for(let i=1;i<pts.length&&rem>0;i++){const d=seg[i-1], u=Math.min(1,rem/d); c.lineTo(L(pts[i-1][0],pts[i][0],u),L(pts[i-1][1],pts[i][1],u)); rem-=d;} c.stroke(); }
+    /* janela das colunas (recortada) */
+    c.save(); c.beginPath(); c.rect(118,0,446,460); c.clip();
+    /* atenção */
+    const arcs=(j,a0,a1,b0,b1)=>{ const a=Math.min(P(a0,a1),1-P(b0,b1)); if(a<=0)return; const w=FILM_ATT[j]; const xj=colCx(j);
+      w.forEach((wt,i)=>{const xi=colCx(i), h=14+Math.min(40,(xj-xi)*.22); c.globalAlpha=a*(.25+.75*wt); c.strokeStyle=fg; c.lineWidth=.6+wt*7; c.beginPath(); c.moveTo(xj,yBot-2); c.quadraticCurveTo((xi+xj)/2,yBot-2-h*2,xi,yBot-2); c.stroke();
+        if(wt>=.3){c.globalAlpha=a; c.fillStyle=fg; c.font=F(600,10.5); c.textAlign='center'; c.fillText(Math.round(wt*100)+'%',(xi+xj)/2,yBot-2-h-6); c.textAlign='left';}});
+      c.globalAlpha=1; return a; };
+    const aA=arcs(4,17.4,18.2,20.8,21.3)||0, aB=arcs(5,21.4,22.2,24.8,25.3)||0;
+    /* arcos fracos ao gerar cada token novo */
+    steps.forEach((s,si)=>{ if(si===0||t<s.pulse[0]||t>=s.grow[1])return; const j=5+si, a=Math.min(P(s.pulse[0],s.pulse[0]+.3),1-P(s.grow[0],s.grow[1])); for(let i=0;i<j;i++){const xi=colCx(i),xj=colCx(j),h=14+Math.min(40,(xj-xi)*.22); c.globalAlpha=a*.35; c.strokeStyle=fg; c.lineWidth=.8; c.beginPath(); c.moveTo(xj,yBot-2); c.quadraticCurveTo((xi+xj)/2,yBot-2-h*2,xi,yBot-2); c.stroke();} c.globalAlpha=1; });
+    /* vetores */
+    for(let i=0;i<nTok;i++){ const base=i<6?11.3+i*.2:steps[i-6].land[0]; const rnd=mulberry(700+i*13); const x=slotX(i)+12, w=CW-24;
+      for(let j=0;j<8;j++){ const v=rnd(); const a=E(P(base+j*.05,base+j*.05+.35)); if(a<=0)continue; const y=386-(j+1)*11+2;
+        c.globalAlpha=a; c.fillStyle=sf2; rr(x,y,w,8,2); c.fill(); c.globalAlpha=a*(.15+.75*v); c.fillStyle=fg; rr(x,y,w*(.25+.75*v),8,2); c.fill(); } }
+    c.globalAlpha=1;
+    /* chips de token na fileira */
+    const hi=i=>(aA>0&&(i===4||i===3))||(aB>0&&(i===5||i===1));
+    const chip=(x,y,w,h,txt,id,idA,strong,fsz)=>{ c.fillStyle=strong?fg:sf; rr(x,y,w,h,9); c.fill(); c.strokeStyle=strong?fg:ln; c.lineWidth=1; rr(x,y,w,h,9); c.stroke();
+      c.fillStyle=strong?bg:fg; c.font=F(600,fsz); c.textAlign='center'; c.fillText(txt,x+w/2,y+(id!=null&&idA>0?h*.46:h*.62)); if(id!=null&&idA>0){c.globalAlpha*=idA; c.fillStyle=strong?bg:mu; c.font=F(400,9.5,true); c.fillText(String(id),x+w/2,y+h*.82);} c.textAlign='left'; };
+    /* cap. 1–2: balão e voo dos tokens */
+    c.restore();
+    const BX=500, BY=200, BF=26;
+    c.font=F(500,BF); const qW=c.measureText(FILM_Q).width; const bx0=BX-qW/2;
+    const tokPos=[]; { let acc=''; for(const tk of FILM_TOK){ const pre=c.measureText(acc).width; const word=tk[1].trimStart(); const lead=tk[1].length-word.length; const wx=c.measureText(acc+tk[1].slice(0,lead)).width; const ww=c.measureText(word).width; tokPos.push([bx0+wx,ww]); acc+=tk[1]; } }
+    if(t<6.2){ const a=1-P(5.4,6.2); c.globalAlpha=a; c.fillStyle=sf; rr(bx0-22,BY-38,qW+44,58,20); c.fill();
+      c.fillStyle=mu; c.font=F(500,11); c.fillText('Você',bx0-22,BY-48);
+      const nch=Math.floor(E(P(.4,2.6))*FILM_Q.length); c.fillStyle=fg; c.font=F(500,BF); c.fillText(FILM_Q.slice(0,nch),bx0,BY);
+      if(t<2.8&&Math.floor(t*2)%2===0){const cw=c.measureText(FILM_Q.slice(0,nch)).width; c.fillRect(bx0+cw+2,BY-22,2,26);}
+      if(t>=4.4){ c.globalAlpha=a*P(4.4,5.0); c.strokeStyle=fg; c.lineWidth=1; tokPos.forEach(([x,w])=>{rr(x-4,BY-26,w+8,34,8); c.stroke();}); }
+      c.globalAlpha=1; }
+    c.save(); c.beginPath(); c.rect(118,0,446,460); c.clip();
+    for(let i=0;i<nTok;i++){ if(i<6&&t<5.4)continue;
+      const strong=hi(i)||(i>=6&&t<steps[i-6].land[1]); let x=slotX(i), y=ROWY, w=CW, h=CH, fsz=12, idA=1;
+      if(i<6){ const fs=5.6+i*.18, p=E(P(fs,fs+.9)); const [sx,sw]=tokPos[i]; x=L(sx-4,x,p); y=L(BY-26,y,p); w=L(sw+8,w,p); h=L(34,h,p); fsz=L(BF*.8,12,p); idA=P(fs+.9,fs+1.3);
+        if(p<1){ c.restore(); c.globalAlpha=1; chip(x,y,w,h,tokText(i),null,0,false,fsz); c.save(); c.beginPath(); c.rect(118,0,446,460); c.clip(); continue; } }
+      c.globalAlpha=1; chip(x,y,w,h,tokText(i),tokId(i),idA,strong,fsz); }
+    /* pulsos */
+    pulses.forEach(p=>{ const x=colCx(p.i), y=pY(p.ph); const g=c.createLinearGradient(0,y,0,y+46); g.addColorStop(0,fg); g.addColorStop(1,clear(fg)); c.globalAlpha=.55; c.strokeStyle=g; c.lineWidth=2; c.beginPath(); c.moveTo(x,y); c.lineTo(x,Math.min(yBot,y+46)); c.stroke(); c.globalAlpha=1; c.fillStyle=fg; c.beginPath(); c.arc(x,y,3.4,0,7); c.fill(); });
+    c.restore();
+    /* desvanecer a borda esquerda da fileira */
+    if(off>0){ const g=c.createLinearGradient(118,0,160,0); g.addColorStop(0,bg); g.addColorStop(1,clear(bg)); c.save(); c.globalAlpha=1; c.fillStyle=g; c.fillRect(118,290,44,160); c.restore(); }
+    /* rótulos da coluna esquerda */
+    if(t>=6.4){ c.globalAlpha=P(6.4,7); c.fillStyle=mu; c.font=F(600,11); c.fillText('Tokens',32,ROWY+20); c.font=F(400,9.5); c.fillText('número (ID)',32,ROWY+34); c.globalAlpha=1; }
+    if(t>=11.2){ c.globalAlpha=P(11.2,11.8); c.fillStyle=mu; c.font=F(600,11); c.fillText('Vetores',32,342); c.font=F(400,9.5); c.fillText('milhares de',32,356); c.fillText('valores cada',32,368); c.globalAlpha=1; }
+    /* cap. 6: barras de probabilidade */
+    const barsA=Math.min(P(32.8,33.4),1-P(39,39.5));
+    if(barsA>0){ FILM_BARS.forEach(([w,p],i)=>{ const y=118+i*34, g=E(P(33+i*.15,33.7+i*.15)); c.globalAlpha=barsA; c.fillStyle=fg; c.font=F(600,13); c.textAlign='right'; c.fillText(w,688,y+5); c.textAlign='left';
+        c.fillStyle=sf2; rr(700,y-7,250,14,7); c.fill(); c.fillStyle=i===0?fg:ot; rr(700,y-7,Math.max(4,250*p/.4*g),14,7); c.fill();
+        c.fillStyle=mu; c.font=F(500,11); c.fillText(Math.round(p*100*g)+'%',708+250*p/.4*g,y+4); });
+      c.globalAlpha=barsA*P(33.6,34.2); c.fillStyle=mu; c.font=F(400,10.5); c.fillText('…e milhares de outros tokens com chance quase zero',700,118+5*34); c.globalAlpha=1; }
+    /* cap. 7: árvore */
+    if(t>=39.2){
+      c.font=F(600,12); const lw=FILM_TREE.map(lv=>Math.max(...lv.map(o=>c.measureText(o[0]).width))+16);
+      const RX=606, RY=120; const xs=[]; let cur=RX+8; lw.forEach((w,i)=>{cur+=22+w/2; xs.push(cur); cur+=w/2;});
+      c.globalAlpha=P(39.2,39.6); c.fillStyle=fg; c.beginPath(); c.arc(RX,RY,5,0,7); c.fill(); c.globalAlpha=1;
+      FILM_TREE.forEach((lv,li)=>{ const s=steps[li]; const g=P(s.grow[0],s.grow[1]); if(g<=0)return; const pk=E(P(s.pick[0],s.pick[1]));
+        const px=li===0?RX+5:xs[li-1]+lw[li-1]/2, py=RY;
+        lv.forEach(([w,p],j)=>{ const cx=xs[li], cy=RY+j*46, ww=lw[li], a=E(clamp(g*1.4-j*.2,0,1)); if(a<=0)return; const chosen=j===0;
+          c.globalAlpha=a*(chosen?1:(1-.45*pk)); c.strokeStyle=chosen&&pk>0?fg:fa; c.lineWidth=chosen?L(1,2.4,pk):1; c.beginPath(); c.moveTo(px,py); if(j===0)c.lineTo(cx-ww/2,cy); else c.bezierCurveTo(px+14,py,cx-ww/2-14,cy,cx-ww/2,cy); c.stroke();
+          const inFly=chosen&&t>=s.fly[0];
+          c.fillStyle=chosen&&pk>0?fg:sf; rr(cx-ww/2,cy-11,ww,22,11); c.fill(); if(!(chosen&&pk>0)){c.strokeStyle=ln; c.lineWidth=1; rr(cx-ww/2,cy-11,ww,22,11); c.stroke();}
+          c.fillStyle=chosen&&pk>0?bg:fg; c.font=F(600,12); c.textAlign='center'; c.fillText(w,cx,cy+4); c.fillStyle=mu; c.font=F(500,9.5); c.fillText(Math.round(p*100)+'%',cx,cy-15); c.textAlign='left';
+          c.globalAlpha=1; }); });
+      /* seta de volta */
+      const la=P(39.6,40.2); if(la>0){ c.globalAlpha=la*.8; c.strokeStyle=mu; c.lineWidth=1; c.setLineDash([3,4]); c.beginPath(); c.moveTo(600,150); c.bezierCurveTo(600,330,590,414,566,414); c.stroke(); c.setLineDash([]);
+        c.fillStyle=mu; c.beginPath(); c.moveTo(566,414); c.lineTo(574,410); c.lineTo(574,418); c.fill(); c.font=F(500,10.5); c.fillText('o escolhido volta para a entrada',612,272); c.globalAlpha=1; }
+      /* token voando da árvore para a fileira */
+      if(flying>=0){ const s=steps[flying], p=E(P(...s.fly)); const sx=xs[flying], sy=RY, dx=slotX(6+flying)+CW/2, dy=ROWY+CH/2;
+        const qx=L(L(sx,600,p),L(600,dx,p),p), qy=L(L(sy,330,p),L(330,dy,p),p); const w=L(lw[flying],CW,p), h=L(22,CH,p);
+        c.save(); c.globalAlpha=1; chip(qx-w/2,qy-h/2,w,h,FILM_TREE[flying][0][0],null,0,true,12); c.restore(); }
+    }
+    /* cap. 8: resposta */
+    if(t>=53.8){ const a=P(53.8,54.4); c.globalAlpha=a; c.fillStyle=sf; rr(606,300,382,82,16); c.fill();
+      c.fillStyle=fg; c.beginPath(); c.arc(628,322,11,0,7); c.fill(); c.fillStyle=bg; c.font=F(600,9.5); c.textAlign='center'; c.fillText('IA',628,325.5); c.textAlign='left';
+      const n=Math.floor(E(P(54.4,58.2))*FILM_ANS.length); const txt=FILM_ANS.slice(0,n); c.fillStyle=fg; c.font=F(500,13.5);
+      const words=txt.split(' '); let line='', ly=327; const maxW=330; for(const w of words){ const tst=line?line+' '+w:w; if(c.measureText(tst).width>maxW&&line){c.fillText(line,648,ly); line=w; ly+=19;} else line=tst; } c.fillText(line,648,ly);
+      c.globalAlpha=1; }
+  }
+}
+const film=new ModelFilm($('#film'));
+enterHooks.film=()=>film.start(); leaveHooks.film=()=>film.stop();
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>film.draw());
 
 /* ============ INÍCIO ============ */
 (function(){let start=0; const m=(location.hash||'').match(/^#s(\d+)$/); if(m)start=Math.max(0,Math.min(N-1,+m[1]-1)); go(start);})();
