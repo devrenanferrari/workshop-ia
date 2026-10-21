@@ -763,6 +763,10 @@ fields.forEach(f=>{if(typeof st.corpo[f.id]==='string')f.value=st.corpo[f.id]; f
 function corpo(){$('#corpoTxt').textContent=['f-p','f-c','f-o','f-r','f-out'].map(id=>$('#'+id).value.trim()).filter(Boolean).join('\n\n');}
 corpo();
 
+/* downloads: no site, caminho relativo; fora dele, aponta para o site */
+const SITE='https://iaproducao.up.railway.app/';
+function fixDl(root){ if(/up\.railway\.app$/.test(location.hostname)||location.hostname==='localhost')return; $$('a[href^="dados/"]',root).forEach(a=>{a.href=SITE+a.getAttribute('href'); a.target='_blank'; a.rel='noopener';}); }
+fixDl(document);
 /* elos */
 function renderElo(k){
   st.eloCur=k; save(); const E=ELOS[k]; let n=0;
@@ -782,6 +786,7 @@ function renderElo(k){
       <details><summary>4 · Gabarito</summary>${E.ans}</details>
       <div class="elo-nav">${prev}${next}</div></div>`;
   }
+  fixDl($('#eloBox'));
 }
 document.addEventListener('click',e=>{const b=e.target.closest('[data-elo],[data-mark]'); if(!b||!b.closest('#eloBox,#eloNav'))return;
   if(b.dataset.mark!=null){st.elos[+b.dataset.mark]=true; save();}
