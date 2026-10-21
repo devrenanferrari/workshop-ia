@@ -765,7 +765,7 @@ corpo();
 
 /* downloads: no site, caminho relativo; fora dele, aponta para o site */
 const SITE='https://iaproducao.up.railway.app/';
-function fixDl(root){ if(/up\.railway\.app$/.test(location.hostname)||location.hostname==='localhost')return; $$('a[href^="dados/"]',root).forEach(a=>{a.href=SITE+a.getAttribute('href'); a.target='_blank'; a.rel='noopener';}); }
+function fixDl(root){ if(/up\.railway\.app$/.test(location.hostname)||location.hostname==='localhost')return; $$('a[href^="dados/"]',root).forEach(a=>{a.href=SITE+a.getAttribute('href'); a.removeAttribute('download'); a.target='_blank'; a.rel='noopener';}); }
 fixDl(document);
 /* elos */
 function renderElo(k){
