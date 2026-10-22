@@ -234,7 +234,7 @@ tr.hl td{background:var(--bad-soft)}
   <span class="eyebrow">Guia de estudo do workshop · Engenharia de Produção</span>
   <h1>IA na produção: do prompt à decisão</h1>
   <p class="muted">Este guia acompanha a aula e continua com você depois dela. Funciona no <b>computador</b> e no <b>celular</b>. Estude um módulo por vez; o seu progresso fica salvo neste navegador.</p>
-  <div class="box"><span class="k">A pergunta do dia</span><p class="hook-q">Por que a linha mais nova da fábrica rende menos que as antigas?</p><p class="small muted">O CFO da Envasa Bebidas quer uma resposta até sexta. Hoje você faz parte da equipe que vai responder, com dados e com a ajuda de uma IA. O caso completo está no Módulo 5.</p></div>
+  <div class="box"><span class="k">A pergunta do dia</span><p class="hook-q">Por que a linha mais nova da fábrica rende menos que as antigas?</p><p class="small muted">O CFO da Envasa Bebidas (empresa fictícia) quer uma resposta até sexta. Hoje você faz parte da equipe que vai responder, com dados e com a ajuda de uma IA. O caso completo está no Módulo 5.</p></div>
   <div class="sum"><span class="k">Propósito</span><p>Sair do workshop capaz de transformar uma pergunta vaga em uma decisão sustentada por dados, usando IA com método e sem perder o senso crítico de engenheiro.</p></div>
   <h3>O que você vai aprender</h3>
   <ul class="list">
@@ -246,9 +246,9 @@ tr.hl td{background:var(--bad-soft)}
   </ul>
   <div class="cards">
     <div class="box fill"><span class="k">Você vai precisar</span><p>Uma IA gratuita (ChatGPT, Claude, Gemini ou Copilot) aberta e logada. A base de dados do caso está no Módulo 5, para copiar ou baixar.</p></div>
-    <div class="box fill"><span class="k">Como organizar a tela</span><p><b>Computador:</b> guia de um lado, IA do outro. <b>Celular:</b> alterne entre o navegador e o app da IA.</p></div>
+    <div class="box fill"><span class="k">Como acompanhar</span><p><b>Computador:</b> guia de um lado, IA do outro. <b>Celular:</b> alterne entre o navegador e o app da IA. <b>Só assistindo:</b> sem problema; tudo aparece nos slides e o guia fica no ar para depois.</p></div>
   </div>
-  <p class="small muted">Não precisa saber programar nem pagar nenhuma ferramenta.</p>
+  <p class="small muted">Não precisa saber programar, pagar ferramenta nem configurar nada: tudo vai pelo chat da IA.</p>
 </section>
 
 <!-- ================= 1 · COMO A IA FUNCIONA ================= -->
@@ -294,7 +294,7 @@ tr.hl td{background:var(--bad-soft)}
   <h2>System, user e assistant</h2>
   <div class="sum"><span class="k">Em resumo</span><p>Toda conversa é uma lista de mensagens com três papéis. A cada envio, o modelo <b>relê a lista inteira</b>. Ele não tem memória própria: quem guarda o histórico é a ferramenta.</p></div>
   <div class="cards c3">
-    <div class="box"><span class="rn">system</span><b>Instrução de bastidor</b><p class="small muted">Define tom, regras e especialidade. Escrita pela ferramenta ou por você, nas configurações.</p></div>
+    <div class="box"><span class="rn">system</span><b>Instrução de bastidor</b><p class="small muted">Define tom, regras e especialidade. Escrita pela empresa da ferramenta; normalmente fica escondida.</p></div>
     <div class="box"><span class="rn">user</span><b>O que você escreve</b><p class="small muted">Sua pergunta, tarefa ou dados colados.</p></div>
     <div class="box"><span class="rn">assistant</span><b>O que a IA responde</b><p class="small muted">Volta para a lista e vira contexto da próxima mensagem.</p></div>
   </div>
@@ -305,20 +305,16 @@ tr.hl td{background:var(--bad-soft)}
     <div><span class="r">assistant</span><span>OEE = Disponibilidade × Performance × Qualidade…</span></div>
     <div class="new"><span class="r">user</span><span>Calcule para 90%, 95% e 98%.</span></div>
   </div>
-  <details><summary>Onde escrever o system prompt em cada ferramenta</summary>
-    <div class="tbl"><table><tbody>
-      <tr><td><b>ChatGPT</b></td><td>Instruções personalizadas, Projetos ou GPTs</td></tr>
-      <tr><td><b>Claude</b></td><td>Instruções do Projeto e preferências</td></tr>
-      <tr><td><b>Gemini</b></td><td>Gems</td></tr>
-      <tr><td><b>Qualquer uma</b></td><td>Escreva as instruções na primeira mensagem</td></tr>
-    </tbody></table></div>
-    <p class="small muted">Os nomes mudam com frequência. Em uso avançado (API), também dá para escrever exemplos no papel de assistant para a IA imitar.</p>
-  </details>
+  <p class="tip"><b>Na aula, tudo vai pelo chat.</b> Em vez de mexer nas configurações da ferramenta, mande a instrução no começo da primeira mensagem: ela fica no histórico e vale para a conversa inteira, com efeito parecido com o do system prompt.</p>
   <div class="task">
     <div class="task-h"><div><span class="lab">Exercício 1 · 5 min</span><h3>Mesma pergunta, instrução diferente</h3></div><label class="check"><input type="checkbox" data-id="ex1">Feito</label></div>
-    <ol class="steps"><li>Numa conversa nova, envie a Instrução A como primeira mensagem.</li><li>Pergunte: <code>O que é OEE?</code></li><li>Repita em outra conversa com a Instrução B e compare.</li></ol>
-    <div class="prompt"><span class="pl">Instrução A</span><button class="pill cp" data-copy>Copiar</button>Você é um professor paciente de Engenharia de Produção. Explique com analogias do dia a dia e um exemplo numérico simples.</div>
-    <div class="prompt"><span class="pl">Instrução B</span><button class="pill cp" data-copy>Copiar</button>Você é um consultor sênior de operações. Responda em no máximo 3 frases, com números de referência e uma recomendação.</div>
+    <ol class="steps"><li>Abra uma conversa nova e envie o Prompt A. Ele já traz a instrução e a pergunta.</li><li>Abra outra conversa nova e envie o Prompt B.</li><li>Compare: o que mudou no tom, no tamanho e no formato? E o conceito, mudou?</li></ol>
+    <div class="prompt"><span class="pl">Prompt A</span><button class="pill cp" data-copy>Copiar</button>Você é um professor paciente de Engenharia de Produção. Explique com analogias do dia a dia e um exemplo numérico simples.
+
+O que é OEE?</div>
+    <div class="prompt"><span class="pl">Prompt B</span><button class="pill cp" data-copy>Copiar</button>Você é um consultor sênior de operações. Responda em no máximo 3 frases, com números de referência e uma recomendação.
+
+O que é OEE?</div>
   </div>
   <div class="quiz" data-q="q2" data-ok="1">
     <span class="lab">Teste rápido</span>
@@ -510,7 +506,7 @@ Antes de responder, liste as premissas e mostre cada cálculo passo a passo.</di
 <section class="mod" data-t="Experimento em 7 elos" data-d="35 min" hidden>
   <span class="eyebrow">Módulo 6 · 35 min</span>
   <h2>O experimento: 7 elos</h2>
-  <div class="sum"><span class="k">Como funciona</span><p>Uma única conversa com a IA, um elo de cada vez. Em cada elo: <b>copie o prompt, envie, compare com o que observar e confira</b>. Só então siga para o próximo. Dica: se a sua IA tiver modo de análise de dados, ative.</p></div>
+  <div class="sum"><span class="k">Como funciona</span><p>Uma única conversa com a IA, um elo de cada vez. Em cada elo: <b>copie o prompt, envie, compare com o que observar e confira</b>. Só então siga para o próximo. Tudo vai pelo chat: não precisa configurar nada.</p></div>
   <details><summary>A sua IA deu um número diferente do gabarito?</summary>
     <ul class="small"><li>Diferença só na casa decimal é arredondamento. Pode seguir.</li><li>Diferença grande: peça <code>Mostre a conta passo a passo para a L1</code> e compare com a checagem do elo.</li><li>Confira se ela removeu a linha repetida e usou <b>tempo operando = planejado − paradas</b>.</li><li>Ainda diferente? Abra uma conversa nova, cole a base de novo e reenvie o prompt do elo.</li></ul>
     <p class="small muted">Esse é o ponto do exercício: a IA acelera, mas quem confere é você.</p>
@@ -667,7 +663,7 @@ const RAW=`data;linha;turno;operador;produto;tempo_planejado_min;parada_setup_mi
 const ELOS=[
  {t:'Entender a base',q:'Os dados estão certos?',tec:'Papel + regra "não calcule ainda"',
   why:'Dado sujo gera conta errada com cara de certa. Aqui deveriam ser 90 turnos (10 dias × 3 linhas × 3 turnos).',
-  p:'Você é engenheiro de produção sênior. Vou colar uma base de produção logo abaixo. Descreva cada coluna, aponte dados faltantes, linhas duplicadas e valores suspeitos. Ainda não calcule nada.\n\n[cole a base aqui]',
+  p:'Você é engenheiro de produção sênior. Segue uma base de produção, colada abaixo ou em anexo. Descreva cada coluna, aponte dados faltantes, linhas duplicadas e valores suspeitos. Ainda não calcule nada.\n\n[cole a base aqui ou anexe o arquivo]',
   see:'A lista das 14 colunas e os problemas de qualidade dos dados.',
   chk:'Procure a data 09/10 na base: a linha da L2, Tarde, aparece duas vezes?',
   ans:'<p><b>91 registros</b> em vez de 90.</p><ul><li>Linha <b>duplicada</b>: 09/10 · L2 · Tarde.</li><li><b>Operador vazio</b>: 06/10 · L2 · Tarde.</li></ul><p class="small">Por que importa: a linha repetida soma à L2 um turno que não existiu (22.058 garrafas). O OEE quase não muda, mas qualquer total ou média por turno sai errado.</p>'},
