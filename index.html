@@ -248,7 +248,7 @@ tr.hl td{background:var(--bad-soft)}
     <div class="box fill"><span class="k">Você vai precisar</span><p>Uma IA gratuita (ChatGPT, Claude, Gemini ou Copilot) aberta e logada. A base de dados do caso está no Módulo 5, para copiar ou baixar.</p></div>
     <div class="box fill"><span class="k">Como acompanhar</span><p><b>Computador:</b> guia de um lado, IA do outro. <b>Celular:</b> alterne entre o navegador e o app da IA. <b>Só assistindo:</b> sem problema; tudo aparece nos slides e o guia fica no ar para depois.</p></div>
   </div>
-  <p class="small muted">Não precisa saber programar, pagar ferramenta nem configurar nada: tudo vai pelo chat da IA.</p>
+  <p class="small muted">Mão na massa em dois momentos: nos exercícios de prompt (Módulos 3 e 4) e no experimento com a base da Envasa (Módulos 5 e 6). Não precisa saber programar, pagar ferramenta nem configurar nada: tudo vai pelo chat da IA.</p>
 </section>
 
 <!-- ================= 1 · COMO A IA FUNCIONA ================= -->
@@ -289,8 +289,8 @@ tr.hl td{background:var(--bad-soft)}
 </section>
 
 <!-- ================= 2 · SYSTEM USER ASSISTANT ================= -->
-<section class="mod" data-t="System, user e assistant" data-d="12 min" hidden>
-  <span class="eyebrow">Módulo 2 · 12 min</span>
+<section class="mod" data-t="System, user e assistant" data-d="6 min" hidden>
+  <span class="eyebrow">Módulo 2 · 6 min</span>
   <h2>System, user e assistant</h2>
   <div class="sum"><span class="k">Em resumo</span><p>Toda conversa é uma lista de mensagens com três papéis. A cada envio, o modelo <b>relê a lista inteira</b>. Ele não tem memória própria: quem guarda o histórico é a ferramenta.</p></div>
   <div class="cards c3">
@@ -306,16 +306,6 @@ tr.hl td{background:var(--bad-soft)}
     <div class="new"><span class="r">user</span><span>Calcule para 90%, 95% e 98%.</span></div>
   </div>
   <p class="tip"><b>Na aula, tudo vai pelo chat.</b> Em vez de mexer nas configurações da ferramenta, mande a instrução no começo da primeira mensagem: ela fica no histórico e vale para a conversa inteira, com efeito parecido com o do system prompt.</p>
-  <div class="task">
-    <div class="task-h"><div><span class="lab">Exercício 1 · 5 min</span><h3>Mesma pergunta, instrução diferente</h3></div><label class="check"><input type="checkbox" data-id="ex1">Feito</label></div>
-    <ol class="steps"><li>Abra uma conversa nova e envie o Prompt A. Ele já traz a instrução e a pergunta.</li><li>Abra outra conversa nova e envie o Prompt B.</li><li>Compare: o que mudou no tom, no tamanho e no formato? E o conceito, mudou?</li></ol>
-    <div class="prompt"><span class="pl">Prompt A</span><button class="pill cp" data-copy>Copiar</button>Você é um professor paciente de Engenharia de Produção. Explique com analogias do dia a dia e um exemplo numérico simples.
-
-O que é OEE?</div>
-    <div class="prompt"><span class="pl">Prompt B</span><button class="pill cp" data-copy>Copiar</button>Você é um consultor sênior de operações. Responda em no máximo 3 frases, com números de referência e uma recomendação.
-
-O que é OEE?</div>
-  </div>
   <div class="quiz" data-q="q2" data-ok="1">
     <span class="lab">Teste rápido</span>
     <p>Por que a IA entende "calcule para 90%, 95% e 98%" sem você repetir a palavra OEE?</p>
@@ -331,6 +321,7 @@ O que é OEE?</div>
   <span class="eyebrow">Módulo 3 · 12 min</span>
   <h2>Escrevendo bons prompts: o método CORPO</h2>
   <div class="sum"><span class="k">Em resumo</span><p>Um bom prompt responde cinco perguntas que a IA não tem como adivinhar. Se faltar uma, ela preenche com o palpite mais provável.</p></div>
+  <p class="tip"><b>Usar IA está ficando mais fácil.</b> Os modelos de fronteira (os mais avançados de cada empresa) pensam antes de responder, entendem a intenção, perguntam o que falta, calculam com código e avisam riscos. Mas não sabem o que só você sabe, e ainda erram. Dar o contexto e conferir continua sendo trabalho seu: é isso que o CORPO organiza.</p>
   <div class="letters">
     <div class="lt"><b class="l">C</b><div><b>Contexto</b> <span class="q">· qual é a situação?</span><p class="small muted">3 linhas de envase, 3 turnos, 10 dias de dados.</p></div></div>
     <div class="lt"><b class="l">O</b><div><b>Objetivo</b> <span class="q">· o que exatamente eu quero?</span><p class="small muted">OEE por linha, com os 3 fatores.</p></div></div>
@@ -362,7 +353,7 @@ O que é OEE?</div>
     <div class="prompt"><span class="pl">Seu prompt montado</span><button class="pill cp" data-copy-el="corpoTxt">Copiar</button><span id="corpoTxt"></span></div>
   </details>
   <div class="task">
-    <div class="task-h"><div><span class="lab">Exercício 2 · 5 min</span><h3>Conserte um prompt fraco</h3></div><label class="check"><input type="checkbox" data-id="ex2">Feito</label></div>
+    <div class="task-h"><div><span class="lab">Exercício 1 · 5 min</span><h3>Conserte um prompt fraco</h3></div><label class="check"><input type="checkbox" data-id="ex2">Feito</label></div>
     <p>Reescreva com as cinco partes do CORPO, pensando numa situação real sua:</p>
     <div class="prompt"><span class="pl">Prompt fraco</span>Me ajuda a melhorar o estoque.</div>
     <details><summary>Ver um exemplo de resposta</summary>
@@ -411,7 +402,7 @@ Agora classifique:
       <div class="box"><span class="k">Passo a passo</span><p class="small">480 − 120 = 360 min · 360 × 60 = 21.600 · 6% = 1.296 · <b>20.304 boas</b></p></div>
     </div>
     <div class="task">
-      <div class="task-h"><div><span class="lab">Exercício 3 · 3 min</span><h3>Teste a cadeia de pensamento</h3></div><label class="check"><input type="checkbox" data-id="ex3">Feito</label></div>
+      <div class="task-h"><div><span class="lab">Exercício 2 · 3 min</span><h3>Teste a cadeia de pensamento</h3></div><label class="check"><input type="checkbox" data-id="ex3">Feito</label></div>
       <p class="small">Envie em duas conversas: primeiro sem a última frase, depois com ela. Compare as duas respostas.</p>
       <div class="prompt"><span class="pl">Pergunta</span><button class="pill cp" data-copy>Copiar</button>Uma linha de 60 un/min tem turno de 480 min. Ficou 120 min parada e 6% da produção virou refugo. Quantas unidades boas saíram?
 
@@ -431,7 +422,7 @@ Antes de responder, liste as premissas e mostre cada cálculo passo a passo.</di
       <div><span class="r">→ 6</span><span>O que fazer e quanto rende?</span></div>
     </div>
     <div class="task">
-      <div class="task-h"><div><span class="lab">Exercício 4 · 3 min</span><h3>Decomponha um problema seu</h3></div><label class="check"><input type="checkbox" data-id="ex4">Feito</label></div>
+      <div class="task-h"><div><span class="lab">Exercício 3 · 3 min</span><h3>Decomponha um problema seu</h3></div><label class="check"><input type="checkbox" data-id="ex4">Feito</label></div>
       <div class="prompt"><span class="pl">Prompt</span><button class="pill cp" data-copy>Copiar</button>Quero descobrir por que o lead time de entrega aumentou 30% este ano. Antes de qualquer análise, quebre o problema em 4 a 6 sub-perguntas, em ordem lógica, e diga que dado responde cada uma. Não responda ainda.</div>
     </div>
   </div>
